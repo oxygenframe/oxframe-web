@@ -2,6 +2,8 @@
 
 > Procedural animation in Rust. Scenes are `async fn`s; every awaited animation takes time. Render to video with a CLI, preview in a browser editor with hot reload, or try it in the playground at https://oxframe.dev/playground.
 
+Install: `cargo install oxframe-cli`, then `oxframe init my-video && cd my-video && oxframe dev`. Update: `cargo install oxframe-cli --force`, then `oxframe upgrade` in each project.
+
 Projects created with `oxframe init` include AGENTS.md and a Claude Code skill (`.claude/skills/oxframe/`) with the API cheat sheet and workflow. Use `oxframe snapshot --at <seconds>` to render PNG frames and check visual changes; do not run `oxframe dev` in an agent session (interactive server).
 
 ## Start here
@@ -35,4 +37,10 @@ Projects created with `oxframe init` include AGENTS.md and a Claude Code skill (
 
 ## Source
 
+- [oxframe on crates.io](https://crates.io/crates/oxframe): the SDK; API docs on [docs.rs](https://docs.rs/oxframe)
 - [oxframe-sdk examples](https://github.com/oxygenframe/oxframe-sdk/tree/main/examples/src)
+- [oxframe-cli](https://github.com/oxygenframe/oxframe-cli)
+
+## Optional
+
+- [llms-full.txt](https://oxframe.dev/llms-full.txt): this file plus the full source of every guide lesson and example

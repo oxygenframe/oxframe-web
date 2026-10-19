@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://oxframe.dev/sitemap.xml

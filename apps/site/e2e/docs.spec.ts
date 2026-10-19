@@ -27,3 +27,12 @@ test('docs pages and links', async ({ page, request }) => {
     }
   }
 });
+
+test('robots.txt, sitemap.xml and llms.txt are served', async ({ request }) => {
+  const robots = await (await request.get('/robots.txt')).text();
+  expect(robots).toContain('Sitemap: https://oxframe.dev/sitemap.xml');
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  for (const p of pages) expect(sitemap).toContain(`<loc>https://oxframe.dev${href(p.slug)}</loc>`);
+  expect(await (await request.get('/llms.txt')).text()).toContain('llms-full.txt');
+  expect(await (await request.get('/llms-full.txt')).text()).toContain('### learn_01_hello');
+});
