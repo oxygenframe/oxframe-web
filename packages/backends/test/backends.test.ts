@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import { decodeFrameHeader, encodeFrameHeader, FrameFormat } from '@oxframe/protocol';
-import { backoff, LocalWs, resolveWsUrl } from '../src/local-ws';
+import {
+  backoff,
+  CLOSE_UNAUTHORIZED,
+  LocalWs,
+  resolveWsUrl,
+  UNAUTHORIZED_REASON,
+} from '../src/local-ws';
 
 describe('frame header', () => {
   it('round-trips', () => {
@@ -85,6 +91,31 @@ describe('LocalWs', () => {
     expect(sockets).toHaveLength(2);
     expect(sockets[1]!.url).toBe('ws://127.0.0.1:1/ws?token=t');
     ws.close();
+    vi.useRealTimers();
+  });
+
+  it('stops retrying when the server rejects the token', () => {
+    vi.useFakeTimers();
+    const sockets: Array<{ onclose: ((e: { code: number }) => void) | null }> = [];
+    class FakeWs {
+      binaryType = '';
+      onclose: ((e: { code: number }) => void) | null = null;
+      constructor() {
+        sockets.push(this);
+      }
+      close() {}
+    }
+    const statuses: unknown[] = [];
+    const ws = new LocalWs({
+      url: 'ws://127.0.0.1:1/ws',
+      token: 'stale',
+      WebSocketImpl: FakeWs as unknown as typeof WebSocket,
+    });
+    ws.connect({ event: () => {}, frame: () => {}, status: (s) => statuses.push(s) });
+    sockets[0]!.onclose?.({ code: CLOSE_UNAUTHORIZED });
+    vi.advanceTimersByTime(10_000);
+    expect(sockets).toHaveLength(1);
+    expect(statuses.at(-1)).toEqual({ state: 'closed', reason: UNAUTHORIZED_REASON });
     vi.useRealTimers();
   });
 });

@@ -5,6 +5,7 @@ const en = {
   'conn.open': 'Connected',
   'conn.reconnecting': 'Reconnecting…',
   'conn.closed': 'Disconnected',
+  'conn.unauthorized': 'Link expired: open the URL printed by `oxframe dev`',
   'status.building': 'Building…',
   'status.reloaded': 'Reloaded',
   'status.incompatible': 'Version mismatch',

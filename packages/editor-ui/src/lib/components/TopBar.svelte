@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { EditorState } from '../state.svelte';
+  import { UNAUTHORIZED_REASON } from '@oxframe/backends';
   import { t } from '../i18n';
 
   interface Props {
@@ -22,7 +23,10 @@
       case 'reconnecting':
         return { cls: 'busy', text: t('conn.reconnecting') };
       default:
-        return { cls: 'bad', text: t('conn.closed') };
+        return {
+          cls: 'bad',
+          text: c.reason === UNAUTHORIZED_REASON ? t('conn.unauthorized') : t('conn.closed'),
+        };
     }
   });
 

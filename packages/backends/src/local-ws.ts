@@ -21,6 +21,13 @@ export function resolveWsUrl(url: string, token: string | undefined, base: strin
   return u.toString();
 }
 
+/**
+ * Close code `oxframe dev` sends when the `?token=` is missing or wrong.
+ * Retrying cannot help, so the editor stops and says so.
+ */
+export const CLOSE_UNAUTHORIZED = 4401;
+export const UNAUTHORIZED_REASON = 'unauthorized';
+
 /** Exponential backoff with an upper bound. */
 export function backoff(attempt: number, min: number, max: number): number {
   return Math.min(max, min * 2 ** Math.max(0, attempt - 1));
@@ -95,9 +102,14 @@ export class LocalWs implements Backend {
         }
       });
     };
-    ws.onclose = () => {
+    ws.onclose = (ev?: CloseEvent) => {
       this.ws = null;
       if (this.closed) return;
+      if (ev?.code === CLOSE_UNAUTHORIZED) {
+        this.closed = true;
+        h.status({ state: 'closed', reason: UNAUTHORIZED_REASON });
+        return;
+      }
       this.attempt += 1;
       const delayMs = backoff(this.attempt, this.min, this.max);
       h.status({ state: 'reconnecting', attempt: this.attempt, delayMs });
