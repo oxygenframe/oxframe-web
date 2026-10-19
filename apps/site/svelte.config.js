@@ -1,6 +1,7 @@
 import adapter from '@sveltejs/adapter-static';
+import { compileUrl } from './compile-url.js';
 
-const compile = process.env.PUBLIC_COMPILE_URL ?? 'http://127.0.0.1:8787';
+const compile = compileUrl();
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {

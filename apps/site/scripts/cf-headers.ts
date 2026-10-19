@@ -4,10 +4,11 @@
 // to compile wasm, so it gets its own CSP with 'wasm-unsafe-eval'.
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { compileUrl } from '../compile-url.js';
 
 const build = join(import.meta.dir, '../build');
-// Same default as src/lib/config.ts, so headers always match the build.
-const compile = process.env.PUBLIC_COMPILE_URL ?? 'http://127.0.0.1:8787';
+// Same resolution as the build itself, so headers always match it.
+const compile = compileUrl();
 
 const workers = join(build, '_app/immutable/workers');
 const engine = existsSync(workers)

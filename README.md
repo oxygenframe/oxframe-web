@@ -45,12 +45,12 @@ Licensed under MIT.
 
 Both halves run on Cloudflare.
 
-**Site** (`oxframe.dev`, static assets, [`wrangler.jsonc`](wrangler.jsonc)).
+**Site** (`oxframe.dev`, static assets, [`wrangler.jsonc`](wrangler.jsonc)):
 Workers Builds with the defaults (root `/`, build `bun run build`, deploy
-`npx wrangler deploy`) and the build variable
-`PUBLIC_COMPILE_URL=https://compile.oxframe.dev`. By hand:
-`PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy`. The build
-writes `apps/site/build/_headers` (security headers, engine worker CSP).
+`npx wrangler deploy`). A build on Workers Builds (`WORKERS_CI=1`) talks to
+`https://compile.oxframe.dev`, everything else to a local compile-service;
+`PUBLIC_COMPILE_URL` overrides both (see `apps/site/compile-url.js`). The
+build writes `apps/site/build/_headers` (security headers, engine worker CSP).
 
 **Compile service** (`compile.oxframe.dev`,
 [`services/compile-cf`](services/compile-cf)): a Worker answers the same API
@@ -60,16 +60,11 @@ is a Firecracker VM without internet that runs `services/compile` with the
 local runner; its image carries the toolchain and a pre-compiled SDK, so a
 build takes seconds. A cron prebuilds the site's examples into R2.
 
-Deployed by a second Worker connected to this repository in Workers Builds:
-
-| Setting        | Value                                                       |
-| -------------- | ----------------------------------------------------------- |
-| Root directory | `/`                                                         |
-| Build command  | `bun run --cwd services/compile-cf gen`                     |
-| Deploy command | `npx wrangler deploy -c services/compile-cf/wrangler.jsonc` |
-
-`gen` bundles the examples and computes `BUILD_ID`, a hash of everything the
-image is built from (part of every cache key). Deploying by hand needs Docker
-(`bun run --cwd services/compile-cf deploy`); without it, run
-[`deploy-compile.yml`](.github/workflows/deploy-compile.yml) with the
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets.
+Deployed by [`deploy-compile.yml`](.github/workflows/deploy-compile.yml) on
+pushes that touch it: the image (Rust toolchain + pre-compiled SDK) is built
+on GitHub with a layer cache and pushed to the Cloudflare registry under
+`BUILD_ID`, a hash of everything it is built from; the Worker is then
+deployed pointing at that tag (no Docker needed on Cloudflare's side).
+Unchanged image inputs skip the image build. Needs the repository secrets
+`CLOUDFLARE_API_TOKEN` (Workers Scripts, R2, Containers, Workers Routes,
+DNS edit on oxframe.dev) and `CLOUDFLARE_ACCOUNT_ID`.

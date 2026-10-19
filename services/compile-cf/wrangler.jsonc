@@ -1,11 +1,10 @@
 // compile.oxframe.dev: Worker + R2 cache + build containers.
 //
-// Workers Builds (Cloudflare git integration), from the repository root:
-//   build command:  bun run --cwd services/compile-cf gen
-//   deploy command: npx wrangler deploy -c services/compile-cf/wrangler.jsonc
-// `gen` writes src/examples.gen.ts (examples + BUILD_ID); without it the
-// bundle fails. Deploying builds the Dockerfile and rolls out the containers. By hand this needs Docker; .github/workflows/deploy-compile.yml
-// does the same from GitHub Actions.
+// Deployed by .github/workflows/deploy-compile.yml: it builds the Dockerfile
+// on GitHub (no time limit, layer cache), pushes it to the Cloudflare
+// registry and deploys with scripts/deploy-config.ts, which points `image`
+// at that registry tag. Deploying from a machine with Docker:
+// `bun run deploy` (builds the Dockerfile itself).
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "oxframe-compile",
