@@ -1,16 +1,9 @@
 name: deploy-compile
 # compile.oxframe.dev: Worker + build container image (Cloudflare Containers).
 # Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# Fallback for deploys from GitHub Actions; normally Cloudflare Workers Builds
+# deploys this Worker from the repository (see services/compile-cf/wrangler.jsonc).
 on:
-  push:
-    branches: [main]
-    paths:
-      - services/compile/src/**
-      - services/compile/package.json
-      - services/compile-cf/**
-      - infra/sandbox/template/**
-      - apps/site/src/lib/examples/**
-      - .github/workflows/deploy-compile.yml
   workflow_dispatch:
 concurrency: deploy-compile
 
@@ -29,7 +22,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          # Cache keys change whenever what the image is built from changes.
-          rev=$(git log -1 --format=%h -- ../compile/src ../compile/package.json Dockerfile container ../../infra/sandbox/template)
-          bunx wrangler deploy --var "BUILD_ID:0.1.0-$rev"
+        run: bun run deploy

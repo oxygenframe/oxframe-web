@@ -1,18 +1,19 @@
 // compile.oxframe.dev: Worker + R2 cache + build containers.
-// Deployed by .github/workflows/compile.yml (needs Docker to build the
-// image), which sets BUILD_ID from the sources the image is made of.
+//
+// Workers Builds (Cloudflare git integration), from the repository root:
+//   build command:  bun run --cwd services/compile-cf gen
+//   deploy command: npx wrangler deploy -c services/compile-cf/wrangler.jsonc
+// `gen` writes src/examples.gen.ts (examples + BUILD_ID); without it the
+// bundle fails. Deploying builds the Dockerfile and rolls out the containers. By hand this needs Docker; .github/workflows/deploy-compile.yml
+// does the same from GitHub Actions.
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "oxframe-compile",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
-  "build": { "command": "bun scripts/gen-examples.ts" },
   "vars": {
-    "SDK_VERSION": "0.1.0",
-    // Overridden on deploy (--var BUILD_ID:...); part of every cache key.
-    "BUILD_ID": "dev",
     "CORS_ORIGINS": "https://oxframe.dev,https://www.oxframe.dev",
-    "POOL_SIZE": "2",
+    "POOL_SIZE": "3",
   },
   "r2_buckets": [{ "binding": "ARTIFACTS", "bucket_name": "oxframe" }],
   // Builds per client IP (cache hits are not limited).
@@ -28,7 +29,7 @@
       "image_build_context": "../..",
       // 4 vCPU / 12 GiB / 20 GB disk: the toolchain and a warm SDK build.
       "instance_type": "standard-4",
-      "max_instances": 2,
+      "max_instances": 3,
     },
   ],
   // Prebuild examples that are not in R2 yet (after every deploy).

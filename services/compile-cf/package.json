@@ -7,7 +7,7 @@
   "scripts": {
     "gen": "bun scripts/gen-examples.ts",
     "test": "bun test",
-    "deploy": "wrangler deploy"
+    "deploy": "bun scripts/gen-examples.ts && wrangler deploy"
   },
   "dependencies": {
     "@cloudflare/containers": "0.3.7"

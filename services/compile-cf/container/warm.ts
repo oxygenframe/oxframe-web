@@ -1,6 +1,8 @@
-// Image build step: compiles the SDK once per build worker, exactly as
-// LocalRunner will at run time, so a build in a fresh container only
-// compiles the user's scene. Runs with network; the container has none.
+// Image build step: compiles the SDK the way LocalRunner will at run time,
+// so a build in a fresh container only compiles the user's scene. Runs with
+// network; the container has none. One build worker per container (cargo
+// fingerprints are tied to the target directory, so a second warm worker
+// would double image size and build time); parallelism comes from the pool.
 import { loadConfig } from '../../compile/src/config';
 import { LocalRunner } from '../../compile/src/runner';
 

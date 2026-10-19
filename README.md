@@ -55,10 +55,21 @@ writes `apps/site/build/_headers` (security headers, engine worker CSP).
 **Compile service** (`compile.oxframe.dev`,
 [`services/compile-cf`](services/compile-cf)): a Worker answers the same API
 as `services/compile`, keeps finished builds in R2 (bucket `oxframe`) and
-sends cache misses to a small pool of Cloudflare Containers. Each container
+sends cache misses to a pool of three Cloudflare Containers. Each container
 is a Firecracker VM without internet that runs `services/compile` with the
 local runner; its image carries the toolchain and a pre-compiled SDK, so a
 build takes seconds. A cron prebuilds the site's examples into R2.
-[`deploy-compile.yml`](.github/workflows/deploy-compile.yml) deploys it on
-pushes that touch it (Docker is needed to build the image); it needs the
-repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+Deployed by a second Worker connected to this repository in Workers Builds:
+
+| Setting        | Value                                                       |
+| -------------- | ----------------------------------------------------------- |
+| Root directory | `/`                                                         |
+| Build command  | `bun run --cwd services/compile-cf gen`                     |
+| Deploy command | `npx wrangler deploy -c services/compile-cf/wrangler.jsonc` |
+
+`gen` bundles the examples and computes `BUILD_ID`, a hash of everything the
+image is built from (part of every cache key). Deploying by hand needs Docker
+(`bun run --cwd services/compile-cf deploy`); without it, run
+[`deploy-compile.yml`](.github/workflows/deploy-compile.yml) with the
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets.
