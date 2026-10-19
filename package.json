@@ -10,6 +10,8 @@
   "scripts": {
     "dev": "bun scripts/dev.ts",
     "build": "bun run --cwd packages/editor-ui build:standalone && bun run --cwd apps/site build",
+    "deploy": "bun run build && wrangler deploy",
+    "deploy:preview": "bun run build && wrangler versions upload",
     "build:editor": "bun run --cwd packages/editor-ui build:standalone",
     "check": "bun run --cwd packages/editor-ui check && bun run --cwd apps/site check && tsc -p services/compile --noEmit && tsc -p packages/backends --noEmit",
     "test": "bun run --cwd packages/backends test && bun run --cwd packages/editor-ui test && bun test --cwd services/compile",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
+    "@types/bun": "1.4.3",
     "eslint": "9.39.5",
     "eslint-plugin-svelte": "3.23.1",
     "globals": "16.5.0",
@@ -30,6 +33,6 @@
     "prettier-plugin-svelte": "3.5.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.2",
-    "@types/bun": "1.4.3"
+    "wrangler": "4.147.0"
   }
 }

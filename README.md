@@ -43,18 +43,22 @@ Licensed under MIT.
 
 ## Deploy
 
-The site is static and runs on Cloudflare Workers (static assets only),
-configured in [`apps/site/wrangler.jsonc`](apps/site/wrangler.jsonc):
+Only the site is deployed to Cloudflare Workers (static assets, no Worker
+code), configured in [`wrangler.jsonc`](wrangler.jsonc). The compile-service
+needs cargo and Docker/gVisor, so it runs on its own host (`infra/sandbox`)
+with `CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev`.
+
+**Workers Builds (git integration):** keep the defaults (root directory `/`,
+build `bun run build`, deploy `npx wrangler deploy`) and add the build
+variable `PUBLIC_COMPILE_URL=https://compile.oxframe.dev`.
+
+**By hand:**
 
 ```sh
-cd apps/site
-bunx wrangler login                                         # once
+bunx wrangler login                                                    # once
 PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy          # oxframe.dev
 PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy:preview  # preview URL only
 ```
 
-`deploy` builds the site, writes `build/_headers` (security headers and the
-engine worker's CSP, see `scripts/cf-headers.ts`) and uploads it. The
-compile-service needs cargo and Docker/gVisor, so it runs on its own host
-(`infra/sandbox`); set `CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev`
-there.
+The site build writes `apps/site/build/_headers` (security headers and the
+engine worker's CSP, see `apps/site/scripts/cf-headers.ts`).

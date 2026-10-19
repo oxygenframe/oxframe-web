@@ -6,8 +6,8 @@ import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const build = join(import.meta.dir, '../build');
-const compile = process.env.PUBLIC_COMPILE_URL;
-if (!compile) throw new Error('set PUBLIC_COMPILE_URL (the same value the site was built with)');
+// Same default as src/lib/config.ts, so headers always match the build.
+const compile = process.env.PUBLIC_COMPILE_URL ?? 'http://127.0.0.1:8787';
 
 const workers = join(build, '_app/immutable/workers');
 const engine = existsSync(workers)

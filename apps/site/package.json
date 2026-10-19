@@ -5,12 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && bun scripts/cf-headers.ts",
     "preview": "bun serve.ts",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
-    "e2e": "playwright test",
-    "deploy": "vite build && bun scripts/cf-headers.ts && wrangler deploy",
-    "deploy:preview": "vite build && bun scripts/cf-headers.ts && wrangler versions upload"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@oxframe/backends": "workspace:*",
@@ -27,7 +25,6 @@
     "svelte": "5.57.2",
     "svelte-check": "4.7.7",
     "typescript": "5.9.3",
-    "vite": "7.3.7",
-    "wrangler": "4.147.0"
+    "vite": "7.3.7"
   }
 }

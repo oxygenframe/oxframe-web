@@ -1,0 +1,30 @@
+// oxframe.dev on Cloudflare Workers (static assets only, no Worker code).
+// Only the site is deployed: the compile-service (cargo + Docker/gVisor)
+// cannot run on Cloudflare and lives on its own host, with
+// CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev.
+//
+// Workers Builds (git integration) works with the defaults: root directory
+// "/", build command `bun run build`, deploy command `npx wrangler deploy`,
+// plus the build variable PUBLIC_COMPILE_URL=https://compile.oxframe.dev.
+// By hand: PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy
+//
+// The site build also writes apps/site/build/_headers (security headers and
+// the engine worker's CSP, see apps/site/scripts/cf-headers.ts).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "oxframe-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./apps/site/build",
+    // adapter-static writes docs/cli.html; serve it at /docs/cli.
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  "routes": [
+    { "pattern": "oxframe.dev", "custom_domain": true },
+    { "pattern": "www.oxframe.dev", "custom_domain": true },
+  ],
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": { "enabled": true },
+}
