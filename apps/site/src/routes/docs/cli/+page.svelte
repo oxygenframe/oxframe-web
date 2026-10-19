@@ -119,6 +119,24 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   are left alone unless you pass <code>--force</code>.
 </p>
 
+<h3><code>oxframe upgrade</code></h3>
+<p>
+  Moves the project to the SDK version your CLI is made for: updates the <code>oxframe</code> pin in
+  <code>Cargo.toml</code> (keeping your formatting), runs <code>cargo update</code> and refreshes the
+  agent files. If the project already uses a newer SDK, it tells you to update the CLI instead.
+</p>
+
+<h2>Updating</h2>
+<pre><code
+    >{`cargo install oxframe-cli --force   # a new CLI
+oxframe upgrade                     # then in each project`}</code
+  ></pre>
+<p>
+  Projects pin the SDK version, so a release never changes an existing project on its own. Once a
+  day the CLI checks crates.io in the background and mentions a newer version; set
+  <code>OXFRAME_NO_UPDATE_CHECK=1</code> to turn that off.
+</p>
+
 <h2>oxframe.toml</h2>
 <p>Project settings for the CLI. Every key is optional.</p>
 <pre><code
