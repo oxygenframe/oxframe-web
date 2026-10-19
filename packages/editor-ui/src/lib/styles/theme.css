@@ -1,0 +1,94 @@
+/* Design tokens. Text colors meet WCAG AA (≥ 4.5:1) on their panels in
+   both themes. */
+:root,
+.oxframe-editor[data-theme='dark'] {
+  --m-bg: #111214;
+  --m-panel: #1a1b1e;
+  --m-panel-2: #232429;
+  --m-border: #34363c;
+  --m-text: #ececee;
+  --m-text-dim: #a9abb3;
+  --m-accent: #6cb2eb;
+  --m-accent-text: #0b1520;
+  --m-danger: #ff7a7a;
+  --m-danger-bg: #2a1416;
+  --m-warn: #f5c242;
+  --m-marker: #f5c242;
+  --m-playhead: #ff5d5d;
+  --m-scene: #2b2d33;
+  --m-wave: #4b5563;
+  --m-focus: #9fd0ff;
+  --m-mono: ui-monospace, 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --m-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+.oxframe-editor[data-theme='light'] {
+  --m-bg: #eef0f3;
+  --m-panel: #ffffff;
+  --m-panel-2: #f3f4f6;
+  --m-border: #d4d7dd;
+  --m-text: #16181d;
+  --m-text-dim: #50545e;
+  --m-accent: #1d5fd1;
+  --m-accent-text: #ffffff;
+  --m-danger: #b42318;
+  --m-danger-bg: #fdecea;
+  --m-warn: #8a5a00;
+  --m-marker: #b7791f;
+  --m-playhead: #d92d20;
+  --m-scene: #e4e7ec;
+  --m-wave: #98a2b3;
+  --m-focus: #1d5fd1;
+  color-scheme: light;
+}
+
+.oxframe-editor {
+  font: 13px/1.4 var(--m-sans);
+  color: var(--m-text);
+  background: var(--m-bg);
+}
+
+.oxframe-editor :focus-visible {
+  outline: 2px solid var(--m-focus);
+  outline-offset: 1px;
+}
+
+.oxframe-editor button {
+  font: inherit;
+  color: inherit;
+  background: var(--m-panel-2);
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.oxframe-editor button:hover {
+  border-color: var(--m-text-dim);
+}
+
+.oxframe-editor button[aria-pressed='true'] {
+  background: var(--m-accent);
+  color: var(--m-accent-text);
+  border-color: var(--m-accent);
+}
+
+.oxframe-editor input[type='number'],
+.oxframe-editor select {
+  font: inherit;
+  color: inherit;
+  background: var(--m-panel-2);
+  border: 1px solid var(--m-border);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.oxframe-editor .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

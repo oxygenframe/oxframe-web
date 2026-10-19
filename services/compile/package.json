@@ -1,0 +1,19 @@
+{
+  "name": "@oxframe/compile-service",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Compiles playground scenes to wasm in a sandbox and serves the artifacts",
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "RUNNER=local bun --watch src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "hono": "4.13.13"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.3",
+    "typescript": "5.9.3"
+  }
+}

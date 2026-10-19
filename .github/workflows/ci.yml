@@ -1,0 +1,61 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+  schedule:
+    - cron: '41 2 * * *' # nightly cross-repo run against the latest SDK
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: .bun-version }
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run check
+      - run: bun run test
+      - run: bun run build
+      - run: bunx playwright install --with-deps chromium
+      # Editor e2e against the in-page mock engine + visual checks.
+      - run: bun run e2e
+
+  integration:
+    # Site + real compile-service (local runner) + Rust; on main and nightly.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          {
+            repository: oxygenframe/oxframe-sdk,
+            path: oxframe-sdk,
+            ref: "${{ github.event_name == 'schedule' && 'main' || '' }}",
+          }
+      # Scripts expect the SDK next to this repo (checkout cannot write there).
+      - run: mv oxframe-sdk ../oxframe-sdk
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: .bun-version }
+      - uses: dtolnay/rust-toolchain@master
+        with: { toolchain: '1.97.1', targets: wasm32-unknown-unknown }
+      - run: ./scripts/install-wasm-tools.sh
+      - run: bun install --frozen-lockfile && bun run sync-examples && bun run build
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run --cwd apps/site e2e
+
+  sandbox-image:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infra/sandbox/Dockerfile -t oxframe-sandbox:ci .
+
+  nightly-issue:
+    if: failure() && github.event_name == 'schedule'
+    needs: [web, integration]
+    runs-on: ubuntu-latest
+    permissions: { issues: write }
+    steps:
+      - run: gh issue create --repo "$GITHUB_REPOSITORY" --title "Nightly cross-repo run failed" --body "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        env: { GH_TOKEN: '${{ github.token }}' }

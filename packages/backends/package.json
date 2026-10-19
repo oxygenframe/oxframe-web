@@ -1,0 +1,22 @@
+{
+  "name": "@oxframe/backends",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Transports between editor-ui and an engine: LocalWs (oxframe dev), InPageWasm (playground), Mock (tests)",
+  "exports": {
+    ".": "./src/index.ts",
+    "./engine-worker": "./src/engine-worker.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@oxframe/protocol": "workspace:*",
+    "mediabunny": "1.61.3"
+  },
+  "devDependencies": {
+    "vitest": "3.2.7",
+    "typescript": "5.9.3"
+  },
+  "license": "MIT"
+}

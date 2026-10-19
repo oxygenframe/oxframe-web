@@ -1,0 +1,101 @@
+// Cheap textual checks before spending a build. The sandbox is the real
+// security boundary; these reject what can never work or would make the
+// generated JS glue depend on user input.
+
+export interface ValidationError {
+  file: string;
+  line: number;
+  column: number;
+  message: string;
+}
+
+const FORBIDDEN: Array<[RegExp, string]> = [
+  [/#!\s*\[\s*no_std\s*\]/, '`#![no_std]` is not supported in the playground'],
+  [/#!\s*\[\s*feature\s*\(/, 'nightly `#![feature]` attributes are not available'],
+  [/\b(?:global_)?asm!\s*[({[]/, 'inline assembly is not allowed'],
+  [/\bwasm_bindgen\b/, '`wasm_bindgen` is managed by the playground; remove it from your scene'],
+  [
+    /#\s*\[\s*(?:unsafe\s*\(\s*)?(?:no_mangle|export_name|link_section|link)\b/,
+    'linkage attributes are not allowed',
+  ],
+  [/\bextern\s+crate\b/, '`extern crate` is not allowed; only the oxframe SDK is available'],
+];
+
+export function validateSource(source: string, maxBytes: number): ValidationError[] {
+  const errors: ValidationError[] = [];
+  const bytes = new TextEncoder().encode(source).byteLength;
+  if (bytes > maxBytes) {
+    return [
+      {
+        file: 'scene.rs',
+        line: 1,
+        column: 1,
+        message: `source is ${bytes} bytes; the limit is ${maxBytes}`,
+      },
+    ];
+  }
+  if (source.includes('\u0000')) {
+    return [{ file: 'scene.rs', line: 1, column: 1, message: 'source contains NUL bytes' }];
+  }
+  const code = stripComments(source);
+  for (const [re, message] of FORBIDDEN) {
+    const m = re.exec(code);
+    if (m) {
+      const { line, column } = position(code, m.index);
+      errors.push({ file: 'scene.rs', line, column, message });
+    }
+  }
+  if (!/\bpub\s+fn\s+project\s*\(\s*\)/.test(code)) {
+    errors.push({
+      file: 'scene.rs',
+      line: 1,
+      column: 1,
+      message: 'define `pub fn project() -> Project`',
+    });
+  }
+  return errors;
+}
+
+/** Replaces comments with spaces (keeps offsets) so commented-out code is not flagged. */
+export function stripComments(s: string): string {
+  let out = '';
+  let i = 0;
+  while (i < s.length) {
+    if (s.startsWith('//', i)) {
+      const end = s.indexOf('\n', i);
+      const stop = end === -1 ? s.length : end;
+      out += ' '.repeat(stop - i);
+      i = stop;
+    } else if (s.startsWith('/*', i)) {
+      let depth = 0;
+      const start = i;
+      while (i < s.length) {
+        if (s.startsWith('/*', i)) {
+          depth++;
+          i += 2;
+        } else if (s.startsWith('*/', i)) {
+          depth--;
+          i += 2;
+          if (depth === 0) break;
+        } else i++;
+      }
+      out += s.slice(start, i).replace(/[^\n]/g, ' ');
+    } else if (s[i] === '"') {
+      // Skip string literals so `"asm!("` in text is fine.
+      const start = i++;
+      while (i < s.length && s[i] !== '"') i += s[i] === '\\' ? 2 : 1;
+      i++;
+      out += '"' + ' '.repeat(Math.max(0, i - start - 2)) + '"';
+    } else {
+      out += s[i++];
+    }
+  }
+  return out;
+}
+
+function position(s: string, index: number) {
+  const before = s.slice(0, index);
+  const line = before.split('\n').length;
+  const column = index - before.lastIndexOf('\n');
+  return { line, column };
+}

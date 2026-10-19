@@ -1,0 +1,27 @@
+# Fixed manifest of the compile sandbox. Users only provide src/scene.rs;
+# dependencies cannot be added, so no build scripts or proc-macros of
+# theirs ever run. {{OXFRAME_DEP}} is a crates.io version in production and a
+# path for local development.
+[package]
+name = "scene"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[dependencies]
+oxframe = { {{OXFRAME_DEP}}, default-features = false, features = ["wasm", "gpu"] }
+wasm-bindgen = "=0.2.129"
+
+# No LTO: incremental rebuilds of scene.rs stay under a second; wasm-opt
+# does the whole-program optimization afterwards.
+[profile.release]
+opt-level = "s"
+lto = false
+codegen-units = 16
+panic = "abort"
+strip = true
+debug = false

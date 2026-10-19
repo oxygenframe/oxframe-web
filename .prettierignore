@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+.svelte-kit
+bun.lock
+packages/protocol/src/generated
+.tools
+**/.data
+test-results
+playwright-report

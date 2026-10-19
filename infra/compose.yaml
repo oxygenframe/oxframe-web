@@ -1,0 +1,30 @@
+# Local stack: site (static build served by Bun) + compile-service.
+# The compile-service needs Docker access and gVisor on the host:
+#   https://gvisor.dev/docs/user_guide/install/  (then `runsc install`)
+# Without gVisor, set SANDBOX_RUNTIME=runc — weaker isolation, dev only.
+services:
+  compile:
+    build:
+      context: ..
+      dockerfile: infra/compile.Dockerfile
+    environment:
+      PORT: '8787'
+      HOST: 0.0.0.0
+      RUNNER: docker
+      SANDBOX_RUNTIME: ${SANDBOX_RUNTIME:-runsc}
+      PUBLIC_BASE: http://localhost:8787
+      CORS_ORIGINS: http://localhost:3000
+      DATA_DIR: /data
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - compile-data:/data
+    ports: ['8787:8787']
+  site:
+    build:
+      context: ..
+      dockerfile: infra/site.Dockerfile
+    environment:
+      PORT: '3000'
+    ports: ['3000:3000']
+volumes:
+  compile-data:

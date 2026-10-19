@@ -1,0 +1,38 @@
+# oxframe
+
+> Procedural animation in Rust. Scenes are `async fn`s; every awaited animation takes time. Render to video with a CLI, preview in a browser editor with hot reload, or try it in the playground at https://oxframe.dev/playground.
+
+Projects created with `oxframe init` include AGENTS.md and a Claude Code skill (`.claude/skills/oxframe/`) with the API cheat sheet and workflow. Use `oxframe snapshot --at <seconds>` to render PNG frames and check visual changes; do not run `oxframe dev` in an agent session (interactive server).
+
+## Start here
+
+- [Welcome](https://oxframe.dev/docs): what oxframe is
+- [Install and first project](https://oxframe.dev/docs/getting-started): Rust, ffmpeg, `oxframe init`, `oxframe dev`
+
+## Guide (in order, each lesson builds on the previous one)
+
+- [1. Your first animation](https://oxframe.dev/docs/guide/hello): a scene, a node, `.to(value, seconds).await`
+- [2. In order, or all at once](https://oxframe.dev/docs/guide/together): `all`, `sequence`, `wait_for`
+- [3. Shapes, colors, transforms](https://oxframe.dev/docs/guide/shapes)
+- [4. Easing](https://oxframe.dev/docs/guide/easing)
+- [5. Text](https://oxframe.dev/docs/guide/text)
+- [6. Groups and layout](https://oxframe.dev/docs/guide/groups): children, flexbox
+- [7. Tweak timing in the editor](https://oxframe.dev/docs/guide/editor): `wait_until`, `tune!`, `ease!`, meta.json
+- [8. Signals](https://oxframe.dev/docs/guide/signals): `.bind`, derived values
+- [9. Drawing and morphing](https://oxframe.dev/docs/guide/drawing): paths, `end`, morph
+- [10. Randomness and background tasks](https://oxframe.dev/docs/guide/random): `random()`, `spawn`
+
+## Reference
+
+- [All nodes](https://oxframe.dev/docs/nodes)
+- [Effects](https://oxframe.dev/docs/effects)
+- [Markers, eases, tunables](https://oxframe.dev/docs/timing)
+- [The editor](https://oxframe.dev/docs/editor)
+- [Rendering video](https://oxframe.dev/docs/rendering)
+- [CLI reference](https://oxframe.dev/docs/cli)
+- [Working with AI agents](https://oxframe.dev/docs/agents)
+- [How oxframe works](https://oxframe.dev/docs/how-it-works)
+
+## Source
+
+- [oxframe-sdk examples](https://github.com/oxygenframe/oxframe-sdk/tree/main/examples/src)

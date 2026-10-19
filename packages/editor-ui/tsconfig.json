@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "types": ["svelte", "bun"] },
+  "include": ["src", "test", "e2e", "scripts", "*.ts"]
+}

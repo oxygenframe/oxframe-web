@@ -1,0 +1,23 @@
+name: release
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: .bun-version }
+      - run: bun install --frozen-lockfile && bun run build
+      - name: editor-ui tarball (embedded by oxframe-cli via ui.lock)
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          tar -czf "editor-ui-$v.tar.gz" -C packages/editor-ui/dist .
+          sha256sum "editor-ui-$v.tar.gz" > "editor-ui-$v.tar.gz.sha256"
+      - run: gh release create "$GITHUB_REF_NAME" editor-ui-*.tar.gz* --generate-notes
+        env: { GH_TOKEN: '${{ github.token }}' }
+      # Site deploy and compile-service rollout are provider-specific; the
+      # sandbox image must be rebuilt for the pinned SDK version first.

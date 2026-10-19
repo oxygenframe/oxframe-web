@@ -1,0 +1,10 @@
+{
+  "name": "@oxframe/protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Editor ↔ engine protocol types (generated from oxframe-protocol) and frame header helpers",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "license": "MIT"
+}

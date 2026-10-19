@@ -1,0 +1,149 @@
+<svelte:head><title>CLI reference — oxframe</title></svelte:head>
+
+<h1>CLI reference</h1>
+<p class="lead">
+  Everything the <code>oxframe</code> command can do. You will use <code>dev</code> most of the time;
+  the rest are for creating, checking and exporting.
+</p>
+
+<h2>The everyday loop</h2>
+<pre><code
+    >{`oxframe init my-video     # once: create a project
+cd my-video
+oxframe dev               # edit code, watch the preview update
+oxframe render            # when you are happy: out/my-video.mp4`}</code
+  ></pre>
+
+<h2>Commands</h2>
+
+<h3><code>oxframe init &lt;name&gt;</code></h3>
+<p>
+  Creates a folder with a ready-to-run project: <code>Cargo.toml</code> (SDK version pinned),
+  <code>src/main.rs</code> with one scene, its <code>meta.json</code>, <code>oxframe.toml</code>,
+  <code>.gitignore</code> and instructions for AI coding agents (see
+  <a href="/docs/agents">Working with AI agents</a>).
+</p>
+<table>
+  <tbody>
+    <tr
+      ><td><code>--sdk-path &lt;dir&gt;</code></td><td
+        >Use a local <code>oxframe-sdk</code> checkout instead of crates.io (also
+        <code>OXFRAME_SDK_PATH</code>).</td
+      ></tr
+    >
+  </tbody>
+</table>
+
+<h3><code>oxframe dev</code></h3>
+<p>
+  Builds the project, opens the editor in your browser and rebuilds every time you save. If the code
+  does not compile, the error shows over the preview and the last good build keeps playing.
+</p>
+<table>
+  <tbody>
+    <tr><td><code>--port &lt;n&gt;</code></td><td>Editor port (default 3000).</td></tr>
+    <tr
+      ><td><code>--open</code> / <code>--no-open</code></td><td
+        >Open the browser, or don't (overrides <code>oxframe.toml</code>).</td
+      ></tr
+    >
+    <tr
+      ><td><code>--release</code></td><td
+        >Optimized build: slower to compile, faster to play heavy scenes.</td
+      ></tr
+    >
+    <tr
+      ><td><code>--cpu</code></td><td
+        >Render the preview on the CPU — useful on machines without a working GPU.</td
+      ></tr
+    >
+  </tbody>
+</table>
+
+<h3><code>oxframe snapshot --at &lt;seconds&gt;</code></h3>
+<p>
+  Renders single frames as PNG without ffmpeg — handy to check a moment in the animation, to put a
+  still in a README, or for an AI agent to look at its own work.
+</p>
+<pre><code
+    >{`oxframe snapshot --at 1.5                       # out/snapshots/<project>-1.50.png
+oxframe snapshot --at 0 --at 2 --at 4           # three frames
+oxframe snapshot --at 1 --out cover.png         # exactly this file
+oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene`}</code
+  ></pre>
+<p>
+  Each written file is printed on its own line (<code>path frame=N t=T</code>), so scripts can pick
+  them up. Default size is 960×540; change it with <code>--size 1920x1080</code>.
+</p>
+
+<h3><code>oxframe render</code></h3>
+<p>
+  Builds in release mode and renders a video. See <a href="/docs/rendering">Rendering video</a> for examples.
+</p>
+<table>
+  <tbody>
+    <tr
+      ><td><code>--out &lt;path&gt;</code></td><td
+        >Output file or folder (default <code>out/&lt;project&gt;.mp4</code>).</td
+      ></tr
+    >
+    <tr
+      ><td><code>--format &lt;f&gt;</code></td><td
+        ><code>mp4</code>, <code>webm</code>, <code>prores</code> or <code>png</code>; by default
+        taken from the <code>--out</code> extension.</td
+      ></tr
+    >
+    <tr><td><code>--scene &lt;name&gt;</code></td><td>Only this scene.</td></tr>
+    <tr
+      ><td><code>--range a..b</code></td><td
+        >Only this time range, in seconds; either side can be left out (<code>2..</code>).</td
+      ></tr
+    >
+    <tr><td><code>--size WxH</code></td><td>Output size, e.g. <code>3840x2160</code>.</td></tr>
+    <tr><td><code>--cpu</code></td><td>Use the CPU renderer, e.g. in CI without a GPU.</td></tr>
+    <tr><td><code>--no-audio</code></td><td>Leave the soundtrack out.</td></tr>
+  </tbody>
+</table>
+
+<h3><code>oxframe check</code></h3>
+<p>
+  A quick health check: <code>cargo check</code>, validates every <code>meta.json</code>, compares
+  the versions of the CLI, SDK and editor, and looks for ffmpeg. Run it when something behaves
+  oddly.
+</p>
+
+<h3><code>oxframe agents</code></h3>
+<p>
+  Writes or refreshes <code>AGENTS.md</code>, <code>CLAUDE.md</code> and
+  <code>.claude/skills/oxframe/</code> — run it after upgrading oxframe. Files you edited yourself
+  are left alone unless you pass <code>--force</code>.
+</p>
+
+<h2>oxframe.toml</h2>
+<p>Project settings for the CLI. Every key is optional.</p>
+<pre><code
+    >{`[dev]
+port = 3000
+open = true        # open the browser on "oxframe dev"
+profile = "dev"    # or "release"
+
+[render]
+ffmpeg = "/opt/ffmpeg/bin/ffmpeg"   # default: ffmpeg from PATH`}</code
+  ></pre>
+
+<h2>Exit codes</h2>
+<table>
+  <tbody>
+    <tr><td>0</td><td>Success.</td></tr>
+    <tr><td>1</td><td>Your code does not compile, or the scene fails.</td></tr>
+    <tr><td>2</td><td>Environment: no ffmpeg, port in use, cannot write a file.</td></tr>
+    <tr><td>3</td><td>Version mismatch between the CLI, SDK and editor.</td></tr>
+  </tbody>
+</table>
+<p>Add <code>-v</code> to any command for detailed logs.</p>
+
+<h2>Security</h2>
+<p>
+  The editor server listens on 127.0.0.1 only, checks the <code>Origin</code> of every WebSocket connection
+  and requires a one-time token. The CLI runs nothing but cargo and your own project.
+</p>
