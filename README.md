@@ -40,3 +40,21 @@ k6 run -e URL=… infra/load/compile.k6.js
 ```
 
 Licensed under MIT.
+
+## Deploy
+
+The site is static and runs on Cloudflare Workers (static assets only),
+configured in [`apps/site/wrangler.jsonc`](apps/site/wrangler.jsonc):
+
+```sh
+cd apps/site
+bunx wrangler login                                         # once
+PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy          # oxframe.dev
+PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy:preview  # preview URL only
+```
+
+`deploy` builds the site, writes `build/_headers` (security headers and the
+engine worker's CSP, see `scripts/cf-headers.ts`) and uploads it. The
+compile-service needs cargo and Docker/gVisor, so it runs on its own host
+(`infra/sandbox`); set `CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev`
+there.

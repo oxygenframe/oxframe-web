@@ -13,6 +13,7 @@ export default ts.config(
       '**/generated',
       '.tools',
       '**/.data',
+      '**/.wrangler',
       '**/test-results',
       '**/playwright-report',
     ],

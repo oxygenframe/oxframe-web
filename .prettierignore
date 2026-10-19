@@ -8,3 +8,4 @@ packages/protocol/src/generated
 **/.data
 test-results
 playwright-report
+.wrangler
