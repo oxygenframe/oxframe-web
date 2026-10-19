@@ -14,6 +14,7 @@ export default ts.config(
       '.tools',
       '**/.data',
       '**/.wrangler',
+      '**/*.gen.ts',
       '**/test-results',
       '**/playwright-report',
     ],

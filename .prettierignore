@@ -9,3 +9,4 @@ packages/protocol/src/generated
 test-results
 playwright-report
 .wrangler
+services/compile-cf/src/examples.gen.ts

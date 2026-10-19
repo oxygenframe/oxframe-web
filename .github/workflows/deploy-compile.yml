@@ -1,0 +1,35 @@
+name: deploy-compile
+# compile.oxframe.dev: Worker + build container image (Cloudflare Containers).
+# Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    branches: [main]
+    paths:
+      - services/compile/src/**
+      - services/compile/package.json
+      - services/compile-cf/**
+      - infra/sandbox/template/**
+      - apps/site/src/lib/examples/**
+      - .github/workflows/deploy-compile.yml
+  workflow_dispatch:
+concurrency: deploy-compile
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: .bun-version }
+      - run: bun install --frozen-lockfile
+      - run: bun run --cwd services/compile-cf gen && bun test --cwd services/compile-cf
+      - name: Deploy (builds the image with Docker, pushes it, rolls out)
+        working-directory: services/compile-cf
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Cache keys change whenever what the image is built from changes.
+          rev=$(git log -1 --format=%h -- ../compile/src ../compile/package.json Dockerfile container ../../infra/sandbox/template)
+          bunx wrangler deploy --var "BUILD_ID:0.1.0-$rev"

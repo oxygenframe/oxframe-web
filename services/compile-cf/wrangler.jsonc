@@ -1,0 +1,38 @@
+// compile.oxframe.dev: Worker + R2 cache + build containers.
+// Deployed by .github/workflows/compile.yml (needs Docker to build the
+// image), which sets BUILD_ID from the sources the image is made of.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "oxframe-compile",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "build": { "command": "bun scripts/gen-examples.ts" },
+  "vars": {
+    "SDK_VERSION": "0.1.0",
+    // Overridden on deploy (--var BUILD_ID:...); part of every cache key.
+    "BUILD_ID": "dev",
+    "CORS_ORIGINS": "https://oxframe.dev,https://www.oxframe.dev",
+    "POOL_SIZE": "2",
+  },
+  "r2_buckets": [{ "binding": "ARTIFACTS", "bucket_name": "oxframe" }],
+  // Builds per client IP (cache hits are not limited).
+  "ratelimits": [
+    { "name": "LIMITER", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+  ],
+  "durable_objects": { "bindings": [{ "name": "BUILDER", "class_name": "Builder" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Builder"] }],
+  "containers": [
+    {
+      "class_name": "Builder",
+      "image": "./Dockerfile",
+      "image_build_context": "../..",
+      // 4 vCPU / 12 GiB / 20 GB disk: the toolchain and a warm SDK build.
+      "instance_type": "standard-4",
+      "max_instances": 2,
+    },
+  ],
+  // Prebuild examples that are not in R2 yet (after every deploy).
+  "triggers": { "crons": ["*/30 * * * *"] },
+  "routes": [{ "pattern": "compile.oxframe.dev", "custom_domain": true }],
+  "observability": { "enabled": true },
+}

@@ -18,6 +18,8 @@ export interface CompileResponse {
   js_url: string | null;
   errors: JobRecord['errors'];
   log?: string;
+  /** Infrastructure failure: not cached, retried on the next request. */
+  transient?: true;
 }
 
 export interface Example {
@@ -48,6 +50,7 @@ export function createApp(
     js_url: rec.status === 'done' ? `${cfg.publicBase}/api/artifact/${rec.id}/bundle.js` : null,
     errors: rec.errors,
     ...(rec.log ? { log: rec.log } : {}),
+    ...(rec.transient ? { transient: true as const } : {}),
   });
 
   app.use(

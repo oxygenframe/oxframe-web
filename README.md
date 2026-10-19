@@ -43,22 +43,22 @@ Licensed under MIT.
 
 ## Deploy
 
-Only the site is deployed to Cloudflare Workers (static assets, no Worker
-code), configured in [`wrangler.jsonc`](wrangler.jsonc). The compile-service
-needs cargo and Docker/gVisor, so it runs on its own host (`infra/sandbox`)
-with `CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev`.
+Both halves run on Cloudflare.
 
-**Workers Builds (git integration):** keep the defaults (root directory `/`,
-build `bun run build`, deploy `npx wrangler deploy`) and add the build
-variable `PUBLIC_COMPILE_URL=https://compile.oxframe.dev`.
+**Site** (`oxframe.dev`, static assets, [`wrangler.jsonc`](wrangler.jsonc)).
+Workers Builds with the defaults (root `/`, build `bun run build`, deploy
+`npx wrangler deploy`) and the build variable
+`PUBLIC_COMPILE_URL=https://compile.oxframe.dev`. By hand:
+`PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy`. The build
+writes `apps/site/build/_headers` (security headers, engine worker CSP).
 
-**By hand:**
-
-```sh
-bunx wrangler login                                                    # once
-PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy          # oxframe.dev
-PUBLIC_COMPILE_URL=https://compile.oxframe.dev bun run deploy:preview  # preview URL only
-```
-
-The site build writes `apps/site/build/_headers` (security headers and the
-engine worker's CSP, see `apps/site/scripts/cf-headers.ts`).
+**Compile service** (`compile.oxframe.dev`,
+[`services/compile-cf`](services/compile-cf)): a Worker answers the same API
+as `services/compile`, keeps finished builds in R2 (bucket `oxframe`) and
+sends cache misses to a small pool of Cloudflare Containers. Each container
+is a Firecracker VM without internet that runs `services/compile` with the
+local runner; its image carries the toolchain and a pre-compiled SDK, so a
+build takes seconds. A cron prebuilds the site's examples into R2.
+[`deploy-compile.yml`](.github/workflows/deploy-compile.yml) deploys it on
+pushes that touch it (Docker is needed to build the image); it needs the
+repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
