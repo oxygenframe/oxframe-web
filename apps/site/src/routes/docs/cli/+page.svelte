@@ -14,8 +14,9 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
 
 <h2>Commands</h2>
 <p>
-  Every command accepts <code>--json</code>. It then prints one JSON object on stdout
-  (<code>ok</code>, <code>exit</code>, and on failure <code>error</code>, <code>diagnostics</code> and
+  Every command accepts <code>--json</code>. It then prints one JSON object on stdout (<code
+    >ok</code
+  >, <code>exit</code>, and on failure <code>error</code>, <code>diagnostics</code> and
   <code>hints</code>) and keeps the log on stderr.
 </p>
 
@@ -122,21 +123,35 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   <code>out/check/storyboard.png</code> (a grid of frames at markers and at equal intervals, with
   the time and marker name under each cell) and <code>out/check/report.json</code>.
 </p>
-<p>Each issue has a rule, a severity (<code>error</code> or <code>warning</code>), a time range, the node name, the source <code>file:line</code> and a hint:</p>
+<p>
+  Each issue has a rule, a severity (<code>error</code> or <code>warning</code>), a time range, the
+  node name, the source <code>file:line</code> and a hint:
+</p>
 <ul>
-  <li><code>out_of_frame</code> — a node stays outside the frame (or inside the frame but outside the safe area, which is a warning).</li>
+  <li>
+    <code>out_of_frame</code> — a node stays outside the frame (or inside the frame but outside the safe
+    area, which is a warning).
+  </li>
   <li><code>text_overlap</code> — two text blocks cover each other.</li>
-  <li><code>text_overflow</code> — text is wider than its <code>max_width</code> or its layout parent.</li>
+  <li>
+    <code>text_overflow</code> — text is wider than its <code>max_width</code> or its layout parent.
+  </li>
   <li><code>low_contrast</code> — text against its backdrop is below WCAG 4.5:1.</li>
-  <li><code>too_fast</code> — a long line flashes too briefly to read (error), or a large move is shorter than 0.15s (warning).</li>
-  <li><code>dead_time</code> — nothing on screen changes for several seconds and the project has no soundtrack (warning).</li>
+  <li>
+    <code>too_fast</code> — a long line flashes too briefly to read (error), or a large move is shorter
+    than 0.15s (warning).
+  </li>
+  <li>
+    <code>dead_time</code> — nothing on screen changes for several seconds and the project has no soundtrack
+    (warning).
+  </li>
 </ul>
 <p>
   Errors make the command exit 1; warnings do not. A project that declares
   <code>Project::aspects</code> is checked in every format; the other storyboards are
-  <code>storyboard-9x16.png</code> and <code>storyboard-1x1.png</code>. <code>--frames</code> also writes each cell at
-  full size under <code>out/check/frames/</code>. The check renders only the frames it needs, on the
-  CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
+  <code>storyboard-9x16.png</code> and <code>storyboard-1x1.png</code>. <code>--frames</code> also
+  writes each cell at full size under <code>out/check/frames/</code>. The check renders only the
+  frames it needs, on the CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
 </p>
 <p>
   Name a node with <code>.name("title")</code> so the report is readable. Without a name it is
@@ -166,10 +181,11 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
 <h3><code>oxframe mcp</code></h3>
 <p>
   An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
-  serves <code>check</code>, <code>storyboard</code>, <code>render_frame</code>, <code>inspect</code>,
+  serves <code>check</code>, <code>storyboard</code>, <code>render_frame</code>,
+  <code>inspect</code>,
   <code>list_components</code>, <code>docs_search</code> and <code>render</code>. Messages are
-  newline-delimited JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the
-  protocol is written to stdout.
+  newline-delimited JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the protocol
+  is written to stdout.
 </p>
 
 <h2>Updating</h2>
@@ -213,7 +229,11 @@ cell_width = 320`}</code
 <table>
   <tbody>
     <tr><td>0</td><td>Success.</td></tr>
-    <tr><td>1</td><td>Your code does not compile, the scene fails, or <code>oxframe check</code> found an error.</td></tr>
+    <tr
+      ><td>1</td><td
+        >Your code does not compile, the scene fails, or <code>oxframe check</code> found an error.</td
+      ></tr
+    >
     <tr><td>2</td><td>Environment: no ffmpeg, port in use, cannot write a file.</td></tr>
     <tr><td>3</td><td>Version mismatch between the CLI, SDK and editor.</td></tr>
   </tbody>

@@ -4,16 +4,12 @@ import { llmsIndex, pageText } from './llms';
 
 describe('llms', () => {
   test('the index points at the full dump', () => {
-    const text = llmsIndex(
-      'https://oxframe.dev/docs',
-      'https://oxframe.dev/llms-full.txt',
-      [
-        {
-          title: 'Guide',
-          pages: [{ slug: 'guide/components', title: 'Components', description: 'Title cards.' }],
-        },
-      ],
-    );
+    const text = llmsIndex('https://oxframe.dev/docs', 'https://oxframe.dev/llms-full.txt', [
+      {
+        title: 'Guide',
+        pages: [{ slug: 'guide/components', title: 'Components', description: 'Title cards.' }],
+      },
+    ]);
     expect(text).toContain('llms-full.txt');
     expect(text).toContain('https://oxframe.dev/docs/guide/components');
   });

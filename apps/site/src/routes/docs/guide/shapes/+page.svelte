@@ -68,7 +68,8 @@
 <h2>Themes</h2>
 <p>
   A scene with no colors and no font sizes of its own already looks finished. Nodes take those from
-  the project theme: <code>.fill(Accent)</code>, <code>.padding(Md)</code>, <code>.radius(Lg)</code>,
+  the project theme: <code>.fill(Accent)</code>, <code>.padding(Md)</code>,
+  <code>.radius(Lg)</code>,
   <code>Txt::new().display()</code>. Text with no fill uses the theme's text color.
 </p>
 <pre><code
@@ -80,8 +81,8 @@ title.fade_in().await;`}</code
   ></pre>
 <p>
   Built-in themes: <code>dark</code> (the default), <code>light</code>, <code>midnight</code>,
-  <code>paper</code> and <code>vivid</code>. <code>.accent(color)</code> rebuilds the palette from one
-  brand color and keeps text at a 4.5:1 contrast. The same override can live in
+  <code>paper</code> and <code>vivid</code>. <code>.accent(color)</code> rebuilds the palette from
+  one brand color and keeps text at a 4.5:1 contrast. The same override can live in
   <code>oxframe.toml</code> without a recompile:
 </p>
 <pre><code
@@ -90,15 +91,17 @@ name = "midnight"
 accent = "#68abdf"`}</code
   ></pre>
 <p>
-  <code>fade_in()</code> and a duration of <code>Fast</code>, <code>Normal</code> or <code>Slow</code>
+  <code>fade_in()</code> and a duration of <code>Fast</code>, <code>Normal</code> or
+  <code>Slow</code>
   use the theme's motion. One <code>.theme(...)</code> line changes every token in the video.
 </p>
 
 <h2>Relative position and frame shape</h2>
 <p>
-  Place a node against another node or the safe area instead of counting pixels.
-  The position is worked out again every frame, so it follows a neighbor that moves
-  or changes size. <code>pct(80)</code> is 80% of the frame width.
+  Place a node against another node or the safe area instead of counting pixels. The position is
+  worked out again every frame, so it follows a neighbor that moves or changes size. <code
+    >pct(80)</code
+  > is 80% of the frame width.
 </p>
 <pre><code
     >{`let title = view.add(Txt::new().text("Binary search").h1().to_edge(Edge::Top));
@@ -108,17 +111,17 @@ let label = view.add(Txt::new().text("mid").caption().next_to(card, Side::Bottom
 <p>
   <code>align_to(other, Edge::Top)</code> shares an edge.
   <code>center_in(other)</code> shares a center.
-  <code>to_edge</code> stops at the safe area: a portrait frame leaves room for a
-  vertical video's status bar and buttons. <code>view.is_portrait()</code> and
+  <code>to_edge</code> stops at the safe area: a portrait frame leaves room for a vertical video's
+  status bar and buttons. <code>view.is_portrait()</code> and
   <code>view.safe_area()</code> are there when a layout really does have to branch.
 </p>
 <p>
-  Declare every shape the video should exist in. <code>oxframe check</code> looks
-  at each of them, and <code>oxframe render --aspect 9:16</code> (or
+  Declare every shape the video should exist in. <code>oxframe check</code> looks at each of them,
+  and <code>oxframe render --aspect 9:16</code> (or
   <code>--aspect all</code>) exports them.
 </p>
 <pre><code
-    >{`Project::new("explainer").aspects([Aspect::Landscape, Aspect::Portrait, Aspect::Square])`}</code
+    >Project::new("explainer").aspects([Aspect::Landscape, Aspect::Portrait, Aspect::Square])</code
   ></pre>
 
 <p>Every shape and all its settings are listed in <a href="/docs/nodes">All nodes</a>.</p>

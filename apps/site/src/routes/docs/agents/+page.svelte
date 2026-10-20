@@ -55,7 +55,10 @@ oxframe inspect --at 2.5      # scene tree at that time, when a frame looks wron
       >"after the title, slide three cards in from the left, one after another"</em
     >.
   </li>
-  <li>The agent edits the code and checks it with <code>oxframe check</code>; your preview reloads by itself.</li>
+  <li>
+    The agent edits the code and checks it with <code>oxframe check</code>; your preview reloads by
+    itself.
+  </li>
   <li>
     Fine-tune timing yourself with markers and sliders. The agent is told to keep your
     <code>meta.json</code> values, so your adjustments survive its next edit.
@@ -90,8 +93,8 @@ oxframe agents --force  # also replaces files you made your own`}</code
 }`}</code
   ></pre>
 <p>
-  Every command also takes <code>--json</code> and then prints a single JSON object on stdout.
-  A compile error includes the compiler text and a <code>hints</code> array for the mistakes agents
+  Every command also takes <code>--json</code> and then prints a single JSON object on stdout. A
+  compile error includes the compiler text and a <code>hints</code> array for the mistakes agents
   make most often (a forgotten <code>.await</code>, a builder never passed to <code>add</code>, a
   theme token used as a number, and the rest).
 </p>
@@ -101,7 +104,8 @@ oxframe agents --force  # also replaces files you made your own`}</code
   Each docs version has a plain-text index and a full dump, generated from the pages when the site
   is built. The current version is <a href="/llms.txt"><code>/llms.txt</code></a> and
   <a href="/llms-full.txt"><code>/llms-full.txt</code></a>. A pinned version is
-  <code>/docs/&lt;series&gt;/llms.txt</code> (for example <a href="/docs/0.1/llms.txt"><code>/docs/0.1/llms.txt</code></a>).
-  The current series redirects to the unversioned files, so a link written for today's version keeps
-  working after that series is archived.
+  <code>/docs/&lt;series&gt;/llms.txt</code> (for example
+  <a href="/docs/0.1/llms.txt"><code>/docs/0.1/llms.txt</code></a>). The current series redirects to
+  the unversioned files, so a link written for today's version keeps working after that series is
+  archived.
 </p>
