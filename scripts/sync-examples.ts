@@ -20,6 +20,7 @@ const names = [
   'typography',
   'quicksort',
   'camera',
+  'code_steps',
   'components',
   'relative',
   'theme',

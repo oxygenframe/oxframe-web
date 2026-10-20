@@ -7,6 +7,12 @@ export interface GalleryItem {
 
 export const galleryItems: GalleryItem[] = [
   {
+    name: 'code_steps',
+    tags: ['code', 'explainer'],
+    prompt:
+      'Write a function in steps. Unchanged tokens slide to their new places, new tokens appear, and the focus follows the line being written.',
+  },
+  {
     name: 'quicksort',
     tags: ['code', 'explainer'],
     prompt:

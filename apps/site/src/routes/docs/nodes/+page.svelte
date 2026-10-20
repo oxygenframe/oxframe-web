@@ -53,7 +53,8 @@
     >
     <tr
       ><td><code>Code</code></td><td><code>.code .language .theme .focus(a, b) .dim</code></td><td
-        ><code>code font_size focus dim</code>, <code>focus_lines</code></td
+        ><code>font_size focus dim</code>, <code>code().to</code> (a token diff),
+        <code>insert</code>, <code>remove</code>, <code>replace</code>, <code>focus_lines</code></td
       ></tr
     >
     <tr
@@ -117,6 +118,9 @@
 <pre><code
     >{`Txt::new().rich([span("Signals are "), span("lazy").bold().color(color!("#f5c242"))])
 Code::new().language("rust").code(src).focus(3, 4)   // code.focus_lines(5, 5, 0.4).await moves it
+code.code().to(next, 1.0).await                       // tokens slide; not a typewriter
+code.insert(3, 0, "    let y = x * 2;\n", 0.6).flash().await
+code.remove(((5, 0), (6, 0)), 0.5).await              // lines from 1, columns from 0
 word.morph_to("frame", 1.0).await                    // shared letters travel, the others fade`}</code
   ></pre>
 <p>

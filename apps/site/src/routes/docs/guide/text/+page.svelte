@@ -40,6 +40,16 @@
   lines you are talking about: <code>Code::new().code(src).focus(3, 4)</code>. The
   <a href="/playground?ex=quicksort">quicksort showcase</a> uses it heavily.
 </p>
+<p>
+  <code>code.code().to(next, 1.0)</code> does not type the new source. Tokens that stay slide to
+  their new places, deleted ones fade, and new ones appear.
+  <code>insert(line, col, text, seconds)</code>,
+  <code>remove(((line, col), (line, col)), seconds)</code>
+  and <code>replace</code> edit one spot; lines are counted from 1 and columns from 0.
+  <code>.flash()</code> on that tween lights the inserted text for a moment. A focus on lines that
+  move rides with them. The <a href="/playground?ex=code_steps">code steps</a> example writes a function
+  this way.
+</p>
 
 <Try>
   <ul>
