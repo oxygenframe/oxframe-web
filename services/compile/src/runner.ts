@@ -161,6 +161,9 @@ export class LocalRunner implements Runner {
 
   async warm(worker: number): Promise<void> {
     const dir = this.crateDir(worker);
+    // Warm with the template's scene, not whatever the last build left there
+    // (which may be a user's broken scene).
+    copyFileSync(join(TEMPLATE, 'src/scene.rs'), join(dir, 'src/scene.rs'));
     const r = await run(['cargo', 'build', '--release', '--target', 'wasm32-unknown-unknown'], {
       cwd: dir,
       timeoutMs: 30 * 60_000,
