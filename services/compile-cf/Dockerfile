@@ -61,8 +61,18 @@ ARG OXFRAME_SDK_VERSION
 COPY --from=tools /out/ /usr/local/bin/
 COPY --from=deps /usr/local/bin/bun /usr/local/bin/bun
 # COPY keeps mtimes, so cargo sees the warmed build as fresh.
+# --chown applies to the copied entries, not to destination directories that
+# already exist (data/, work/, w0/ from the toolchain stage). The copy leaves
+# those directories owned by root, so builder cannot mkdir artifacts/ or write
+# the scene.
 COPY --from=warm --chown=builder /home/builder/.cargo /home/builder/.cargo
 COPY --from=warm --chown=builder /home/builder/data /home/builder/data
+RUN chown builder:builder \
+      /home/builder/data /home/builder/data/work /home/builder/data/work/w0 \
+      /home/builder/.cargo \
+ && chmod 755 \
+      /home/builder/data /home/builder/data/work /home/builder/data/work/w0 \
+      /home/builder/.cargo
 WORKDIR /app
 # bun's isolated install: packages live in node_modules/.bun, the service
 # reaches them through relative links in its own node_modules.
