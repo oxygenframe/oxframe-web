@@ -11,7 +11,7 @@ async fn intro(view: View) {
     .await;
     wait_until("title").await;
     let t = view.add(Txt::new().text("").font_size(96.0).y(220.0));
-    t.text().to("Hello from wasm".into(), 1.0).ease(presets::LINEAR).await;
+    t.text().to("Hello from wasm", 1.0).ease(presets::LINEAR).await;
     wait_for(1.0).await;
 }
 

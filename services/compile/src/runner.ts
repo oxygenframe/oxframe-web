@@ -161,10 +161,17 @@ export class LocalRunner implements Runner {
 
   async warm(worker: number): Promise<void> {
     const dir = this.crateDir(worker);
-    await run(['cargo', 'build', '--release', '--target', 'wasm32-unknown-unknown'], {
+    const r = await run(['cargo', 'build', '--release', '--target', 'wasm32-unknown-unknown'], {
       cwd: dir,
       timeoutMs: 30 * 60_000,
     });
+    // The template must build: a broken one (e.g. after an SDK API change)
+    // would otherwise only show up as a failed production image build.
+    if (r.killed || r.code !== 0) {
+      throw new Error(
+        `warming worker ${worker} failed: the sandbox template does not build\n${stripAnsi(r.stderr).slice(-3000)}`,
+      );
+    }
   }
 
   async build(source: string, outDir: string, worker: number): Promise<BuildResult> {

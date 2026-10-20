@@ -19,7 +19,7 @@
 <h2>Text animates too</h2>
 <ul>
   <li>
-    <code>title.text().to("Hello, text".into(), 1.0)</code> types the new text like a typewriter.
+    <code>title.text().to("Hello, text", 1.0)</code> types the new text like a typewriter.
   </li>
   <li>
     <code>.end()</code> from 0 to 1 reveals the text letter by letter (you will see <code>end</code> again
