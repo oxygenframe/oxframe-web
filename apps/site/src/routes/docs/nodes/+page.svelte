@@ -72,6 +72,11 @@
       ></tr
     >
     <tr><td><code>Group</code></td><td>—</td><td>—</td></tr>
+    <tr
+      ><td><a href="/docs/camera"><code>Camera</code></a></td><td><code>.zoom</code></td><td
+        ><code>zoom</code> (and <code>x y rotation</code>), <code>center_on fit reset</code></td
+      ></tr
+    >
   </tbody>
 </table>
 <p>

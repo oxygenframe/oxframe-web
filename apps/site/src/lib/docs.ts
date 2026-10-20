@@ -120,6 +120,12 @@ export const sections: DocSection[] = [
           'Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.',
       },
       {
+        slug: 'camera',
+        title: 'Camera',
+        description:
+          'Zoom, pan and rotate the view in oxframe: fit a whole diagram, center on a detail, follow a moving node, and keep titles on screen.',
+      },
+      {
         slug: 'timing',
         title: 'Markers, eases, tunables',
         description:
