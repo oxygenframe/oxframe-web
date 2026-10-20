@@ -98,6 +98,13 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
       ></tr
     >
     <tr><td><code>--size WxH</code></td><td>Output size, e.g. <code>3840x2160</code>.</td></tr>
+    <tr
+      ><td><code>--aspect &lt;shape&gt;</code></td><td
+        ><code>16:9</code>, <code>9:16</code>, <code>1:1</code>, or <code>all</code>.
+        <code>all</code> writes one file per format declared with
+        <code>Project::aspects</code>.</td
+      ></tr
+    >
     <tr><td><code>--cpu</code></td><td>Use the CPU renderer, e.g. in CI without a GPU.</td></tr>
     <tr><td><code>--no-audio</code></td><td>Leave the soundtrack out.</td></tr>
   </tbody>
@@ -120,7 +127,9 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   <li><code>dead_time</code> — nothing on screen changes for several seconds and the project has no soundtrack (warning).</li>
 </ul>
 <p>
-  Errors make the command exit 1; warnings do not. <code>--frames</code> also writes each cell at
+  Errors make the command exit 1; warnings do not. A project that declares
+  <code>Project::aspects</code> is checked in every format; the other storyboards are
+  <code>storyboard-9x16.png</code> and <code>storyboard-1x1.png</code>. <code>--frames</code> also writes each cell at
   full size under <code>out/check/frames/</code>. The check renders only the frames it needs, on the
   CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
 </p>

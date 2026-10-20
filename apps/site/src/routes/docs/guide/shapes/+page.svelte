@@ -94,4 +94,31 @@ accent = "#68abdf"`}</code
   use the theme's motion. One <code>.theme(...)</code> line changes every token in the video.
 </p>
 
+<h2>Relative position and frame shape</h2>
+<p>
+  Place a node against another node or the safe area instead of counting pixels.
+  The position is worked out again every frame, so it follows a neighbor that moves
+  or changes size. <code>pct(80)</code> is 80% of the frame width.
+</p>
+<pre><code
+    >{`let title = view.add(Txt::new().text("Binary search").h1().to_edge(Edge::Top));
+let card = view.add(Rect::new().width(pct(80)).height(300.0).fill(Surface));
+let label = view.add(Txt::new().text("mid").caption().next_to(card, Side::Bottom));`}</code
+  ></pre>
+<p>
+  <code>align_to(other, Edge::Top)</code> shares an edge.
+  <code>center_in(other)</code> shares a center.
+  <code>to_edge</code> stops at the safe area: a portrait frame leaves room for a
+  vertical video's status bar and buttons. <code>view.is_portrait()</code> and
+  <code>view.safe_area()</code> are there when a layout really does have to branch.
+</p>
+<p>
+  Declare every shape the video should exist in. <code>oxframe check</code> looks
+  at each of them, and <code>oxframe render --aspect 9:16</code> (or
+  <code>--aspect all</code>) exports them.
+</p>
+<pre><code
+    >{`Project::new("explainer").aspects([Aspect::Landscape, Aspect::Portrait, Aspect::Square])`}</code
+  ></pre>
+
 <p>Every shape and all its settings are listed in <a href="/docs/nodes">All nodes</a>.</p>
