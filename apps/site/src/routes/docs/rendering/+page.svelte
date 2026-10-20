@@ -26,6 +26,35 @@ oxframe render --cpu                       # no GPU available (CI, servers)`}</c
   no full render.
 </p>
 
+<h2>Transitions</h2>
+<p>
+  A scene can open by blending in over the one before it. The call waits out the blend, so nodes
+  added before it are on screen while it runs and nodes added after appear when it finishes. The
+  length comes from the theme unless you set one, and the editor can drag it afterwards.
+</p>
+<pre><code
+    >{`#[oxframe::scene]
+async fn outro(view: View) {
+    transition(Transition::slide(Dir::Left)).await;
+    let end = view.add(EndCard::new("Thanks for watching"));
+    end.enter().await;
+}`}</code
+  ></pre>
+<p>
+  <code>fade</code>, <code>slide(Dir::Left)</code> (<code>Right</code>, <code>Up</code>,
+  <code>Down</code>), <code>wipe(dir)</code>, <code>zoom_in</code> and <code>zoom_out</code> are
+  built in. <code>.ease(...)</code> changes the curve, <code>.overlap()</code> lets the previous
+  scene keep playing instead of holding its last frame, and <code>Transition::custom(|t| ...)</code>
+  places the two layers itself with opacity, offset, scale and a wipe. The first scene has nothing to
+  blend from, so the call does nothing there.
+</p>
+<p>
+  <code>oxframe render</code> includes every transition. <code>oxframe render --scene outro</code>
+  draws that scene on its own, without the blend into it. <code>oxframe check</code> puts a frame
+  from each blend on the storyboard, and <code>oxframe inspect</code> reports the type and progress. The
+  same blend keeps its alpha on a transparent background, in 16:9, 9:16 and 1:1.
+</p>
+
 <h2>Sound</h2>
 <p>Attach a soundtrack to the project:</p>
 <pre><code

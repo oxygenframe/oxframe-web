@@ -9,6 +9,7 @@ export type { NodeInfo } from './generated/NodeInfo';
 export type { SignalValue } from './generated/SignalValue';
 export type { Meta } from './generated/Meta';
 export type { AudioMeta } from './generated/AudioMeta';
+export type { TransitionMeta } from './generated/TransitionMeta';
 
 /** Must equal `PROTOCOL_VERSION` in oxframe-protocol. */
 export const PROTOCOL_VERSION = 1;

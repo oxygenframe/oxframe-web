@@ -59,7 +59,15 @@ name: string,
 /**
  * New value.
  */
-value: number, } | { "type": "Pick", 
+value: number, } | { "type": "SetTransition", 
+/**
+ * Scene the transition belongs to.
+ */
+scene: string, 
+/**
+ * Blend length. Zero removes it.
+ */
+seconds: number, } | { "type": "Pick", 
 /**
  * Horizontal position.
  */

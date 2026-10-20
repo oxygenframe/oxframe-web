@@ -18,8 +18,8 @@ export class MockBackend implements Backend {
   readonly fps = 30;
   readonly size: [number, number] = [1920, 1080];
   readonly scenes = [
-    { name: 'intro', start: 0, frames: 60 },
-    { name: 'outro', start: 60, frames: 60 },
+    { name: 'intro', start: 0, frames: 60, transition: 0, transition_at: 0 },
+    { name: 'outro', start: 60, frames: 60, transition: 0, transition_at: 0 },
   ];
   metas: Record<string, Meta> = {
     intro: {
@@ -217,6 +217,22 @@ export class MockBackend implements Backend {
         this.emit({ type: 'Selected', node_id: this.selected });
         void this.show();
         break;
+      case 'SetTransition': {
+        const scene = this.scenes.find((s) => s.name === cmd.scene);
+        if (!scene) {
+          this.emit({
+            type: 'Error',
+            kind: 'Meta',
+            message: `no scene named \`${cmd.scene}\``,
+            spans: [],
+          });
+          return;
+        }
+        scene.transition = Math.max(0, Math.round(cmd.seconds * this.fps));
+        this.timeline();
+        void this.show();
+        break;
+      }
       case 'Shutdown':
         break;
     }

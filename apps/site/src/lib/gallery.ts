@@ -7,6 +7,11 @@ export interface GalleryItem {
 
 export const galleryItems: GalleryItem[] = [
   {
+    name: 'transitions',
+    tags: ['explainer'],
+    prompt: 'Open on a title card, then slide left into an end card.',
+  },
+  {
     name: 'svg',
     tags: ['logo'],
     prompt: 'Bring in an SVG logo. Draw each path on in turn, then recolor the part with id "dot".',

@@ -141,7 +141,7 @@ export const sections: DocSection[] = [
         slug: 'rendering',
         title: 'Rendering video',
         description:
-          'Render oxframe animations to MP4, WebM with alpha, ProRes 4444 or PNG sequences with one command, on the GPU or CPU, with audio.',
+          'Render oxframe animations to MP4, WebM with alpha, ProRes 4444 or PNG sequences with one command, on the GPU or CPU, with audio and scene transitions.',
       },
       {
         slug: 'cli',

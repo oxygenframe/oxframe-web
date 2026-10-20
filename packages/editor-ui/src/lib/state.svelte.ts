@@ -303,6 +303,11 @@ export class EditorState {
     this.send({ type: 'SetTunable', name, value });
   }
 
+  /** Blend length into `scene`, in seconds. Zero removes it. */
+  setTransition(scene: string, seconds: number): void {
+    this.send({ type: 'SetTransition', scene, seconds: Number(Math.max(0, seconds).toFixed(6)) });
+  }
+
   /** Click in the viewport, in frame pixels of the project size. */
   pick(x: number, y: number): void {
     this.send({ type: 'Pick', x, y });

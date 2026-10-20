@@ -22,6 +22,7 @@ const names = [
   'camera',
   'code_steps',
   'svg',
+  'transitions',
   'components',
   'relative',
   'theme',

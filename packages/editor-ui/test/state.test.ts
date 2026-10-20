@@ -33,8 +33,8 @@ const ready: Event = {
   fps: 30,
   size: [1920, 1080],
   scenes: [
-    { name: 'a', start: 0, frames: 60 },
-    { name: 'b', start: 60, frames: 30 },
+    { name: 'a', start: 0, frames: 60, transition: 0, transition_at: 0 },
+    { name: 'b', start: 60, frames: 30, transition: 12, transition_at: 0 },
   ],
 };
 
@@ -92,6 +92,13 @@ describe('EditorState', () => {
     s.frame = 80;
     s.markerAtPlayhead();
     expect(b.sent.at(-1)).toMatchObject({ type: 'SetMarker', name: 'x', scene: 'b' });
+  });
+
+  it('sends a new transition length', () => {
+    const { b, s, emit } = setup();
+    emit(ready);
+    s.setTransition('b', 0.4);
+    expect(b.sent.at(-1)).toEqual({ type: 'SetTransition', scene: 'b', seconds: 0.4 });
   });
 
   it('restart opens the next engine at frame 0', () => {

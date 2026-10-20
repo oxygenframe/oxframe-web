@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { MarkerInfo } from '@oxframe/protocol';
+  import type { MarkerInfo, SceneInfo } from '@oxframe/protocol';
   import { formatTime, type EditorState } from '../state.svelte';
   import { t } from '../i18n';
 
@@ -28,7 +28,8 @@
     });
   }
   function onTrackDown(e: PointerEvent) {
-    if ((e.target as HTMLElement).dataset.marker) return;
+    const el = e.target as HTMLElement;
+    if (el.dataset.marker || el.closest('[data-transition]')) return;
     scrubbing = true;
     track.setPointerCapture(e.pointerId);
     if (editor.playing) editor.pause();
@@ -71,6 +72,27 @@
     } else if (e.key === 'Enter') {
       editor.seek(editor.markerFrame(m));
     }
+  }
+
+  // --- transition length ---
+  let trimming = $state<{ name: string; frames: number } | null>(null);
+  const blendFrames = (s: SceneInfo) =>
+    trimming && trimming.name === s.name ? trimming.frames : (s.transition ?? 0);
+  function onTrimDown(e: PointerEvent, s: SceneInfo) {
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    trimming = { name: s.name, frames: s.transition ?? 0 };
+  }
+  function onTrimMove(e: PointerEvent, s: SceneInfo) {
+    if (!trimming || trimming.name !== s.name) return;
+    const start = s.start + (s.transition_at ?? 0);
+    trimming = { name: s.name, frames: Math.max(0, frameAt(e.clientX) - start) };
+  }
+  function onTrimUp(s: SceneInfo) {
+    if (!trimming || trimming.name !== s.name) return;
+    const frames = trimming.frames;
+    trimming = null;
+    if (frames !== (s.transition ?? 0)) editor.setTransition(s.name, frames / editor.fps);
   }
 
   // --- waveform ---
@@ -156,6 +178,35 @@
         >
           <span>{s.name}</span>
         </div>
+        {#if blendFrames(s) > 0}
+          <div
+            class="transition"
+            style:left="{x(s.start + (s.transition_at ?? 0))}px"
+            style:width="{Math.max(
+              8,
+              x(s.start + (s.transition_at ?? 0) + blendFrames(s)) -
+                x(s.start + (s.transition_at ?? 0)),
+            )}px"
+            data-transition={s.name}
+            data-testid="transition-{s.name}"
+            title={t('timeline.transition', {
+              name: s.name,
+              seconds: (blendFrames(s) / editor.fps).toFixed(2),
+            })}
+          >
+            <button
+              class="trim"
+              data-transition={s.name}
+              aria-label={t('timeline.transition', {
+                name: s.name,
+                seconds: (blendFrames(s) / editor.fps).toFixed(2),
+              })}
+              onpointerdown={(e) => onTrimDown(e, s)}
+              onpointermove={(e) => onTrimMove(e, s)}
+              onpointerup={() => onTrimUp(s)}
+            ></button>
+          </div>
+        {/if}
       {/each}
     </div>
     <canvas class="wave" bind:this={wave} style:width="{width}px" aria-hidden="true"></canvas>
@@ -236,6 +287,28 @@
     overflow: hidden;
     white-space: nowrap;
     padding-left: 4px;
+  }
+  .transition {
+    position: absolute;
+    top: 2px;
+    height: 16px;
+    background: var(--m-accent);
+    opacity: 0.85;
+    border-radius: 2px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .trim {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: ew-resize;
+    pointer-events: auto;
   }
   .wave {
     position: absolute;
