@@ -38,6 +38,11 @@ export async function compile(source: string, signal?: AbortSignal): Promise<Com
     const retry = res.headers.get('retry-after');
     throw new Error(`Too many builds — try again in ${retry ?? 'a few'} s.`);
   }
+  if (res.status === 422)
+    // Right after a release the site can be ahead of the compile service.
+    throw new Error(
+      `The playground is being upgraded to oxframe ${SDK_VERSION}. Try again in a few minutes.`,
+    );
   if (!res.ok)
     throw new Error(
       ((await res.json().catch(() => ({}))) as { error?: string }).error ?? res.statusText,

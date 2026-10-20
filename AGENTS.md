@@ -48,5 +48,8 @@ snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
   `bun scripts/archive-docs.ts 0.1` (snapshot of the 0.1 docs, links
   rewritten), then `bun run format`, then bump `src/lib/sdk.ts` and change the
   docs for 0.2. Patch releases only bump `sdk.ts`.
+  Bumping `sdk.ts` redeploys both the site and compile.oxframe.dev (new
+  container image, ~30–40 min); in between the playground says it is being
+  upgraded.
 - Archived pages are canonicalized to the current page and stay out of the
   sitemap; "API reference" links to docs.rs for the selected version.
