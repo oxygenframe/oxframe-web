@@ -154,6 +154,10 @@ export function createService(d: Deps) {
     return res;
   }
 
+  const exampleIds = Promise.all(
+    d.examples.map((ex) => jobId(ex.source, d.sdkVersion, d.buildId)),
+  ).then((ids) => new Set(ids));
+
   async function compile(req: Request, origin: string): Promise<Response> {
     let body: { source?: unknown; sdk_version?: unknown };
     try {
@@ -173,7 +177,9 @@ export function createService(d: Deps) {
     const invalid = validateSource(body.source, MAX_SOURCE_BYTES);
     if (invalid.length) return json(respond({ id, status: 'error', errors: invalid }, origin));
     const ip = req.headers.get('CF-Connecting-IP') ?? 'unknown';
-    if (!(await d.allowBuild(ip))) {
+    // The site's own examples (docs embeds build them on demand) are a
+    // bounded, cached set: they do not count against the visitor's builds.
+    if (!(await exampleIds).has(id) && !(await d.allowBuild(ip))) {
       return json({ error: 'too many builds; try again in a minute' }, 429, {
         'Retry-After': '60',
       });

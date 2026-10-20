@@ -42,8 +42,9 @@ test('share links restore the code', async ({ page, context }) => {
 });
 
 test('guide lessons embed live examples', async ({ page }) => {
+  // Built on demand if the service has not prebuilt it yet.
   await page.goto('/docs/guide/hello');
-  await expect.poll(() => frameOf(page), { timeout: 60_000 }).toBeGreaterThanOrEqual(0);
+  await expect.poll(() => frameOf(page), { timeout: 300_000 }).toBeGreaterThanOrEqual(0);
 });
 
 test('gallery links open examples', async ({ page }) => {
@@ -67,8 +68,13 @@ test('exports mp4 in the browser with WebCodecs', async ({ page, browserName }) 
   if (await failed.isVisible()) test.skip(true, 'no H.264 encoder in this browser build');
   const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
   expect(download.suggestedFilename()).toBe('intro.mp4');
-  const { statSync } = await import('node:fs');
-  expect(statSync((await download.path())!).size).toBeGreaterThan(10_000);
+  // A real MP4: `ftyp` first, a `moov` index, and frame data in `mdat`.
+  const { readFileSync } = await import('node:fs');
+  const mp4 = readFileSync((await download.path())!);
+  expect(mp4.toString('latin1', 4, 8)).toBe('ftyp');
+  expect(mp4.includes('moov')).toBe(true);
+  expect(mp4.includes('mdat')).toBe(true);
+  expect(mp4.length).toBeGreaterThan(2_000);
 });
 
 test('reports which renderer the engine uses', async ({ page }) => {

@@ -196,6 +196,15 @@ describe('API', () => {
     expect((await post(app, { source: GOOD + '//4' }, '2.2.2.2')).status).toBe(200);
   });
 
+  it('does not rate-limit building the site examples', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ex-'));
+    writeFileSync(join(dir, 'hello.rs'), GOOD + '//example');
+    const { app } = createApp(cfg({ ratePerMinute: 1 }), new FakeRunner(), { examplesDir: dir });
+    expect((await post(app, { source: GOOD + '//1' })).status).toBe(200);
+    expect((await post(app, { source: GOOD + '//2' })).status).toBe(429);
+    expect((await post(app, { source: GOOD + '//example' })).status).toBe(200);
+  });
+
   it('answers 429 when the queue is full', async () => {
     const runner = new FakeRunner();
     runner.delayMs = 300;

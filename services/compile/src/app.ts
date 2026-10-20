@@ -99,7 +99,11 @@ export function createApp(
           'Retry-After': '10',
         });
       }
-      if (!limiter.take(ip)) {
+      // Docs embeds build the site's own examples on demand: a known,
+      // bounded set that is cached once built, so it does not count
+      // against the visitor's own builds.
+      const isExample = () => examples().some((e) => e.id === id);
+      if (!isExample() && !limiter.take(ip)) {
         metrics.inc('oxframe_rejected_total', { reason: 'rate_limit' });
         return c.json({ error: `at most ${cfg.ratePerMinute} builds per minute` }, 429, {
           'Retry-After': String(limiter.retryAfterSeconds(ip)),

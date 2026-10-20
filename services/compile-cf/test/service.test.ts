@@ -167,6 +167,16 @@ describe('compile worker', () => {
     expect(runner.builds).toBe(0);
   });
 
+  it('does not rate-limit building the site examples', async () => {
+    const { svc, runner } = setup({
+      allow: false,
+      examples: [{ name: 'hello', title: 'Hello', source: GOOD }],
+    });
+    expect((await body(compile(svc, GOOD))).status).toBe('done');
+    expect((await compile(svc, GOOD + '//other')).status).toBe(429);
+    expect(runner.builds).toBe(1);
+  });
+
   it('lists examples with their status and prebuilds the missing ones', async () => {
     const examples = [
       { name: 'hello', title: 'Hello', source: GOOD },
