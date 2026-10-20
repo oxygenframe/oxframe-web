@@ -8,6 +8,8 @@ const series = SDK_VERSION.split('.').slice(0, 2).join('.');
 
 /** `[from, to, status]`; a trailing `*` in `from` matches the rest as `:splat`. */
 export const REDIRECTS: [string, string, number][] = [
+  [`/docs/${series}/llms.txt`, '/llms.txt', 301],
+  [`/docs/${series}/llms-full.txt`, '/llms-full.txt', 301],
   [`/docs/${series}`, '/docs', 301],
   [`/docs/${series}/*`, '/docs/:splat', 301],
 ];

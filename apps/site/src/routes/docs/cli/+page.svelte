@@ -13,6 +13,11 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
   ></pre>
 
 <h2>Commands</h2>
+<p>
+  Every command accepts <code>--json</code>. It then prints one JSON object on stdout
+  (<code>ok</code>, <code>exit</code>, and on failure <code>error</code>, <code>diagnostics</code> and
+  <code>hints</code>) and keeps the log on stderr.
+</p>
 
 <h3><code>oxframe init &lt;name&gt;</code></h3>
 <p>
@@ -156,6 +161,15 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   Moves the project to the SDK version your CLI is made for: updates the <code>oxframe</code> pin in
   <code>Cargo.toml</code> (keeping your formatting), runs <code>cargo update</code> and refreshes the
   agent files. If the project already uses a newer SDK, it tells you to update the CLI instead.
+</p>
+
+<h3><code>oxframe mcp</code></h3>
+<p>
+  An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
+  serves <code>check</code>, <code>storyboard</code>, <code>render_frame</code>, <code>inspect</code>,
+  <code>list_components</code>, <code>docs_search</code> and <code>render</code>. Messages are
+  newline-delimited JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the
+  protocol is written to stdout.
 </p>
 
 <h2>Updating</h2>

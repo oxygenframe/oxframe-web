@@ -105,4 +105,6 @@ if (import.meta.main) {
     sections,
   });
   console.log(`archived the docs as ${series}: ${files.length} files`);
+  const { writeLlms } = await import('./llms');
+  console.log(`wrote ${writeLlms().length} llms files`);
 }

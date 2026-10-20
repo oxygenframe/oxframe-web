@@ -74,8 +74,34 @@ oxframe agents --force  # also replaces files you made your own`}</code
   files the same way.
 </p>
 
+<h2>Connecting an MCP client</h2>
+<p>
+  <code>oxframe mcp</code> speaks MCP over stdin and stdout. Point Claude Code, or any other client,
+  at that command with the project directory as its working directory. The tools are
+  <code>check</code>, <code>storyboard</code>, <code>render_frame</code>, <code>inspect</code>,
+  <code>list_components</code>, <code>docs_search</code> and <code>render</code>.
+  <code>docs_search</code> looks through the docs of the CLI's own version.
+</p>
+<pre><code
+    >{`{
+  "mcpServers": {
+    "oxframe": { "command": "oxframe", "args": ["mcp"] }
+  }
+}`}</code
+  ></pre>
+<p>
+  Every command also takes <code>--json</code> and then prints a single JSON object on stdout.
+  A compile error includes the compiler text and a <code>hints</code> array for the mistakes agents
+  make most often (a forgotten <code>.await</code>, a builder never passed to <code>add</code>, a
+  theme token used as a number, and the rest).
+</p>
+
 <h2>For tools that read the web</h2>
 <p>
-  This documentation is also available as plain text for language models at
-  <a href="/llms.txt"><code>/llms.txt</code></a>.
+  Each docs version has a plain-text index and a full dump, generated from the pages when the site
+  is built. The current version is <a href="/llms.txt"><code>/llms.txt</code></a> and
+  <a href="/llms-full.txt"><code>/llms-full.txt</code></a>. A pinned version is
+  <code>/docs/&lt;series&gt;/llms.txt</code> (for example <a href="/docs/0.1/llms.txt"><code>/docs/0.1/llms.txt</code></a>).
+  The current series redirects to the unversioned files, so a link written for today's version keeps
+  working after that series is archived.
 </p>

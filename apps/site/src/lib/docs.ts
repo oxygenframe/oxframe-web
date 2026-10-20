@@ -141,7 +141,7 @@ export const sections: DocSection[] = [
         slug: 'cli',
         title: 'CLI reference',
         description:
-          'Reference for the oxframe command line: init, dev, render, snapshot, check, agents and upgrade, with all options.',
+          'Reference for the oxframe command line: init, dev, render, snapshot, check, agents, upgrade and mcp, with all options.',
       },
       {
         slug: 'agents',
