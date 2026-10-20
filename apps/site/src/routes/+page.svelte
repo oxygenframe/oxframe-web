@@ -1,64 +1,114 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { SDK_VERSION } from '$lib/sdk';
+  import { measurements } from '$lib/measurements';
   import { SITE } from '$lib/site';
-  const sample = `use oxframe::prelude::*;
+  import { track } from '$lib/track';
 
-#[oxframe::scene]
-async fn intro(view: View) {
-    let square = view.add(Rect::new().size(200.0).x(-300.0).fill(color!("#e13238")));
-    all((
-        square.x().to(300.0, 1.0),
-        square.radius().to(100.0, 1.0),
-    ))
-    .await;
-}
-
-fn main() {
-    Project::new("intro").scene(intro()).main();
-}`;
   const features = [
     [
-      'Scenes are coroutines',
-      'An animation is an async fn; every .await is a frame boundary. all, sequence, spawn and wait_until compose timing.',
+      'oxframe check',
+      'A storyboard and a JSON report after every change. Errors name the rule, the time, the node and the line.',
+    ],
+    [
+      'MCP server',
+      'oxframe mcp gives an agent check, inspect, a single frame and the docs for this version.',
+    ],
+    [
+      'Themes',
+      'Color, type and motion come from tokens, so a scene looks finished before anyone picks a hex value.',
+    ],
+    [
+      'Components',
+      'Title cards, lists, code, diagrams, callouts and end cards. Add them like any other node.',
+    ],
+    [
+      '16:9, 9:16 and 1:1',
+      'One scene, three frames. Relative placement follows the safe area of each shape.',
     ],
     [
       'Deterministic',
-      'Fixed dt, a single-threaded executor and seeded randomness: the same code renders byte-identical frames anywhere.',
+      'Fixed time steps and a seeded random source. The same code renders the same frames everywhere.',
     ],
     [
       'Edit timing without recompiling',
-      'Markers, eases and tunables live in meta.json. Drag them in the editor; the code keeps only defaults.',
+      'Markers, eases and tunables live beside the code. Drag them in the editor.',
     ],
     [
       'Fast preview',
-      'oxframe dev rebuilds on save and reconnects the editor in about a second; scrubbing re-simulates without rendering.',
+      'Save, and the editor reconnects to the new build. Scrubbing re-simulates without drawing every frame.',
     ],
     [
-      'GPU and CPU renderers',
-      'vello on wgpu for speed, tiny-skia as a byte-exact reference and for CI without a GPU.',
+      'GPU and CPU',
+      'vello on wgpu for playback, tiny-skia as the reference and for machines without a GPU.',
     ],
     [
       'Video out',
-      'mp4, webm with alpha, ProRes 4444 or PNG sequences through ffmpeg, with your soundtrack muxed in.',
+      'MP4, WebM with alpha, ProRes 4444 or a PNG sequence, with the soundtrack muxed in.',
     ],
   ];
+
+  let video: HTMLVideoElement | undefined = $state();
+  let copied = $state(false);
+
+  async function copyInstall() {
+    try {
+      await navigator.clipboard.writeText('cargo install oxframe-cli');
+      copied = true;
+    } catch {
+      copied = false;
+    }
+    track('Copy install');
+  }
+
+  function loadHero(node: HTMLVideoElement) {
+    if (node.getAttribute('src')) return;
+    node.src = '/hero.mp4';
+    const start = () => node.play().catch(() => {});
+    if (node.readyState >= 2) start();
+    else node.addEventListener('loadeddata', start, { once: true });
+  }
+
+  function heroInView(node: HTMLVideoElement) {
+    const box = node.getBoundingClientRect();
+    return box.bottom > 0 && box.top < window.innerHeight;
+  }
+
+  $effect(() => {
+    const node = video;
+    if (!node) return;
+    if (heroInView(node)) {
+      loadHero(node);
+      return;
+    }
+    const onScroll = () => {
+      if (heroInView(node)) loadHero(node);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) loadHero(node);
+    });
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+  });
 </script>
 
 <Seo
-  title="oxframe — motion graphics and animation in Rust"
-  description="Make motion graphics and animated videos by writing Rust. Live editor with hot reload, a browser playground, deterministic rendering to MP4, WebM and ProRes."
+  title="oxframe — motion graphics your AI agent can see"
+  description="AI-native motion graphics in Rust: code-based animation, live timeline editor, deterministic rendering, and visual checks for coding agents."
   jsonld={[
     {
       '@type': 'SoftwareApplication',
       name: 'oxframe',
       url: `${SITE}/`,
       description:
-        'A Rust engine for procedural animation and motion graphics: scenes are async functions, with a live editor and deterministic video rendering.',
+        'AI-native motion graphics in Rust: code-based animation, live timeline editor, deterministic rendering, and visual checks for coding agents.',
       applicationCategory: 'MultimediaApplication',
       applicationSubCategory: 'Animation software',
       operatingSystem: 'Linux, macOS, Windows',
-      softwareVersion: SDK_VERSION,
+      softwareVersion: measurements.version,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       downloadUrl: 'https://crates.io/crates/oxframe-cli',
       sameAs: ['https://github.com/oxygenframe', 'https://crates.io/crates/oxframe'],
@@ -68,65 +118,294 @@ fn main() {
 />
 
 <section class="hero">
-  <h1>Motion graphics and animation in Rust</h1>
+  <div>
+    <h1>Motion graphics your AI agent can see</h1>
+    <p class="lead">
+      Code-based animation in Rust with a live editor and visual checks, so AI agents fix their own
+      mistakes before you ever hit render.
+    </p>
+    <p class="cta">
+      <a class="btn primary" href="/playground" onclick={() => track('Open playground')}
+        >Open the playground</a
+      >
+      <a class="btn" href="/docs/getting-started">Get started</a>
+      <a class="btn" href="/docs/agents" onclick={() => track('Use with Claude Code')}
+        >Use with Claude Code</a
+      >
+    </p>
+    <div class="install">
+      <pre><code>cargo install oxframe-cli</code></pre>
+      <button class="btn" type="button" onclick={copyInstall}>{copied ? 'Copied' : 'Copy'}</button>
+    </div>
+  </div>
+  <video
+    bind:this={video}
+    poster="/hero-poster.png"
+    width="1280"
+    height="720"
+    muted
+    loop
+    playsinline
+    preload="none"
+    controls
+    aria-label="A prompt, a storyboard, a lint report, a fix, and the rendered film"
+    onplay={() => track('Hero video')}
+  ></video>
+</section>
+
+<section>
+  <h2>How it works with agents</h2>
   <p class="lead">
-    Motion Canvas’ model — animations as coroutines, frames as <code>await</code> points — with Rust’s
-    speed and a live editor.
+    Prompt, then check, then render. The agent reads the picture and the report, not only the
+    compiler.
   </p>
-  <p class="cta">
-    <a class="btn primary" href="/playground">Open the playground</a>
-    <a class="btn" href="/docs/getting-started">Get started</a>
-    <a class="btn" href="/playground?ex=quicksort">See the showcase</a>
+  <div class="steps">
+    <article>
+      <h3>Prompt</h3>
+      <img
+        src="/hero-poster.png"
+        alt="A title card that says A prompt, Explain binary search"
+        width="640"
+        height="360"
+      />
+    </article>
+    <article>
+      <h3>Check</h3>
+      <img
+        src="/storyboard.png"
+        alt="Storyboard grid from oxframe check on oxframe 0.4.0"
+        width="640"
+        height="360"
+      />
+      <pre><code class="language-json">{`{
+  "duration": 2.7,
+  "issues": [{
+    "rule": "text_overlap",
+    "severity": "error",
+    "time": [1.4, 2.3],
+    "node": "line",
+    "source": "src/title.rs:218",
+    "hint": "Text overlaps title. Move one of them."
+  }]
+}`}</code></pre>
+    </article>
+    <article>
+      <h3>Render</h3>
+      <img
+        src="/hero-poster.png"
+        alt="The finished title card from the homepage film"
+        width="640"
+        height="360"
+      />
+    </article>
+  </div>
+</section>
+
+<section>
+  <h2>Numbers</h2>
+  <p class="lead">
+    oxframe {measurements.version}, measured {measurements.date} on {measurements.machine}. {measurements.scene}
+  </p>
+  <div class="numbers">
+    <article>
+      <p class="figure">{measurements.editSeconds}s</p>
+      <h3>One-line rebuild</h3>
+      <p><code>cargo build</code> after changing a single string, with oxframe already compiled.</p>
+    </article>
+    <article>
+      <p class="figure">{measurements.checkWarmSeconds}s</p>
+      <h3>Warm check</h3>
+      <p>
+        <code>oxframe check</code> when that build is already current. The visual lint itself
+        reported {measurements.checkVisualSeconds}s.
+      </p>
+    </article>
+  </div>
+  <p>
+    An agent pass rate and an average iteration count have not been measured. The prompt set and the
+    runner are in the CLI; the baseline run is waiting on a real agent.
   </p>
 </section>
 
-<pre><code>{sample}</code></pre>
+<section class="split">
+  <div>
+    <h2>You don't need to know Rust. Your agent does.</h2>
+    <p>
+      Themes and components carry the look. This scene is the whole program: a title, three steps
+      and an end card.
+    </p>
+    <p>
+      <a href="/playground?ex=components" onclick={() => track('Open playground')}
+        >Open the component example</a
+      >
+    </p>
+  </div>
+  <pre><code class="language-rust">{`use oxframe::prelude::*;
 
-<section class="grid">
-  {#each features as [title, text] (title)}
+#[oxframe::scene]
+async fn intro(view: View) {
+    let title = view.add(TitleCard::new("Binary search").subtitle("O(log n)"));
+    title.enter().await;
+    let steps = view.add(BulletList::new(["Take the middle", "Compare", "Drop half"]));
+    steps.enter().await;
+    for _ in 0..steps.len() {
+        steps.next().await;
+    }
+    let end = view.add(EndCard::new("That's the search"));
+    end.enter().await;
+}
+
+fn main() {
+    Project::new("intro").theme(Theme::dark()).scene(intro()).main();
+}`}</code></pre>
+</section>
+
+<section>
+  <h2>Features</h2>
+  <div class="grid">
+    {#each features as [title, text] (title)}
+      <article>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </article>
+    {/each}
+  </div>
+  <p>
+    Inspired by Motion Canvas: scenes are coroutines, and an <code>await</code> is a point on the timeline.
+    oxframe runs that model in Rust, with a native renderer and a check an agent can read.
+  </p>
+</section>
+
+<section>
+  <h2>Works with your agent</h2>
+  <div class="grid">
     <article>
-      <h2>{title}</h2>
-      <p>{text}</p>
+      <h3>Claude Code</h3>
+      <p>
+        <code>oxframe init</code> writes a skill and <code>AGENTS.md</code>. The docs are on the
+        <a href="/docs/agents">agents page</a>.
+      </p>
+      <pre><code>oxframe init my-video</code></pre>
     </article>
-  {/each}
+    <article>
+      <h3>Cursor</h3>
+      <p>
+        The same <code>AGENTS.md</code> is what Cursor reads. Refresh it after an upgrade with
+        <code>oxframe agents</code>.
+      </p>
+      <pre><code>oxframe agents</code></pre>
+    </article>
+    <article>
+      <h3>Codex</h3>
+      <p>
+        Codex reads <code>AGENTS.md</code> from the project before it edits. <code>oxframe init</code>
+        writes that file.
+      </p>
+      <pre><code>npm install -g @openai/codex</code></pre>
+    </article>
+    <article>
+      <h3>OpenAI</h3>
+      <p>
+        No plugin. Give the model the project's <code>AGENTS.md</code>, or the docs of this version
+        at <a href="/llms.txt">/llms.txt</a>.
+      </p>
+    </article>
+    <article>
+      <h3>MCP</h3>
+      <p>Any client that speaks MCP can run <code>oxframe mcp</code> from the project directory.</p>
+      <pre><code>oxframe mcp</code></pre>
+    </article>
+    <article>
+      <h3>llms.txt</h3>
+      <p>The docs of this version as plain text, for tools that read the web.</p>
+      <p><a href="/llms.txt">/llms.txt</a> and <a href="/llms-full.txt">/llms-full.txt</a></p>
+    </article>
+  </div>
 </section>
 
 <style>
   .hero {
-    padding: 40px 0 20px;
+    display: grid;
+    gap: 28px;
+    padding: 28px 0 8px;
+    min-width: 0;
+  }
+  @media (min-width: 860px) {
+    .hero {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+    }
   }
   h1 {
-    font-size: 44px;
+    font-size: clamp(32px, 5vw, 46px);
     margin: 0 0 12px;
   }
   .lead {
-    font-size: 19px;
     color: var(--muted);
-    max-width: 640px;
+    max-width: 62ch;
   }
-  .cta {
+  .cta,
+  .install {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 24px;
+    gap: 10px;
+    align-items: center;
   }
-  .grid {
+  .install pre {
+    margin: 0;
+    padding: 8px 12px;
+    width: max-content;
+    max-width: 100%;
+  }
+  video,
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #000;
+  }
+  .steps,
+  .numbers,
+  .grid,
+  .split {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 16px;
-    margin-top: 32px;
+    min-width: 0;
+  }
+  @media (min-width: 800px) {
+    .steps,
+    .numbers {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .split {
+      grid-template-columns: 1fr 1.2fr;
+      align-items: start;
+    }
   }
   article {
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 4px 16px;
+    padding: 4px 16px 12px;
     background: var(--panel);
   }
-  /* Same size as before the feature titles became h2 (heading order). */
-  article h2 {
-    font-size: 1.17em;
+  article h3 {
+    font-size: 1.05rem;
   }
   article p {
     color: var(--muted);
+  }
+  .figure {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 12px 0 0;
+    color: var(--text);
+  }
+  section {
+    margin-top: 48px;
   }
 </style>

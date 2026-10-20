@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="148" height="28" role="img" aria-label="made with oxframe">
+  <title>made with oxframe</title>
+  <rect width="148" height="28" rx="6" fill="#111214"/>
+  <rect x="8" y="8" width="10" height="10" rx="2" fill="#e13238"/>
+  <circle cx="26" cy="13" r="5" fill="#68abdf"/>
+  <text x="38" y="18" fill="#ececee" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">made with oxframe</text>
+</svg>

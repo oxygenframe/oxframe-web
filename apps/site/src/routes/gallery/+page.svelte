@@ -1,74 +1,60 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { showcaseExamples } from '$lib/examples';
+  import { galleryItems } from '$lib/gallery';
+  import { exampleByName } from '$lib/examples';
+  import { track } from '$lib/track';
 </script>
 
 <Seo
-  title="Gallery of Rust animations — oxframe"
-  description="Motion graphics made with oxframe, from a step-by-step quicksort visualization to text, shape and effect demos. Open any example and edit it in your browser."
+  title="Gallery of code-based videos — oxframe"
+  description="Explainer, code, chart and vertical videos made with oxframe. Each card has the brief, the source and a link into the playground."
 />
 
 <h1>Gallery</h1>
-<p>
-  Examples from <code>oxframe-sdk/examples</code>. Open one in the playground to edit and run it in
-  your browser.
+<p class="lead">
+  Examples from <code>oxframe-sdk/examples</code>. None of these cards is an agent run, so there is
+  no iteration count. The brief is the request the scene answers.
 </p>
-<a class="featured" href="/playground?ex=quicksort">
-  <span class="tag">Showcase</span>
-  <h2>Quicksort, step by step</h2>
-  <p>
-    The code with a moving focus, synced to bars that compare, swap and settle — highlighted code,
-    hundreds of coordinated tweens, seeded data, tunables, markers, glow and text morphing in one
-    scene.
-  </p>
-  <span class="btn primary">Open in playground →</span>
-</a>
 
 <ul class="cards">
-  {#each showcaseExamples as ex (ex.name)}
+  {#each galleryItems as item (item.name)}
+    {@const example = exampleByName(item.name)}
     <li>
-      <h2>{ex.name}</h2>
-      <p>{ex.title}</p>
-      <a class="btn" href="/playground?ex={ex.name}">Open in playground →</a>
+      <p class="tags">{item.tags.join(' · ')}</p>
+      <h2>{example?.title ?? item.name}</h2>
+      <p>{item.prompt}</p>
+      {#if example}
+        <details>
+          <summary>Source</summary>
+          <pre><code>{example.source}</code></pre>
+        </details>
+      {/if}
+      <a class="btn" href="/playground?ex={item.name}" onclick={() => track('Open playground')}
+        >Open in playground</a
+      >
     </li>
   {/each}
 </ul>
 
 <style>
-  .featured {
-    display: block;
-    margin: 20px 0 8px;
-    padding: 4px 20px 20px;
-    border-radius: 14px;
-    border: 1px solid var(--accent);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 14%, var(--panel)),
-      var(--panel)
-    );
-    color: var(--text);
-    text-decoration: none;
-  }
-  .featured p {
+  .lead {
     color: var(--muted);
-    max-width: 720px;
-  }
-  .tag {
-    display: inline-block;
-    margin-top: 16px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent);
+    max-width: 68ch;
   }
   .cards {
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
+    min-width: 0;
+  }
+  @media (min-width: 800px) {
+    .cards {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
   }
   li {
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 4px 16px 16px;
@@ -76,6 +62,17 @@
   }
   li p {
     color: var(--muted);
-    min-height: 3em;
+  }
+  .tags {
+    margin-top: 12px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  h2 {
+    font-size: 1.15rem;
+  }
+  details {
+    margin-bottom: 12px;
   }
 </style>

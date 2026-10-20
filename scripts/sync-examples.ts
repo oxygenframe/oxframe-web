@@ -20,6 +20,9 @@ const names = [
   'typography',
   'quicksort',
   'camera',
+  'components',
+  'relative',
+  'theme',
   // Guide lessons (docs only, not in the gallery).
   'learn_01_hello',
   'learn_02_together',

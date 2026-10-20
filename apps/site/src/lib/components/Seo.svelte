@@ -47,7 +47,7 @@
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="oxframe — motion graphics and animation in Rust" />
+  <meta property="og:image:alt" content="oxframe — motion graphics your AI agent can see" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />

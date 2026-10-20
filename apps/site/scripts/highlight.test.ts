@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'bun:test';
-import { codeText, escapeBraces, guessLang, highlight, highlightCode } from '../highlight.js';
+import {
+  codeText,
+  escapeBraces,
+  guessLang,
+  highlight,
+  highlightCode,
+  inlineLang,
+} from '../highlight.js';
 
 describe('highlight', () => {
   it('reads code bodies the way Svelte would print them', () => {
@@ -37,5 +44,19 @@ describe('highlight', () => {
     expect(out!.code).toContain('class="shiki');
     expect(out!.code).toContain('<pre><code>{dynamic}</code></pre>');
     expect(await pre.markup!({ content: src, filename: '/x/src/lib/X.svelte' })).toBeUndefined();
+  });
+
+  it('colors homepage chips and leaves file names alone', async () => {
+    expect(inlineLang('cargo build')).toBe('shellscript');
+    expect(inlineLang('await')).toBe('rust');
+    expect(inlineLang('AGENTS.md')).toBeNull();
+    const pre = highlightCode();
+    const src = '<p><code>oxframe check</code> and <code>AGENTS.md</code></p>';
+    const out = await pre.markup!({ content: src, filename: '/x/src/routes/+page.svelte' });
+    expect(out!.code).toContain('class="shiki shiki-chip"');
+    expect(out!.code).toContain('&#8203;&#32;check');
+    expect(out!.code).toContain('<code>AGENTS.md</code>');
+    const docs = await pre.markup!({ content: src, filename: '/x/src/routes/docs/a/+page.svelte' });
+    expect(docs).toBeUndefined();
   });
 });
