@@ -5,6 +5,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from '../../compile/src/app';
+import { SDK_VERSION } from '../../compile/src/config';
 import type { Config } from '../../compile/src/config';
 import type { Runner } from '../../compile/src/runner';
 import { jobId as storeJobId } from '../../compile/src/store';
@@ -71,7 +72,7 @@ function setup(over: { examples?: Example[]; allow?: boolean } = {}) {
     dataDir: mkdtempSync(join(tmpdir(), 'compile-cf-')),
     publicBase: 'http://container',
     runner: 'local',
-    oxframeDep: 'version = "0.1.0"',
+    oxframeDep: `version = "${SDK_VERSION}"`,
     image: 'x',
     runtime: 'runsc',
     workers: 1,
@@ -96,7 +97,8 @@ function setup(over: { examples?: Example[]; allow?: boolean } = {}) {
     },
     allowBuild: async () => over.allow ?? true,
     examples: over.examples ?? [],
-    sdkVersion: '0.1.0',
+    // The container app builds the site's SDK version; the Worker must agree.
+    sdkVersion: SDK_VERSION,
     buildId: BUILD_ID,
     corsOrigins: ['https://oxframe.dev'],
   });
@@ -117,7 +119,7 @@ const compile = (svc: ReturnType<typeof setup>['svc'], source: string, origin?: 
 
 describe('compile worker', () => {
   it('computes the same job id as the container', async () => {
-    expect(await jobId(GOOD, '0.1.0', BUILD_ID)).toBe(storeJobId(GOOD, '0.1.0', BUILD_ID));
+    expect(await jobId(GOOD, SDK_VERSION, BUILD_ID)).toBe(storeJobId(GOOD, SDK_VERSION, BUILD_ID));
   });
 
   it('builds once, then serves from R2 without waking a container', async () => {

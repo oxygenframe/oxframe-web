@@ -3,7 +3,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from '../src/app';
-import type { Config } from '../src/config';
+import { type Config, SDK_VERSION } from '../src/config';
 import { RateLimiter } from '../src/ratelimit';
 import { parseCargo, type Runner } from '../src/runner';
 import { jobId } from '../src/store';
@@ -18,7 +18,7 @@ function cfg(over: Partial<Config> = {}): Config {
     dataDir: mkdtempSync(join(tmpdir(), 'compile-test-')),
     publicBase: 'http://cdn.test',
     runner: 'local',
-    oxframeDep: 'version = "0.1.0"',
+    oxframeDep: `version = "${SDK_VERSION}"`,
     image: 'x',
     runtime: 'runsc',
     workers: 1,
@@ -145,10 +145,10 @@ describe('API', () => {
   it('compiles, caches and serves artifacts immutably', async () => {
     const runner = new FakeRunner();
     const { app } = createApp(cfg(), runner);
-    const r1 = await (await post(app, { source: GOOD, sdk_version: '0.1.0' })).json();
+    const r1 = await (await post(app, { source: GOOD, sdk_version: SDK_VERSION })).json();
     expect(r1.status).toBe('done');
     expect(r1.wasm_url).toBe(`http://cdn.test/api/artifact/${r1.id}/bundle.wasm`);
-    const r2 = await (await post(app, { source: GOOD, sdk_version: '0.1.0' })).json();
+    const r2 = await (await post(app, { source: GOOD, sdk_version: SDK_VERSION })).json();
     expect(r2.id).toBe(r1.id);
     expect(runner.builds).toBe(1);
     const art = await app.fetch(new Request(`http://x/api/artifact/${r1.id}/bundle.wasm`));
