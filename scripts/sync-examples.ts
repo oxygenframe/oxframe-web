@@ -1,7 +1,7 @@
 // Copies the SDK examples that work as playground scenes (each defines
 // `pub fn project()`) into the site. In CI this runs against the oxframe-sdk
 // release tag pinned in package.json, so docs never drift from the code.
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const sdk = process.env.OXFRAME_SDK_PATH ?? join(import.meta.dir, '../../oxframe-sdk');
@@ -35,9 +35,16 @@ const names = [
   'learn_09_drawing',
   'learn_10_random',
 ];
+/** Drop `#[cfg(test)]` modules. They guard the SDK example, not the scene a visitor edits. */
+export function sceneSource(source: string): string {
+  const at = source.search(/^#\[cfg\(test\)\]/m);
+  if (at === -1) return source;
+  return source.slice(0, at).trimEnd() + '\n';
+}
+
 for (const n of names) {
   const from = join(sdk, 'examples/src', `${n}.rs`);
   if (!existsSync(from)) throw new Error(`missing ${from}`);
-  copyFileSync(from, join(to, `${n}.rs`));
+  writeFileSync(join(to, `${n}.rs`), sceneSource(readFileSync(from, 'utf8')));
 }
 console.log(`synced ${names.length} examples from ${sdk}`);
