@@ -1,5 +1,3 @@
-<svelte:head><title>How oxframe works — oxframe</title></svelte:head>
-
 <h1>How oxframe works</h1>
 <p class="lead">
   You don't need any of this to make animations. Read it if you are curious why scrubbing is

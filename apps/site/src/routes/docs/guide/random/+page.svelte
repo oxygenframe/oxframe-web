@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>10. Randomness and background tasks — oxframe</title></svelte:head>
-
 <h1>10. Randomness and background tasks</h1>
 <p class="lead">
   Lots of things happening on their own, while the main story continues — and still the same video

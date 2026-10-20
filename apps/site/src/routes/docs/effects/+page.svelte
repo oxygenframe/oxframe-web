@@ -2,8 +2,6 @@
   import LiveExample from '$lib/components/LiveExample.svelte';
 </script>
 
-<svelte:head><title>Effects — oxframe</title></svelte:head>
-
 <h1>Effects</h1>
 <p class="lead">
   Gradients, dashes, shadows, blur, blend modes and clipping. Every effect is a signal, so it

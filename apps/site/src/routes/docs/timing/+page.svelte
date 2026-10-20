@@ -2,8 +2,6 @@
   import LiveExample from '$lib/components/LiveExample.svelte';
 </script>
 
-<svelte:head><title>Markers, eases, tunables — oxframe</title></svelte:head>
-
 <h1>Markers, eases, tunables</h1>
 <p class="lead">
   The full story behind <a href="/docs/guide/editor">lesson 7</a>: values that live outside your

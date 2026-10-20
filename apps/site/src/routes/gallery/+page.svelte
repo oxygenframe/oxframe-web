@@ -1,6 +1,12 @@
 <script lang="ts">
+  import Seo from '$lib/components/Seo.svelte';
   import { showcaseExamples } from '$lib/examples';
 </script>
+
+<Seo
+  title="Gallery of Rust animations — oxframe"
+  description="Motion graphics made with oxframe, from a step-by-step quicksort visualization to text, shape and effect demos. Open any example and edit it in your browser."
+/>
 
 <h1>Gallery</h1>
 <p>

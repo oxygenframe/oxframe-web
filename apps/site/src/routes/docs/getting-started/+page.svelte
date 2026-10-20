@@ -1,5 +1,3 @@
-<svelte:head><title>Install and first project — oxframe</title></svelte:head>
-
 <h1>Install and first project</h1>
 <p class="lead">Five minutes from nothing to an editor with your own animation in it.</p>
 

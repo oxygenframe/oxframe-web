@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>3. Shapes, colors, transforms — oxframe</title></svelte:head>
-
 <h1>3. Shapes, colors, transforms</h1>
 <p class="lead">
   More shapes, outlines, and the properties every shape shares: rotation, scale, color.

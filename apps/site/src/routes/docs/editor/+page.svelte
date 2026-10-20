@@ -1,5 +1,3 @@
-<svelte:head><title>The editor — oxframe</title></svelte:head>
-
 <h1>The editor</h1>
 <p class="lead">
   A tour of the editor. It is the same app under <code>oxframe dev</code> on your machine and in the playground

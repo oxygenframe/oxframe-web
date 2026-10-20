@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>7. Tweak timing in the editor — oxframe</title></svelte:head>
-
 <h1>7. Tweak timing in the editor</h1>
 <p class="lead">
   Some things are easier to adjust by eye than by number. oxframe lets you do that without touching

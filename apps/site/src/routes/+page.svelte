@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Seo from '$lib/components/Seo.svelte';
+  import { SITE } from '$lib/site';
   const sample = `use oxframe::prelude::*;
 
 #[oxframe::scene]
@@ -42,8 +44,30 @@ fn main() {
   ];
 </script>
 
+<Seo
+  title="oxframe — motion graphics and animation in Rust"
+  description="Make motion graphics and animated videos by writing Rust. Live editor with hot reload, a browser playground, deterministic rendering to MP4, WebM and ProRes."
+  jsonld={[
+    {
+      '@type': 'SoftwareApplication',
+      name: 'oxframe',
+      url: `${SITE}/`,
+      description:
+        'A Rust engine for procedural animation and motion graphics: scenes are async functions, with a live editor and deterministic video rendering.',
+      applicationCategory: 'MultimediaApplication',
+      applicationSubCategory: 'Animation software',
+      operatingSystem: 'Linux, macOS, Windows',
+      softwareVersion: '0.1',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      downloadUrl: 'https://crates.io/crates/oxframe-cli',
+      sameAs: ['https://github.com/oxygenframe', 'https://crates.io/crates/oxframe'],
+    },
+    { '@type': 'WebSite', name: 'oxframe', url: `${SITE}/` },
+  ]}
+/>
+
 <section class="hero">
-  <h1>Procedural animation in Rust</h1>
+  <h1>Motion graphics and animation in Rust</h1>
   <p class="lead">
     Motion Canvas’ model — animations as coroutines, frames as <code>await</code> points — with Rust’s
     speed and a live editor.
@@ -60,7 +84,7 @@ fn main() {
 <section class="grid">
   {#each features as [title, text] (title)}
     <article>
-      <h3>{title}</h3>
+      <h2>{title}</h2>
       <p>{text}</p>
     </article>
   {/each}
@@ -95,6 +119,10 @@ fn main() {
     border-radius: 10px;
     padding: 4px 16px;
     background: var(--panel);
+  }
+  /* Same size as before the feature titles became h2 (heading order). */
+  article h2 {
+    font-size: 1.17em;
   }
   article p {
     color: var(--muted);

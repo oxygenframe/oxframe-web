@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>6. Groups and layout — oxframe</title></svelte:head>
-
 <h1>6. Groups and layout</h1>
 <p class="lead">Put shapes inside other shapes, and let a layout arrange them for you.</p>
 

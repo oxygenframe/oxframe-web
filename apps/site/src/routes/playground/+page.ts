@@ -1,3 +1,3 @@
-// Client-only: the engine runs in a Worker, Monaco needs the DOM.
-export const ssr = false;
+// Prerendered shell with the SEO head; the app itself mounts in the
+// browser (see +page.svelte).
 export const prerender = true;

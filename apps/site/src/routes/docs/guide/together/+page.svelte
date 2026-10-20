@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>2. In order, or all at once — oxframe</title></svelte:head>
-
 <h1>2. In order, or all at once</h1>
 <p class="lead">
   In lesson 1 things happened one after another. Now you will make several things move at the same

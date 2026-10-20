@@ -1,5 +1,3 @@
-<svelte:head><title>CLI reference — oxframe</title></svelte:head>
-
 <h1>CLI reference</h1>
 <p class="lead">
   Everything the <code>oxframe</code> command can do. You will use <code>dev</code> most of the time;

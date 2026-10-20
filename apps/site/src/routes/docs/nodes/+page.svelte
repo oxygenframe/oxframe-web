@@ -2,8 +2,6 @@
   import LiveExample from '$lib/components/LiveExample.svelte';
 </script>
 
-<svelte:head><title>All nodes — oxframe</title></svelte:head>
-
 <h1>All nodes</h1>
 <p class="lead">
   A reference of every node and its properties. If you followed the guide, you already know the

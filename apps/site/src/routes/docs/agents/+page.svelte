@@ -1,5 +1,3 @@
-<svelte:head><title>Working with AI agents — oxframe</title></svelte:head>
-
 <h1>Working with AI agents</h1>
 <p class="lead">
   Coding agents like Claude Code, Codex or Cursor can write oxframe scenes for you. Every new

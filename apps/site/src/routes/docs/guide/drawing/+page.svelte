@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>9. Drawing and morphing — oxframe</title></svelte:head>
-
 <h1>9. Drawing and morphing</h1>
 <p class="lead">Draw an outline as if with a pen, then turn one shape into another.</p>
 

@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>5. Text — oxframe</title></svelte:head>
-
 <h1>5. Text</h1>
 <p class="lead">Titles, typewriter effects, mixed styles and code.</p>
 

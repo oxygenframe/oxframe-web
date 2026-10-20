@@ -1,5 +1,3 @@
-<svelte:head><title>Rendering video — oxframe</title></svelte:head>
-
 <h1>Rendering video</h1>
 <p class="lead">
   When the animation looks right in the editor, one command turns it into a video file.

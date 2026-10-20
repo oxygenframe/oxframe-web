@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>8. Signals — oxframe</title></svelte:head>
-
 <h1>8. Signals</h1>
 <p class="lead">
   Make one thing follow another automatically — a line that always connects two dots, a label that

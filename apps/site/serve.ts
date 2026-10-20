@@ -20,8 +20,9 @@ Bun.serve({
     const url = new URL(req.url);
     let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
     let file = join(root, path);
-    if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
-    else if (!existsSync(file) && existsSync(`${file}.html`)) file = `${file}.html`;
+    // adapter-static writes /docs as docs.html next to the docs/ directory.
+    if (existsSync(`${file}.html`)) file = `${file}.html`;
+    else if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
     if (!file.startsWith(root) || !existsSync(file)) {
       file = join(root, '404.html');
       path = '/404';

@@ -1,5 +1,3 @@
-<svelte:head><title>Docs — oxframe</title></svelte:head>
-
 <h1>Welcome to oxframe</h1>
 <p class="lead">
   oxframe lets you make animations by writing code. You describe what happens, step by step, and

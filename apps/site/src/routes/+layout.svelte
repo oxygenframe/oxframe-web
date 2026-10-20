@@ -9,14 +9,6 @@
   ];
 </script>
 
-<svelte:head>
-  <title>oxframe — procedural animation in Rust</title>
-  <meta
-    name="description"
-    content="Motion Canvas-style procedural animation in Rust: scenes are coroutines, frames are await points."
-  />
-</svelte:head>
-
 <header class="nav">
   <a class="brand" href="/">
     <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"

@@ -1,10 +1,45 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { href, neighbors, sections } from '$lib/docs';
+  import Seo from '$lib/components/Seo.svelte';
+  import { href, neighbors, pages, sections } from '$lib/docs';
+  import { canonical, SITE } from '$lib/site';
   let { children } = $props();
   const around = $derived(neighbors(page.url.pathname));
   const current = (slug: string) => page.url.pathname.replace(/\/$/, '') === href(slug);
+  const doc = $derived(pages.find((p) => current(p.slug)));
+  // "1. Your first animation" reads better in results without the number.
+  const name = $derived(doc?.title.replace(/^\d+\.\s*/, '') ?? 'Docs');
+  const title = $derived(
+    doc?.slug === '' ? 'oxframe docs — animation in Rust, step by step' : `${name} — oxframe docs`,
+  );
+  const jsonld = $derived(
+    doc
+      ? [
+          {
+            '@type': 'TechArticle',
+            headline: name,
+            description: doc.description,
+            url: canonical(href(doc.slug)),
+            inLanguage: 'en',
+            isPartOf: { '@type': 'WebSite', name: 'oxframe', url: SITE },
+            about: { '@type': 'SoftwareApplication', name: 'oxframe' },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'oxframe', item: `${SITE}/` },
+              { '@type': 'ListItem', position: 2, name: 'Docs', item: `${SITE}/docs` },
+              ...(doc.slug
+                ? [{ '@type': 'ListItem', position: 3, name, item: canonical(href(doc.slug)) }]
+                : []),
+            ],
+          },
+        ]
+      : [],
+  );
 </script>
+
+{#if doc}<Seo {title} description={doc.description} type="article" {jsonld} />{/if}
 
 <div class="docs">
   <nav aria-label="Documentation">

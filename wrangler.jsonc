@@ -1,7 +1,8 @@
 // oxframe.dev on Cloudflare Workers (static assets only, no Worker code).
-// Only the site is deployed: the compile-service (cargo + Docker/gVisor)
-// cannot run on Cloudflare and lives on its own host, with
-// CORS_ORIGINS=https://oxframe.dev,https://www.oxframe.dev.
+// Only the site is deployed here; the compile service is its own Worker
+// (services/compile-cf, compile.oxframe.dev, deployed by GitHub Actions).
+// www.oxframe.dev → oxframe.dev is a 301 Redirect Rule in the zone (the
+// pages also carry canonical URLs).
 //
 // Workers Builds (git integration) works with the defaults: root directory
 // "/", build command `bun run build`, deploy command `npx wrangler deploy`,

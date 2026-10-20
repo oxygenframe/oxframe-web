@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>4. Easing — oxframe</title></svelte:head>
-
 <h1>4. Easing</h1>
 <p class="lead">Why some animations feel natural and others feel robotic — and how to choose.</p>
 

@@ -4,8 +4,6 @@
   import Recap from '$lib/components/Recap.svelte';
 </script>
 
-<svelte:head><title>1. Your first animation — oxframe</title></svelte:head>
-
 <h1>1. Your first animation</h1>
 <p class="lead">
   You will add a circle to the screen and move it. That is most of what animation code ever does.
