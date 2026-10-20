@@ -46,7 +46,7 @@ export const sections: DocSection[] = [
         slug: 'guide/together',
         title: '2. In order, or all at once',
         description:
-          'Lesson 2: run animations one after another or all at once with sequence, all and delays — composing timing in Rust with oxframe.',
+          'Lesson 2: run animations in order, all at once or as a ripple with all and stagger, plus ready-made entrances like fade_in and pop_in.',
       },
       {
         slug: 'guide/shapes',

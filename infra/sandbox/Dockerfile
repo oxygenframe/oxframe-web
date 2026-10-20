@@ -1,5 +1,5 @@
 # Compile sandbox for playground scenes. Rebuilt for every SDK release:
-#   docker build -f infra/sandbox/Dockerfile --build-arg OXFRAME_SDK_VERSION=0.2.6 -t oxframe-sandbox:0.2.6 .
+#   docker build -f infra/sandbox/Dockerfile --build-arg OXFRAME_SDK_VERSION=0.3.0 -t oxframe-sandbox:0.3.0 .
 # Run only under gVisor (`--runtime=runsc`) with --network=none; see
 # services/compile/src/runner.ts (DockerRunner) for the exact flags.
 # Prebuilt, statically linked wasm-bindgen and wasm-opt (no cargo install).
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 # The final image ships the Rust toolchain on purpose: it compiles scenes.
 # Debian slim, not Alpine: rust:*-alpine is larger and musl slows rustc.
 FROM rust:1.97.1-slim-bookworm
-ARG OXFRAME_SDK_VERSION=0.2.6
+ARG OXFRAME_SDK_VERSION=0.3.0
 RUN rustup target add wasm32-unknown-unknown && useradd -m -u 10001 builder
 COPY --from=tools /out/ /usr/local/bin/
 WORKDIR /work

@@ -12,7 +12,7 @@ Full text: https://oxframe.dev/llms-full.txt
 ## Guide
 
 - [1. Your first animation](https://oxframe.dev/docs/guide/hello): Lesson 1 of the oxframe guide: add a circle to the screen and animate it with Rust. The basic pattern behind every animation, with a live example.
-- [2. In order, or all at once](https://oxframe.dev/docs/guide/together): Lesson 2: run animations one after another or all at once with sequence, all and delays — composing timing in Rust with oxframe.
+- [2. In order, or all at once](https://oxframe.dev/docs/guide/together): Lesson 2: run animations in order, all at once or as a ripple with all and stagger, plus ready-made entrances like fade_in and pop_in.
 - [3. Shapes, colors, transforms](https://oxframe.dev/docs/guide/shapes): Lesson 3: rectangles, circles, lines and polygons; fills and outlines; rotation, scale and color — the properties every oxframe shape shares.
 - [4. Easing](https://oxframe.dev/docs/guide/easing): Lesson 4: easing curves explained — why some animations feel natural and others robotic, and how to pick the right ease-in and ease-out curve.
 - [5. Text](https://oxframe.dev/docs/guide/text): Lesson 5: animate text in Rust — titles, typewriter effects, mixed styles and syntax-highlighted code blocks with oxframe.

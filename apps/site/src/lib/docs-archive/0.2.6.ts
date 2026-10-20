@@ -1,0 +1,151 @@
+// Page list of the oxframe 0.2.6 docs (snapshot, see scripts/archive-docs.ts).
+import type { DocSection } from '../docs';
+
+export const sections: DocSection[] = [
+  {
+    title: 'Start here',
+    pages: [
+      {
+        slug: '',
+        title: 'Welcome',
+        description:
+          'Learn oxframe: make animations and motion graphics by writing Rust code, with a live editor to scrub through them and fine-tune the timing.',
+      },
+      {
+        slug: 'getting-started',
+        title: 'Install and first project',
+        description:
+          'Install the oxframe CLI with cargo, create your first animation project and open the live editor — five minutes from nothing to a moving scene.',
+      },
+    ],
+  },
+  {
+    title: 'Guide',
+    pages: [
+      {
+        slug: 'guide/hello',
+        title: '1. Your first animation',
+        description:
+          'Lesson 1 of the oxframe guide: add a circle to the screen and animate it with Rust. The basic pattern behind every animation, with a live example.',
+      },
+      {
+        slug: 'guide/together',
+        title: '2. In order, or all at once',
+        description:
+          'Lesson 2: run animations one after another or all at once with sequence, all and delays — composing timing in Rust with oxframe.',
+      },
+      {
+        slug: 'guide/shapes',
+        title: '3. Shapes, colors, transforms',
+        description:
+          'Lesson 3: rectangles, circles, lines and polygons; fills and outlines; rotation, scale and color — the properties every oxframe shape shares.',
+      },
+      {
+        slug: 'guide/easing',
+        title: '4. Easing',
+        description:
+          'Lesson 4: easing curves explained — why some animations feel natural and others robotic, and how to pick the right ease-in and ease-out curve.',
+      },
+      {
+        slug: 'guide/text',
+        title: '5. Text',
+        description:
+          'Lesson 5: animate text in Rust — titles, typewriter effects, mixed styles and syntax-highlighted code blocks with oxframe.',
+      },
+      {
+        slug: 'guide/groups',
+        title: '6. Groups and layout',
+        description:
+          'Lesson 6: nest shapes in groups and let flexbox-style layout arrange them, so whole compositions move and scale together.',
+      },
+      {
+        slug: 'guide/editor',
+        title: '7. Tweak timing in the editor',
+        description:
+          'Lesson 7: adjust timing by eye in the oxframe editor — markers, eases and tunables you can drag without touching or recompiling code.',
+      },
+      {
+        slug: 'guide/signals',
+        title: '8. Signals',
+        description:
+          'Lesson 8: signals make one value follow another — a line that always connects two dots, a label that always shows a number.',
+      },
+      {
+        slug: 'guide/drawing',
+        title: '9. Drawing and morphing',
+        description:
+          'Lesson 9: draw an outline as if with a pen, then morph one shape into another — path drawing and shape morphing in oxframe.',
+      },
+      {
+        slug: 'guide/random',
+        title: '10. Randomness and background tasks',
+        description:
+          'Lesson 10: background tasks and seeded randomness — many things moving on their own while the story continues, rendering the same video every time.',
+      },
+    ],
+  },
+  {
+    title: 'Going further',
+    pages: [
+      {
+        slug: 'guide/components',
+        title: 'Components',
+        description:
+          'Build an explainer from ready-made blocks: title cards, bullet lists, code, flow diagrams, callouts, lower thirds and end cards.',
+      },
+      {
+        slug: 'nodes',
+        title: 'All nodes',
+        description:
+          'Reference of every oxframe node and its properties: Rect, Circle, Line, Path, Polygon, Star, Txt, Code, Img, Layout and Grid.',
+      },
+      {
+        slug: 'effects',
+        title: 'Effects',
+        description:
+          'Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.',
+      },
+      {
+        slug: 'timing',
+        title: 'Markers, eases, tunables',
+        description:
+          'Markers, custom eases and tunables: timing values stored outside your Rust code so you can adjust them visually in the oxframe editor.',
+      },
+      {
+        slug: 'editor',
+        title: 'The editor',
+        description:
+          'A tour of the oxframe editor: viewport, timeline, inspector and hot reload — the same app in oxframe dev and in the browser playground.',
+      },
+      {
+        slug: 'rendering',
+        title: 'Rendering video',
+        description:
+          'Render oxframe animations to MP4, WebM with alpha, ProRes 4444 or PNG sequences with one command, on the GPU or CPU, with audio.',
+      },
+      {
+        slug: 'cli',
+        title: 'CLI reference',
+        description:
+          'Reference for the oxframe command line: init, dev, render, snapshot, check, agents, upgrade and mcp, with all options.',
+      },
+      {
+        slug: 'agents',
+        title: 'Working with AI agents',
+        description:
+          'Use Claude Code, Codex or Cursor to write oxframe animations: every project ships agent instructions and a way for agents to see what they made.',
+      },
+    ],
+  },
+  {
+    title: 'Under the hood',
+    pages: [
+      {
+        slug: 'how-it-works',
+        title: 'How oxframe works',
+        description:
+          'How oxframe works inside: scenes as Rust coroutines, deterministic rendering, instant scrubbing, and compiling Rust to WebAssembly for the browser.',
+      },
+    ],
+  },
+];

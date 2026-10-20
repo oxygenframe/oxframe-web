@@ -20,7 +20,7 @@ export default function () {
   const source = `${SCENE}\n// k6 ${__VU}-${Date.now()}\n`;
   const res = http.post(
     `${__ENV.URL}/api/compile`,
-    JSON.stringify({ source, sdk_version: '0.2.6' }),
+    JSON.stringify({ source, sdk_version: '0.3.0' }),
     {
       headers: { 'content-type': 'application/json' },
       timeout: '120s',

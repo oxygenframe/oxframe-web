@@ -30,18 +30,35 @@ b.x().to(500.0, 0.8).await;`}</code
 
 <h2>Pauses and waves</h2>
 <p>
-  <code>wait_for(0.3).await</code> simply waits. <code>sequence(0.1, ...)</code> starts a list of animations
-  0.1 s apart, which gives that nice ripple at the end of the preview.
+  <code>wait_for(0.3).await</code> simply waits. <code>stagger(0.1, &wave, |c| ...)</code> runs the same
+  animation on every item of a list, each one starting 0.1 s after the previous — that is the ripple at
+  the end of the preview.
 </p>
+<pre><code>stagger(0.1, &wave, |c| c.y().to(200.0, 0.4)).await;</code></pre>
 <p>
-  The list is built with a small helper syntax — <code>Box::pin(...)</code> — because Rust needs animations
-  of different kinds in one list. Copy the pattern from the example; you will rarely need more.
+  For a list of the same animation that should all start at once, <code>all</code> takes it
+  directly:
+  <code>all(wave.iter().map(|c| c.y().to(200.0, 0.4)))</code>.
 </p>
+
+<h2>Ready-made entrances</h2>
+<p>
+  Every shape has a few common moves built in. They take their length and easing from the theme, so
+  a whole video stays consistent; <code>.duration(seconds)</code> changes one of them.
+</p>
+<pre><code
+    >title.fade_in().await;
+badge.pop_in().await;              // grows from nothing with a small overshoot
+card.slide_in(Side::Left).await;   // slides in from the left while fading in
+outline.draw_on().await;           // the outline is drawn like with a pen
+title.fade_out().duration(0.3).await;</code
+  ></pre>
 
 <Try>
   <ul>
     <li>Wrap the two red squares in <code>all((...))</code> so they move together.</li>
-    <li>Change the delay in <code>sequence</code> to <code>0.3</code>.</li>
+    <li>Change the delay in <code>stagger</code> to <code>0.3</code>.</li>
+    <li>Replace the wave's animation with <code>|c| c.pop_in()</code>.</li>
   </ul>
 </Try>
 
@@ -49,6 +66,13 @@ b.x().to(500.0, 0.8).await;`}</code
   <ul>
     <li>Lines with <code>.await</code> run in order.</li>
     <li><code>all((a, b, c)).await</code> runs them together and waits for all.</li>
-    <li><code>wait_for(seconds)</code> pauses; <code>sequence(delay, list)</code> staggers.</li>
+    <li>
+      <code>wait_for(seconds)</code> pauses; <code>stagger(delay, &list, |x| ...)</code> ripples through
+      a list.
+    </li>
+    <li>
+      <code>fade_in</code>, <code>pop_in</code>, <code>slide_in</code>, <code>draw_on</code> are ready-made
+      entrances.
+    </li>
   </ul>
 </Recap>
