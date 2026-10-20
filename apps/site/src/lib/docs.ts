@@ -102,6 +102,12 @@ export const sections: DocSection[] = [
     title: 'Going further',
     pages: [
       {
+        slug: 'guide/components',
+        title: 'Components',
+        description:
+          'Build an explainer from ready-made blocks: title cards, bullet lists, code, flow diagrams, callouts, lower thirds and end cards.',
+      },
+      {
         slug: 'nodes',
         title: 'All nodes',
         description:
