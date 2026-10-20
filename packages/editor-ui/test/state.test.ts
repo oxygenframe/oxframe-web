@@ -94,6 +94,22 @@ describe('EditorState', () => {
     expect(b.sent.at(-1)).toMatchObject({ type: 'SetMarker', name: 'x', scene: 'b' });
   });
 
+  it('restart opens the next engine at frame 0', () => {
+    const { b, s, emit } = setup();
+    emit({ type: 'Timeline', frames: 100, markers: [], scenes: [] });
+    emit({ type: 'Frame', index: 42 });
+    expect(s.frame).toBe(42);
+    s.restart();
+    expect(s.frame).toBe(0);
+    expect(b.sent.at(-1)).toEqual({ type: 'Seek', frame: 0 });
+    // A late frame from the scene being left must not stick.
+    emit({ type: 'Frame', index: 42 });
+    b.sent.length = 0;
+    emit({ type: 'Reloaded' });
+    expect(s.frame).toBe(0);
+    expect(b.sent.at(-1)).toEqual({ type: 'Seek', frame: 0 });
+  });
+
   it('clamps seeks', () => {
     const { b, s, emit } = setup();
     emit({ type: 'Timeline', frames: 10, markers: [], scenes: [] });

@@ -2,7 +2,7 @@
   import { onDestroy, untrack } from 'svelte';
   import { InPageWasm } from '@oxframe/backends';
   import EngineWorker from '@oxframe/backends/engine-worker?worker';
-  import { Editor, EditorState } from '@oxframe/editor-ui';
+  import { Editor, EditorState, persist } from '@oxframe/editor-ui';
   import type { Meta } from '@oxframe/protocol';
 
   interface Props {
@@ -25,6 +25,11 @@
   });
   const editor = new EditorState(backend, { persist: !initial.compact });
   editor.start();
+  // A fresh example has no `#f=` in the URL. Session storage still holds the
+  // playhead of whichever example was open before, and must not carry it over.
+  if (!initial.compact && persist.parseHash(location.hash).frame === undefined) {
+    editor.restart();
+  }
 
   let loadedAt = performance.now();
   let reported = false;
@@ -56,6 +61,11 @@
   });
 
   onDestroy(() => editor.stop());
+
+  /** Playhead to the start, including after this scene's engine reconnects. */
+  export function restart(): void {
+    editor.restart();
+  }
 
   /** Renders the whole project to MP4 in the browser (WebCodecs). */
   export function exportMp4(onProgress?: (done: number, total: number) => void): Promise<Blob> {

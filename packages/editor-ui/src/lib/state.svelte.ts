@@ -183,8 +183,21 @@ export class EditorState {
     if (this.viewport.w > 0) this.sendViewport();
     const target = this.restoredFrame ?? this.frame;
     this.restoredFrame = null;
+    this.frame = target;
     this.send({ type: 'Seek', frame: target });
     if (this.selected !== null) this.send({ type: 'Select', node_id: this.selected });
+  }
+
+  /**
+   * Playhead to the start. A later reconnect (a new example's engine) stays
+   * there even if a frame from the previous scene arrives first.
+   */
+  restart(): void {
+    this.pause();
+    this.playing = false;
+    this.restoredFrame = 0;
+    this.seek(0);
+    this.savePersist();
   }
 
   // ------------------------------------------------------------ actions

@@ -30,7 +30,10 @@
   let firstFrameMs = $state<number | null>(null);
   let compileMs = $state<number | null>(null);
   let copied = $state(false);
-  let player = $state<{ exportMp4: (p?: (d: number, t: number) => void) => Promise<Blob> }>();
+  let player = $state<{
+    exportMp4: (p?: (d: number, t: number) => void) => Promise<Blob>;
+    restart: () => void;
+  }>();
   let exportState = $state<{ done: number; total: number } | null>(null);
   let download = $state<{ url: string; name: string } | null>(null);
 
@@ -96,6 +99,7 @@
     source = ex.source;
     metas = {};
     history.replaceState(history.state, '', `?ex=${name}`);
+    player?.restart();
     void run();
   }
 
