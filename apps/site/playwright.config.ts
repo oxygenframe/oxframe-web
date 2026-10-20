@@ -20,9 +20,11 @@ export default defineConfig({
     },
     {
       command: `PORT=${compilePort} RUNNER=local CORS_ORIGINS=http://127.0.0.1:4173 bun ../../services/compile/src/index.ts`,
-      url: `${compileUrl}/healthz`,
+      // Ready once the examples are built as well: tests do not compete with
+      // the prebuild for CPU (on CI runners that made the first test time out).
+      url: `${compileUrl}/readyz`,
       reuseExistingServer: true,
-      timeout: 600_000,
+      timeout: 1_200_000,
     },
   ],
   projects: [

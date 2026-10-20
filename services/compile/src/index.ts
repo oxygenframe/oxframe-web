@@ -24,9 +24,26 @@ if (runner.warm) {
   console.log(`warming ${cfg.workers} worker(s)…`);
   await Promise.all(Array.from({ length: cfg.workers }, (_, i) => runner.warm!(i)));
 }
-void prebuildExamples().then(() => console.log('examples built'));
+// /readyz answers once the examples are built too (healthz: as soon as the
+// service accepts builds). Tests wait for it so they never compete with
+// the prebuild for CPU.
+let examplesBuilt = false;
+void prebuildExamples().then(() => {
+  examplesBuilt = true;
+  console.log('examples built');
+});
 
-Bun.serve({ port: cfg.port, hostname: cfg.host, fetch: app.fetch, idleTimeout: 120 });
+Bun.serve({
+  port: cfg.port,
+  hostname: cfg.host,
+  idleTimeout: 120,
+  fetch: (req) =>
+    new URL(req.url).pathname === '/readyz'
+      ? new Response(examplesBuilt ? 'ready' : 'building examples', {
+          status: examplesBuilt ? 200 : 503,
+        })
+      : app.fetch(req),
+});
 console.log(
   `compile-service on http://${cfg.host}:${cfg.port} (runner: ${cfg.runner}, workers: ${cfg.workers})`,
 );
