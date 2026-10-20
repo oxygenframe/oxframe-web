@@ -4,3 +4,5 @@
 !services/compile/src
 !services/compile-cf/container
 !infra/sandbox
+# The SDK version, shared with the site.
+!apps/site/src/lib/sdk.ts
