@@ -64,7 +64,10 @@ COPY --from=deps /usr/local/bin/bun /usr/local/bin/bun
 COPY --from=warm --chown=builder /home/builder/.cargo /home/builder/.cargo
 COPY --from=warm --chown=builder /home/builder/data /home/builder/data
 WORKDIR /app
+# bun's isolated install: packages live in node_modules/.bun, the service
+# reaches them through relative links in its own node_modules.
 COPY --from=deps /app/node_modules node_modules
+COPY --from=deps /app/services/compile/node_modules services/compile/node_modules
 COPY services/compile/package.json services/compile/
 COPY services/compile/src services/compile/src
 COPY apps/site/src/lib/sdk.ts apps/site/src/lib/sdk.ts
