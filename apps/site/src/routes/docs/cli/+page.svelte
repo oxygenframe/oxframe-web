@@ -171,6 +171,10 @@ profile = "dev"    # or "release"
 [render]
 ffmpeg = "/opt/ffmpeg/bin/ffmpeg"   # default: ffmpeg from PATH
 
+[theme]
+name = "dark"         # dark, light, midnight, paper, vivid
+accent = "#68abdf"    # one brand color; other colors stay readable
+
 [check]
 interval = 1.0        # seconds between storyboard frames
 safe_inset = 48       # px; 0 turns the safe-area warning off

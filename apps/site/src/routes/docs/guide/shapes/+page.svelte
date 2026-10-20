@@ -65,4 +65,33 @@
     <li><code>.name(value)</code> sets before adding; <code>.name()</code> animates after.</li>
   </ul>
 </Recap>
+<h2>Themes</h2>
+<p>
+  A scene with no colors and no font sizes of its own already looks finished. Nodes take those from
+  the project theme: <code>.fill(Accent)</code>, <code>.padding(Md)</code>, <code>.radius(Lg)</code>,
+  <code>Txt::new().display()</code>. Text with no fill uses the theme's text color.
+</p>
+<pre><code
+    >{`Project::new("explainer").theme(Theme::dark().accent(color!("#68abdf")))
+
+let title = view.add(Txt::new().text("Binary search").display());
+let note = view.add(Txt::new().text("O(log n)").caption().fill(Muted));
+title.fade_in().await;`}</code
+  ></pre>
+<p>
+  Built-in themes: <code>dark</code> (the default), <code>light</code>, <code>midnight</code>,
+  <code>paper</code> and <code>vivid</code>. <code>.accent(color)</code> rebuilds the palette from one
+  brand color and keeps text at a 4.5:1 contrast. The same override can live in
+  <code>oxframe.toml</code> without a recompile:
+</p>
+<pre><code
+    >{`[theme]
+name = "midnight"
+accent = "#68abdf"`}</code
+  ></pre>
+<p>
+  <code>fade_in()</code> and a duration of <code>Fast</code>, <code>Normal</code> or <code>Slow</code>
+  use the theme's motion. One <code>.theme(...)</code> line changes every token in the video.
+</p>
+
 <p>Every shape and all its settings are listed in <a href="/docs/nodes">All nodes</a>.</p>
