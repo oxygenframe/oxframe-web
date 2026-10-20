@@ -10,13 +10,13 @@
 # service). The base stays Debian slim: rust:*-alpine is larger (it adds
 # gcc and musl-dev to the same toolchain) and musl's allocator makes rustc
 # slower, which is the latency users wait for.
-ARG RUST_IMAGE=rust:1.97.1-slim-bookworm
+ARG RUST_IMAGE=docker.io/library/rust:1.97.1-slim-bookworm
 ARG BUN_VERSION=1.3.14
 # Must match apps/site/src/lib/sdk.ts (checked by scripts/gen-examples.ts).
 ARG OXFRAME_SDK_VERSION=0.4.0
 
 # Prebuilt, statically linked wasm-bindgen and wasm-opt.
-FROM debian:bookworm-slim AS tools
+FROM docker.io/library/debian:bookworm-slim AS tools
 ARG WASM_BINDGEN_VERSION=0.2.129
 ARG BINARYEN_VERSION=133
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     | tar -xz -C /tmp && cp /tmp/binaryen-version_${BINARYEN_VERSION}/bin/wasm-opt /out/
 
 # The service's production dependencies.
-FROM oven/bun:${BUN_VERSION} AS deps
+FROM docker.io/oven/bun:${BUN_VERSION} AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/site/package.json apps/site/
@@ -37,6 +37,12 @@ COPY packages/protocol/package.json packages/protocol/
 COPY services/compile/package.json services/compile/
 COPY services/compile-cf/package.json services/compile-cf/
 RUN bun install --frozen-lockfile --ignore-scripts --production --filter @oxframe/compile-service
+
+# The SDK sources, for checking an unreleased SDK before it is published
+# (scripts/image-check.sh passes --build-context sdk=../oxframe-sdk and
+# OXFRAME_DEP pointing at /sdk). Empty in production: crates.io is used.
+FROM docker.io/library/busybox:1.37 AS sdk
+RUN mkdir /sdk
 
 FROM ${RUST_IMAGE} AS toolchain
 RUN rustup target add wasm32-unknown-unknown \
@@ -48,16 +54,20 @@ RUN rustup target add wasm32-unknown-unknown \
 # template and the SDK version, so changes to the service reuse this layer.
 FROM toolchain AS warm
 ARG OXFRAME_SDK_VERSION
+ARG OXFRAME_DEP="version = \"=${OXFRAME_SDK_VERSION}\""
+COPY --from=sdk /sdk /sdk
 USER builder
 ENV CARGO_HOME=/home/builder/.cargo
 WORKDIR /home/builder/data/work/w0
 COPY --chown=builder infra/sandbox/template /tmp/template
-RUN sed 's|{{OXFRAME_DEP}}|version = "='"${OXFRAME_SDK_VERSION}"'"|g' /tmp/template/Cargo.toml.in > Cargo.toml \
+RUN sed "s|{{OXFRAME_DEP}}|${OXFRAME_DEP}|g" /tmp/template/Cargo.toml.in > Cargo.toml \
  && mkdir src && cp /tmp/template/src/lib.rs /tmp/template/src/scene.rs src/ \
  && cargo build --release --target wasm32-unknown-unknown
 
 FROM toolchain
 ARG OXFRAME_SDK_VERSION
+ARG OXFRAME_DEP="version = \"=${OXFRAME_SDK_VERSION}\""
+COPY --from=warm /sdk /sdk
 COPY --from=tools /out/ /usr/local/bin/
 COPY --from=deps /usr/local/bin/bun /usr/local/bin/bun
 # COPY keeps mtimes, so cargo sees the warmed build as fresh.
@@ -99,6 +109,6 @@ ENV CARGO_HOME=/home/builder/.cargo \
     TOOLS_DIR=/usr/local/bin \
     EXAMPLES_DIR=/nonexistent \
     OXFRAME_SDK_VERSION=${OXFRAME_SDK_VERSION} \
-    OXFRAME_DEP="version = \"=${OXFRAME_SDK_VERSION}\""
+    OXFRAME_DEP=${OXFRAME_DEP}
 EXPOSE 8080
 CMD ["bun", "services/compile/src/index.ts"]

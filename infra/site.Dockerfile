@@ -4,7 +4,7 @@
 #   docker build -f infra/site.Dockerfile --build-arg PUBLIC_COMPILE_URL=https://compile.example -t oxframe-site .
 ARG BUN_VERSION=1.3.14
 
-FROM oven/bun:${BUN_VERSION} AS build
+FROM docker.io/oven/bun:${BUN_VERSION} AS build
 WORKDIR /app
 # Manifests first, so the dependency layer is reused until they change.
 COPY package.json bun.lock ./
@@ -23,7 +23,7 @@ RUN PUBLIC_COMPILE_URL="$PUBLIC_COMPILE_URL" bun run build \
  && bun build --compile --minify --target="bun-linux-$arch-musl" apps/site/serve.ts --outfile /out/oxframe-site \
  && cp -r apps/site/build /out/site
 
-FROM alpine:3.22
+FROM docker.io/library/alpine:3.22
 # The bun runtime inside the executable needs the C++ runtime.
 RUN apk add --no-cache libstdc++ libgcc && adduser -D -H -u 10001 site
 COPY --from=build /out/oxframe-site /usr/local/bin/oxframe-site

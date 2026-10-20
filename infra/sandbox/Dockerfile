@@ -3,7 +3,7 @@
 # Run only under gVisor (`--runtime=runsc`) with --network=none; see
 # services/compile/src/runner.ts (DockerRunner) for the exact flags.
 # Prebuilt, statically linked wasm-bindgen and wasm-opt (no cargo install).
-FROM debian:bookworm-slim AS tools
+FROM docker.io/library/debian:bookworm-slim AS tools
 ARG WASM_BINDGEN_VERSION=0.2.129
 ARG BINARYEN_VERSION=133
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 # The final image ships the Rust toolchain on purpose: it compiles scenes.
 # Debian slim, not Alpine: rust:*-alpine is larger and musl slows rustc.
-FROM rust:1.97.1-slim-bookworm
+FROM docker.io/library/rust:1.97.1-slim-bookworm
 ARG OXFRAME_SDK_VERSION=0.4.0
 RUN rustup target add wasm32-unknown-unknown && useradd -m -u 10001 builder
 COPY --from=tools /out/ /usr/local/bin/

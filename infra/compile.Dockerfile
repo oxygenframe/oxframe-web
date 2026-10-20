@@ -5,7 +5,7 @@
 # host's Docker socket, so no Rust toolchain is needed here.
 ARG BUN_VERSION=1.3.14
 
-FROM oven/bun:${BUN_VERSION} AS build
+FROM docker.io/oven/bun:${BUN_VERSION} AS build
 WORKDIR /app
 # Every workspace manifest, or the frozen lockfile does not match; only the
 # service's dependencies are installed.
@@ -23,7 +23,7 @@ ARG TARGETARCH
 RUN arch=$([ "$TARGETARCH" = arm64 ] && echo arm64 || echo x64) \
  && bun build --compile --minify --target="bun-linux-$arch-musl" services/compile/src/index.ts --outfile /out/oxframe-compile
 
-FROM alpine:3.22
+FROM docker.io/library/alpine:3.22
 RUN apk add --no-cache docker-cli libstdc++ libgcc
 COPY --from=build /out/oxframe-compile /usr/local/bin/oxframe-compile
 COPY apps/site/src/lib/examples /srv/examples
