@@ -7,12 +7,16 @@ import { SDK_VERSION } from './src/lib/sdk';
 const series = SDK_VERSION.split('.').slice(0, 2).join('.');
 
 /** `[from, to, status]`; a trailing `*` in `from` matches the rest as `:splat`. */
-export const REDIRECTS: [string, string, number][] = [
-  [`/docs/${series}/llms.txt`, '/llms.txt', 301],
-  [`/docs/${series}/llms-full.txt`, '/llms-full.txt', 301],
-  [`/docs/${series}`, '/docs', 301],
-  [`/docs/${series}/*`, '/docs/:splat', 301],
-];
+// The current docs under their series (/docs/0.2/…) and exact version
+// (/docs/0.2.6/…).
+export const REDIRECTS: [string, string, number][] = [series, SDK_VERSION].flatMap(
+  (v): [string, string, number][] => [
+    [`/docs/${v}/llms.txt`, '/llms.txt', 301],
+    [`/docs/${v}/llms-full.txt`, '/llms-full.txt', 301],
+    [`/docs/${v}`, '/docs', 301],
+    [`/docs/${v}/*`, '/docs/:splat', 301],
+  ],
+);
 
 /** Where `pathname` redirects to, if anywhere. */
 export function redirectFor(pathname: string): { to: string; status: number } | null {

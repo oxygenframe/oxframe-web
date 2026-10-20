@@ -13,7 +13,7 @@
 ARG RUST_IMAGE=rust:1.97.1-slim-bookworm
 ARG BUN_VERSION=1.3.14
 # Must match apps/site/src/lib/sdk.ts (checked by scripts/gen-examples.ts).
-ARG OXFRAME_SDK_VERSION=0.2.1
+ARG OXFRAME_SDK_VERSION=0.2.6
 
 # Prebuilt, statically linked wasm-bindgen and wasm-opt.
 FROM debian:bookworm-slim AS tools

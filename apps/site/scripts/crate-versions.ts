@@ -3,6 +3,7 @@
 // crates.io is unreachable the last saved list is kept and the build goes on.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { SDK_VERSION } from '../src/lib/sdk';
 
 const file = join(import.meta.dir, '../src/lib/versions.json');
 const saved = JSON.parse(readFileSync(file, 'utf8')) as { crate: string; versions: string[] };
@@ -50,5 +51,19 @@ if (import.meta.main) {
     console.log(`versions.json: ${versions.join(', ')}`);
   } catch (e) {
     console.warn(`versions.json: kept the saved list (${(e as Error).message})`);
+  }
+  // The site describes src/lib/sdk.ts's version: deploying docs for a
+  // version nobody can install is a bug. Production builds (Cloudflare
+  // Workers Builds sets WORKERS_CI=1) refuse; local builds only warn.
+  const published = (JSON.parse(readFileSync(file, 'utf8')) as { versions: string[] }).versions;
+  if (!published.includes(SDK_VERSION)) {
+    const msg =
+      `src/lib/sdk.ts says oxframe ${SDK_VERSION}, which is not on crates.io ` +
+      `(published: ${published.join(', ')}). Release the SDK (tag v${SDK_VERSION}) first.`;
+    if (process.env.WORKERS_CI === '1') {
+      console.error(`error: ${msg}`);
+      process.exit(1);
+    }
+    console.warn(`warning: ${msg}`);
   }
 }

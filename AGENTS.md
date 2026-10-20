@@ -37,6 +37,13 @@ metadata") enforces most of this; extend it when you add a rule.
 
 ## Versioned docs
 
+**Docs never get ahead of crates.io.** The site deploys on every push to
+main, so documentation of a new SDK feature lands in the same commit that
+bumps `apps/site/src/lib/sdk.ts` to a version that is already published
+(tag `vX.Y.Z` in oxframe-sdk, then wait for crates.io). The production build
+fails if `sdk.ts` names an unpublished version
+(`apps/site/scripts/crate-versions.ts`).
+
 The docs at `/docs/…` describe the SDK version in `apps/site/src/lib/sdk.ts`
 (the playground builds with the same one). Older minor versions are
 snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
@@ -46,10 +53,11 @@ snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
   (`src/lib/docs-archive/`), labelled with the newest published patch from
   crates.io (`src/lib/versions.json`, refreshed by `scripts/crate-versions.ts`
   on every build, kept as is when crates.io is unreachable).
-- **Releasing a new minor version (0.1 → 0.2):** first
-  `bun scripts/archive-docs.ts 0.1` (snapshot of the 0.1 docs, links
-  rewritten), then `bun run format`, then bump `src/lib/sdk.ts` and change the
-  docs for 0.2. Patch releases only bump `sdk.ts`.
+- **Every release keeps the previous docs.** Before bumping `sdk.ts` from
+  the published version X (say 0.2.6) to the next one, run
+  `bun scripts/archive-docs.ts 0.2.6` (a snapshot at `/docs/0.2.6/…`, links
+  rewritten), then `bun run format`, then bump `sdk.ts` and update the docs.
+  Older snapshots may be whole series (`0.1`) or exact versions (`0.2.1`).
   Bumping `sdk.ts` redeploys both the site and compile.oxframe.dev (new
   container image, ~30–40 min); in between the playground says it is being
   upgraded.

@@ -90,6 +90,25 @@ test('docs are versioned: switcher, API reference, versioned URLs', async ({ pag
   expect(res.headers()['location']).toMatch(/\/docs\/guide\/hello$/);
   await page.goto(`/docs/${series}`);
   await expect(page).toHaveURL(/\/docs$/);
+  // ...and at their exact version.
+  const exact = await request.get(`/docs/${latest}/cli`, { maxRedirects: 0 });
+  expect(exact.status()).toBe(301);
+
+  // Every older version keeps its snapshot, with a banner pointing to the
+  // current docs and a docs.rs link of its own.
+  const older = (await select.locator('option').allTextContents()).slice(1);
+  expect(older.length).toBeGreaterThan(0);
+  for (const label of older) {
+    const v = await select.locator('option', { hasText: label }).getAttribute('value');
+    await page.goto(`/docs/${v}/guide/hello`);
+    await expect(page.getByTestId('old-version'), v!).toContainText(
+      `The latest version is ${latest}`,
+    );
+    await expect(page.getByTestId('api-reference')).toHaveAttribute(
+      'href',
+      new RegExp(`/oxframe/${label}/`),
+    );
+  }
 });
 
 test('the development status notice is on every main page', async ({ page }) => {

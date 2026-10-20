@@ -16,9 +16,10 @@ describe('archive-docs', () => {
       '<a href="/playground?v=0.1&ex=intro">p</a>',
     );
     // Already versioned, other sites and look-alikes stay as they are.
-    expect(rewriteLinks('"/docs/0.2/cli" "https://docs.rs/oxframe" "/docsy"', '0.1')).toBe(
-      '"/docs/0.2/cli" "https://docs.rs/oxframe" "/docsy"',
-    );
+    expect(
+      rewriteLinks('"/docs/0.2/cli" "/docs/0.2.1/cli" "https://docs.rs/oxframe" "/docsy"', '0.1'),
+    ).toBe('"/docs/0.2/cli" "/docs/0.2.1/cli" "https://docs.rs/oxframe" "/docsy"');
+    expect(rewriteLinks('<a href="/docs/cli">', '0.2.1')).toBe('<a href="/docs/0.2.1/cli">');
   });
 
   it('copies pages (not the layout or older snapshots) and registers the version', () => {
