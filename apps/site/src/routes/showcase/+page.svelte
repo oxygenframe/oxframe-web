@@ -24,8 +24,7 @@
 <h2>Badge</h2>
 <p>For a README or the description of a video:</p>
 <img src="/badge.svg" alt="made with oxframe" width="148" height="28" />
-<pre><code>{`[![made with oxframe](https://oxframe.dev/badge.svg)](https://oxframe.dev)`}</code
-  ></pre>
+<pre><code>[![made with oxframe](https://oxframe.dev/badge.svg)](https://oxframe.dev)</code></pre>
 
 <style>
   .lead {

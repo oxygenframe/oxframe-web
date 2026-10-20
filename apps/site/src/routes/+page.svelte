@@ -177,7 +177,8 @@
         width="640"
         height="360"
       />
-      <pre><code class="language-json">{`{
+      <pre><code class="language-json"
+          >{`{
   "duration": 2.7,
   "issues": [{
     "rule": "text_overlap",
@@ -187,7 +188,8 @@
     "source": "src/title.rs:218",
     "hint": "Text overlaps title. Move one of them."
   }]
-}`}</code></pre>
+}`}</code
+        ></pre>
     </article>
     <article>
       <h3>Render</h3>
@@ -240,7 +242,8 @@
       >
     </p>
   </div>
-  <pre><code class="language-rust">{`use oxframe::prelude::*;
+  <pre><code class="language-rust"
+      >{`use oxframe::prelude::*;
 
 #[oxframe::scene]
 async fn intro(view: View) {
@@ -257,7 +260,8 @@ async fn intro(view: View) {
 
 fn main() {
     Project::new("intro").theme(Theme::dark()).scene(intro()).main();
-}`}</code></pre>
+}`}</code
+    ></pre>
 </section>
 
 <section>
@@ -298,7 +302,8 @@ fn main() {
     <article>
       <h3>Codex</h3>
       <p>
-        Codex reads <code>AGENTS.md</code> from the project before it edits. <code>oxframe init</code>
+        Codex reads <code>AGENTS.md</code> from the project before it edits.
+        <code>oxframe init</code>
         writes that file.
       </p>
       <pre><code>npm install -g @openai/codex</code></pre>
