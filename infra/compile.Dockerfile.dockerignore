@@ -1,0 +1,11 @@
+# Context for infra/compile.Dockerfile: only what it copies.
+*
+!package.json
+!bun.lock
+!apps/site/package.json
+!packages/*/package.json
+!services/*/package.json
+!services/compile/src
+!apps/site/src/lib/sdk.ts
+!apps/site/src/lib/examples
+!infra/sandbox/template

@@ -26,16 +26,19 @@ const examples = readdirSync(exDir)
 
 // One SDK version for the site, the playground and this service.
 const SDK_VERSION = SITE_SDK_VERSION;
-const dockerArg = /^ARG OXFRAME_SDK_VERSION=(.+)$/m.exec(
-  readFileSync(join(root, 'services/compile-cf/Dockerfile'), 'utf8'),
-)?.[1];
-if (dockerArg !== SDK_VERSION)
+const dockerArgs = [
+  ...readFileSync(join(root, 'services/compile-cf/Dockerfile'), 'utf8').matchAll(
+    /^ARG OXFRAME_SDK_VERSION=(.+)$/gm,
+  ),
+].map((m) => m[1]);
+const dockerArg = dockerArgs.join(', ');
+if (dockerArgs.length !== 1 || dockerArg !== SDK_VERSION)
   throw new Error(
     `services/compile-cf/Dockerfile builds SDK ${dockerArg}, apps/site/src/lib/sdk.ts says ${SDK_VERSION}`,
   );
 const imageInputs = [
   'services/compile-cf/Dockerfile',
-  'services/compile-cf/container',
+  'services/compile-cf/Dockerfile.dockerignore',
   'services/compile/package.json',
   'services/compile/src',
   'apps/site/src/lib/sdk.ts',

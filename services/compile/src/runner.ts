@@ -30,7 +30,10 @@ export interface Runner {
   warm?(worker: number): Promise<void>;
 }
 
-const TEMPLATE = resolve(import.meta.dir, '../../../infra/sandbox/template');
+// TEMPLATE_DIR: where the template lives when this service runs as a
+// compiled binary (import.meta.dir is then inside the executable).
+const TEMPLATE =
+  process.env.TEMPLATE_DIR ?? resolve(import.meta.dir, '../../../infra/sandbox/template');
 
 interface CargoMessage {
   reason: string;

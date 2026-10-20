@@ -1,0 +1,11 @@
+# Context for infra/site.Dockerfile: the source, never local builds or deps.
+**/node_modules
+**/build
+**/dist
+**/.svelte-kit
+**/.data
+**/test-results
+**/playwright-report
+.git
+.wrangler
+.tools

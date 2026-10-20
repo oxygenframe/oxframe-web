@@ -6,7 +6,8 @@ import { join, normalize } from 'node:path';
 import { compileUrl } from './compile-url.js';
 import { redirectFor } from './redirects';
 
-const root = join(import.meta.dir, 'build');
+// SITE_DIR: the built site when this server runs as a compiled binary.
+const root = process.env.SITE_DIR ?? join(import.meta.dir, 'build');
 const compile = compileUrl();
 const port = Number(process.env.PORT ?? 3000);
 

@@ -14,7 +14,7 @@ on:
       - services/compile-cf/**
       - infra/sandbox/template/**
       - apps/site/src/lib/sdk.ts
-      - .dockerignore
+      - services/compile-cf/Dockerfile.dockerignore
       - apps/site/src/lib/examples/**
       - .github/workflows/deploy-compile.yml
   workflow_dispatch:
@@ -62,6 +62,18 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ steps.image.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      # Offline, like production: the scene must build from the warmed SDK.
+      - name: Smoke test (no network)
+        if: steps.image.outputs.exists != 'true'
+        run: |
+          ref="$IMAGE:${{ steps.image.outputs.tag }}"
+          docker image inspect "$ref" --format 'image size: {{.Size}} bytes' \
+            | awk '{printf "image size: %.0f MB\n", $3/1e6}'
+          docker run -d --name smoke --network none "$ref"
+          docker cp scripts/smoke.ts smoke:/tmp/smoke.ts
+          docker cp ../../apps/site/src/lib/examples/intro.rs smoke:/tmp/intro.rs
+          docker exec smoke bun /tmp/smoke.ts /tmp/intro.rs || { docker logs smoke | tail -50; exit 1; }
+          docker rm -f smoke
       - name: Push image to the Cloudflare registry
         if: steps.image.outputs.exists != 'true'
         run: bunx wrangler containers push "$IMAGE:${{ steps.image.outputs.tag }}"

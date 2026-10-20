@@ -1,0 +1,11 @@
+# Context for services/compile-cf/Dockerfile (the repository root): only
+# what the image copies.
+*
+!package.json
+!bun.lock
+!apps/site/package.json
+!packages/*/package.json
+!services/*/package.json
+!services/compile/src
+!apps/site/src/lib/sdk.ts
+!infra/sandbox/template

@@ -51,6 +51,27 @@ jobs:
       - uses: actions/checkout@v7
       - run: docker build -f infra/sandbox/Dockerfile -t oxframe-sandbox:ci .
 
+  # Local-stack images: one executable each on a bare Alpine. They must
+  # build, start and answer.
+  stack-images:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -f infra/site.Dockerfile -t oxframe-site:ci .
+      - run: docker build -f infra/compile.Dockerfile -t oxframe-compile:ci .
+      - name: Sizes
+        run: docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | grep ':ci'
+      - name: Start and answer
+        run: |
+          docker run -d --name site -p 3000:3000 oxframe-site:ci
+          docker run -d --name compile -p 8787:8787 oxframe-compile:ci
+          for i in $(seq 30); do curl -sf localhost:3000/docs >/dev/null && curl -sf localhost:8787/healthz && break; sleep 1; done
+          curl -sf localhost:3000/docs | grep -q '<title>'
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:3000/docs/0.2)" = 301
+          curl -sf localhost:8787/api/examples | grep -q '"name":"intro"'
+          docker logs site; docker logs compile
+
   nightly-issue:
     if: failure() && github.event_name == 'schedule'
     needs: [web, integration]
