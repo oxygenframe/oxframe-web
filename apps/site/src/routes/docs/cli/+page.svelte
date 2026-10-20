@@ -105,9 +105,34 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
 
 <h3><code>oxframe check</code></h3>
 <p>
-  A quick health check: <code>cargo check</code>, validates every <code>meta.json</code>, compares
-  the versions of the CLI, SDK and editor, and looks for ffmpeg. Run it when something behaves
-  oddly.
+  Compiles the project (<code>cargo check</code>), validates every <code>meta.json</code>, compares
+  the versions of the CLI, SDK and editor, and then looks at the picture. It writes
+  <code>out/check/storyboard.png</code> (a grid of frames at markers and at equal intervals, with
+  the time and marker name under each cell) and <code>out/check/report.json</code>.
+</p>
+<p>Each issue has a rule, a severity (<code>error</code> or <code>warning</code>), a time range, the node name, the source <code>file:line</code> and a hint:</p>
+<ul>
+  <li><code>out_of_frame</code> — a node stays outside the frame (or inside the frame but outside the safe area, which is a warning).</li>
+  <li><code>text_overlap</code> — two text blocks cover each other.</li>
+  <li><code>text_overflow</code> — text is wider than its <code>max_width</code> or its layout parent.</li>
+  <li><code>low_contrast</code> — text against its backdrop is below WCAG 4.5:1.</li>
+  <li><code>too_fast</code> — a long line flashes too briefly to read (error), or a large move is shorter than 0.15s (warning).</li>
+  <li><code>dead_time</code> — nothing on screen changes for several seconds and the project has no soundtrack (warning).</li>
+</ul>
+<p>
+  Errors make the command exit 1; warnings do not. <code>--frames</code> also writes each cell at
+  full size under <code>out/check/frames/</code>. The check renders only the frames it needs, on the
+  CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
+</p>
+<p>
+  Name a node with <code>.name("title")</code> so the report is readable. Without a name it is
+  labeled by the line that called <code>add</code>.
+</p>
+
+<h3><code>oxframe inspect --at &lt;seconds&gt;</code></h3>
+<p>
+  Prints the scene tree at that time as JSON: kind, name, source location, scene bounds, opacity,
+  text and draw order. <code>--scene outro</code> measures the time from the start of that scene.
 </p>
 
 <h3><code>oxframe agents</code></h3>
@@ -144,14 +169,24 @@ open = true        # open the browser on "oxframe dev"
 profile = "dev"    # or "release"
 
 [render]
-ffmpeg = "/opt/ffmpeg/bin/ffmpeg"   # default: ffmpeg from PATH`}</code
+ffmpeg = "/opt/ffmpeg/bin/ffmpeg"   # default: ffmpeg from PATH
+
+[check]
+interval = 1.0        # seconds between storyboard frames
+safe_inset = 48       # px; 0 turns the safe-area warning off
+min_contrast = 4.5
+min_motion = 0.15
+max_still = 3.0
+chars_per_second = 20
+min_chars = 24
+cell_width = 320`}</code
   ></pre>
 
 <h2>Exit codes</h2>
 <table>
   <tbody>
     <tr><td>0</td><td>Success.</td></tr>
-    <tr><td>1</td><td>Your code does not compile, or the scene fails.</td></tr>
+    <tr><td>1</td><td>Your code does not compile, the scene fails, or <code>oxframe check</code> found an error.</td></tr>
     <tr><td>2</td><td>Environment: no ffmpeg, port in use, cannot write a file.</td></tr>
     <tr><td>3</td><td>Version mismatch between the CLI, SDK and editor.</td></tr>
   </tbody>

@@ -34,17 +34,17 @@
 <h2>Letting the agent see its work</h2>
 <p>
   Animation is visual, so compiling is not enough to know a change is right. The instructions tell
-  the agent to check itself with snapshots:
+  the agent to look at the picture after every change:
 </p>
 <pre><code
-    >{`oxframe check                          # does it compile?
-oxframe snapshot --at 0.5 --at 2       # render those moments as PNG
-cargo run -q -- info                   # scene lengths and marker times as JSON`}</code
+    >{`oxframe check                 # storyboard.png + report.json; exit 1 on errors
+# open out/check/storyboard.png and out/check/report.json, fix, run again
+oxframe inspect --at 2.5      # scene tree at that time, when a frame looks wrong`}</code
   ></pre>
 <p>
-  <code>snapshot</code> prints one path per image, the agent opens the PNGs and compares them with
-  what you asked for. No editor, no ffmpeg, nothing that keeps running — <code>oxframe dev</code> is for
-  you, not for the agent.
+  The storyboard is a grid of frames with the time under each cell. The report names the rule, the
+  node and the source line. <code>oxframe snapshot</code> is still there for one full-size still.
+  Nothing keeps running — <code>oxframe dev</code> is for you, not for the agent.
 </p>
 
 <h2>A good way to work together</h2>
@@ -55,7 +55,7 @@ cargo run -q -- info                   # scene lengths and marker times as JSON`
       >"after the title, slide three cards in from the left, one after another"</em
     >.
   </li>
-  <li>The agent edits the code and checks it with snapshots; your preview reloads by itself.</li>
+  <li>The agent edits the code and checks it with <code>oxframe check</code>; your preview reloads by itself.</li>
   <li>
     Fine-tune timing yourself with markers and sliders. The agent is told to keep your
     <code>meta.json</code> values, so your adjustments survive its next edit.
