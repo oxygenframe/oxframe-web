@@ -3,6 +3,7 @@
   import { page } from '$app/state';
   import { compile, examples } from '../compile';
   import { exampleByName } from '../examples';
+  import { highlightedExample } from '../examples-highlighted';
   import { CURRENT, locate } from '../versions';
   import Player from './Player.svelte';
 
@@ -12,6 +13,7 @@
   let building = $state(false);
   let failed = $state(false);
   const local = $derived(exampleByName(name));
+  const source = $derived(highlightedExample(name));
   // In archived docs the playground is told which version the example is from.
   const series = $derived(locate(page.url.pathname).series);
   const playground = $derived(
@@ -59,7 +61,12 @@
         >Source of <code>{name}</code> —
         <a href={playground}>edit in the playground</a></summary
       >
-      <pre><code>{local.source}</code></pre>
+      {#if source}
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -- highlighted at build time from our own example files -->
+        {@html source}
+      {:else}
+        <pre><code>{local.source}</code></pre>
+      {/if}
     </details>
   {/if}
 </figure>

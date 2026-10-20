@@ -1,10 +1,13 @@
 import adapter from '@sveltejs/adapter-static';
 import { compileUrl } from './compile-url.js';
+import { highlightCode } from './highlight.js';
 
 const compile = compileUrl();
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
+  // Code blocks are highlighted at build time (highlight.js).
+  preprocess: [highlightCode()],
   kit: {
     // Static site: any host with Bun (serve.ts) or a CDN.
     adapter: adapter({ fallback: '404.html' }),

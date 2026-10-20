@@ -110,3 +110,16 @@ pre {
     overflow-x: auto;
   }
 }
+
+/* Highlighted code (highlight.js): dark is the default scheme, light follows
+   the system setting, like the rest of the site. */
+.shiki,
+.shiki span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: light) {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-light);
+  }
+}
