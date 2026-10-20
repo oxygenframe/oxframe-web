@@ -107,8 +107,8 @@
 <h2>When to pick something else</h2>
 <ul>
   <li>
-    Pick fframes when generative design is the priority. Each frame is its own SVG, so the frames are
-    not rigidly tied together.
+    Pick fframes when generative design is the priority. Each frame is its own SVG, so the frames
+    are not rigidly tied together.
   </li>
   <li>Pick Remotion when the video is a React app and the team already lives in that stack.</li>
   <li>
