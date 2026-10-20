@@ -1,5 +1,5 @@
 # Compile sandbox for playground scenes. Rebuilt for every SDK release:
-#   docker build -f infra/sandbox/Dockerfile --build-arg OXFRAME_SDK_VERSION=0.1.0 -t oxframe-sandbox:0.1.0 .
+#   docker build -f infra/sandbox/Dockerfile --build-arg OXFRAME_SDK_VERSION=0.2.1 -t oxframe-sandbox:0.2.1 .
 # Run only under gVisor (`--runtime=runsc`) with --network=none; see
 # services/compile/src/runner.ts (DockerRunner) for the exact flags.
 FROM rust:1.97.1-slim-bookworm AS tools
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     | tar -xz -C /opt && cp /opt/binaryen-version_${BINARYEN_VERSION}/bin/wasm-opt /usr/local/bin/
 
 FROM rust:1.97.1-slim-bookworm
-ARG OXFRAME_SDK_VERSION=0.1.0
+ARG OXFRAME_SDK_VERSION=0.2.1
 RUN rustup target add wasm32-unknown-unknown && useradd -m -u 10001 builder
 COPY --from=tools /usr/local/cargo/bin/wasm-bindgen /usr/local/bin/wasm-bindgen
 COPY --from=tools /usr/local/bin/wasm-opt /usr/local/bin/wasm-opt

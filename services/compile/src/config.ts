@@ -1,11 +1,12 @@
 import { readdirSync, statSync } from 'node:fs';
 import { cpus } from 'node:os';
 import { join, resolve } from 'node:path';
+import { SDK_VERSION as SITE_SDK_VERSION } from '../../../apps/site/src/lib/sdk';
 
 const env = (k: string, d: string) => process.env[k] ?? d;
 const num = (k: string, d: number) => Number(process.env[k] ?? d);
 
-export const SDK_VERSION = env('OXFRAME_SDK_VERSION', '0.1.0');
+export const SDK_VERSION = env('OXFRAME_SDK_VERSION', SITE_SDK_VERSION);
 
 export interface Config {
   port: number;

@@ -1,10 +1,12 @@
-// Writes build/_headers for Cloudflare: the same headers serve.ts sends.
+// Writes build/_headers and build/_redirects for Cloudflare: the same
+// headers and redirects serve.ts applies.
 // Pages carry their CSP in a <meta> tag (SvelteKit hashes); the header adds
 // only what meta cannot express. The engine worker is the one script allowed
 // to compile wasm, so it gets its own CSP with 'wasm-unsafe-eval'.
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { compileUrl } from '../compile-url.js';
+import { REDIRECTS } from '../redirects';
 
 const build = join(import.meta.dir, '../build');
 // Same resolution as the build itself, so headers always match it.
@@ -33,4 +35,5 @@ const headers = `/*
   Content-Security-Policy: ${workerCsp}
 `;
 writeFileSync(join(build, '_headers'), headers);
-console.log(`wrote build/_headers (compile service: ${compile})`);
+writeFileSync(join(build, '_redirects'), REDIRECTS.map((r) => r.join(' ')).join('\n') + '\n');
+console.log(`wrote build/_headers (compile service: ${compile}) and build/_redirects`);

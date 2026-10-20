@@ -7,10 +7,16 @@
   import CodeEditor from '$lib/components/CodeEditor.svelte';
   import Player from '$lib/components/Player.svelte';
   import { compile, type CompileError } from '$lib/compile';
+  import { SDK_VERSION } from '$lib/config';
+  import { CURRENT } from '$lib/versions';
   import { exampleByName, lessonExamples, localExamples, showcaseExamples } from '$lib/examples';
   import { decodeShare, encodeShare } from '$lib/share';
 
   const initialName = page.url.searchParams.get('ex') ?? 'intro';
+  // Examples linked from archived docs carry their version (`?v=0.1`); the
+  // playground builds with one SDK only, so say when they differ.
+  const fromVersion = page.url.searchParams.get('v');
+  const otherVersion = fromVersion && fromVersion !== CURRENT ? fromVersion : null;
   let source = $state(
     decodeShare(location.hash) ?? exampleByName(initialName)?.source ?? localExamples[0]!.source,
   );
@@ -112,6 +118,12 @@
 
 <div class="pg">
   <section class="code">
+    {#if otherVersion}
+      <p class="version-warning" role="note" data-testid="version-warning">
+        This example comes from the oxframe {otherVersion} docs; the playground runs {SDK_VERSION},
+        so it may need changes.
+      </p>
+    {/if}
     <div class="bar">
       <label>
         Example
@@ -167,8 +179,9 @@
       </div>
     {/if}
     <p class="hint">
-      Share links are public by design: the code travels in the URL. Your scene runs in your
-      browser; the server only compiles it.
+      <span class="sdk" data-testid="sdk-version">oxframe {SDK_VERSION}</span> · Share links are public
+      by design: the code travels in the URL. Your scene runs in your browser; the server only compiles
+      it.
     </p>
   </section>
   <section class="preview">
@@ -198,10 +211,11 @@
     height: 100%;
   }
   .code {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    display: flex;
+    flex-direction: column;
     border-right: 1px solid var(--border);
     min-height: 0;
+    min-width: 0;
   }
   .bar {
     display: flex;
@@ -209,13 +223,6 @@
     align-items: center;
     padding: 8px 10px;
     border-bottom: 1px solid var(--border);
-  }
-  select {
-    font: inherit;
-    background: var(--panel);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 6px;
   }
   .status {
     margin-left: auto;
@@ -226,6 +233,7 @@
     color: #ff7a7a;
   }
   .editor {
+    flex: 1;
     min-height: 0;
   }
   .errors {
@@ -235,12 +243,36 @@
     border-top: 1px solid var(--border);
     font-size: 13px;
   }
+  .version-warning {
+    margin: 0;
+    padding: 6px 10px;
+    font-size: 13px;
+    background: color-mix(in srgb, #f5c242 18%, var(--panel));
+    border-bottom: 1px solid var(--border);
+  }
+  .sdk {
+    color: var(--text);
+  }
   .hint {
     margin: 0;
     padding: 6px 10px;
     font-size: 12px;
     color: var(--muted);
     border-top: 1px solid var(--border);
+  }
+  /* Phones: code above, preview below. */
+  @media (max-width: 720px) {
+    .pg {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 55%) minmax(0, 45%);
+    }
+    .code {
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .bar {
+      flex-wrap: wrap;
+    }
   }
   .preview {
     display: grid;

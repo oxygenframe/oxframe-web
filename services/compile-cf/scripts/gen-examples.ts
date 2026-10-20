@@ -8,6 +8,7 @@
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { SDK_VERSION as SITE_SDK_VERSION } from '../../../apps/site/src/lib/sdk';
 
 const root = join(import.meta.dir, '../../..');
 const exDir = join(root, 'apps/site/src/lib/examples');
@@ -23,12 +24,21 @@ const examples = readdirSync(exDir)
     };
   });
 
-const SDK_VERSION = '0.1.0';
+// One SDK version for the site, the playground and this service.
+const SDK_VERSION = SITE_SDK_VERSION;
+const dockerArg = /^ARG OXFRAME_SDK_VERSION=(.+)$/m.exec(
+  readFileSync(join(root, 'services/compile-cf/Dockerfile'), 'utf8'),
+)?.[1];
+if (dockerArg !== SDK_VERSION)
+  throw new Error(
+    `services/compile-cf/Dockerfile builds SDK ${dockerArg}, apps/site/src/lib/sdk.ts says ${SDK_VERSION}`,
+  );
 const imageInputs = [
   'services/compile-cf/Dockerfile',
   'services/compile-cf/container',
   'services/compile/package.json',
   'services/compile/src',
+  'apps/site/src/lib/sdk.ts',
   'infra/sandbox/template',
 ];
 const files = (p: string): string[] =>

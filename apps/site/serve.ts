@@ -4,6 +4,7 @@
 import { existsSync, statSync } from 'node:fs';
 import { join, normalize } from 'node:path';
 import { compileUrl } from './compile-url.js';
+import { redirectFor } from './redirects';
 
 const root = join(import.meta.dir, 'build');
 const compile = compileUrl();
@@ -18,6 +19,8 @@ Bun.serve({
   port,
   async fetch(req) {
     const url = new URL(req.url);
+    const redirect = redirectFor(url.pathname);
+    if (redirect) return Response.redirect(new URL(redirect.to, url), redirect.status);
     let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
     let file = join(root, path);
     // adapter-static writes /docs as docs.html next to the docs/ directory.

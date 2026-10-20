@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/state';
   import { compile, examples } from '../compile';
   import { exampleByName } from '../examples';
+  import { CURRENT, locate } from '../versions';
   import Player from './Player.svelte';
 
   /** `open`: show the source expanded (lessons). */
@@ -10,6 +12,11 @@
   let building = $state(false);
   let failed = $state(false);
   const local = $derived(exampleByName(name));
+  // In archived docs the playground is told which version the example is from.
+  const series = $derived(locate(page.url.pathname).series);
+  const playground = $derived(
+    `/playground?${series === CURRENT ? '' : `v=${series}&`}ex=${encodeURIComponent(name)}`,
+  );
 
   // Prebuilt examples play at once. One not built yet (right after a
   // deploy) is compiled on demand: the service shares the job and caches
@@ -50,7 +57,7 @@
     <details {open}>
       <summary
         >Source of <code>{name}</code> —
-        <a href="/playground?ex={name}">edit in the playground</a></summary
+        <a href={playground}>edit in the playground</a></summary
       >
       <pre><code>{local.source}</code></pre>
     </details>

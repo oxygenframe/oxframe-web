@@ -72,3 +72,53 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
   }
   expect((await request.get('/og.png')).headers()['content-type']).toBe('image/png');
 });
+
+test('docs are versioned: switcher, API reference, versioned URLs', async ({ page, request }) => {
+  await page.goto('/docs/guide/hello');
+  const select = page.getByTestId('docs-version');
+  await expect(select.locator('option').first()).toHaveText(/^\d+\.\d+\.\d+ \(latest\)$/);
+  const latest = (await select.locator('option').first().textContent())!.split(' ')[0]!;
+  await expect(page.getByTestId('api-reference')).toHaveAttribute(
+    'href',
+    `https://docs.rs/oxframe/${latest}/oxframe/`,
+  );
+  await expect(page.getByTestId('old-version')).toHaveCount(0);
+  // The current docs also answer at their versioned URL.
+  const series = latest.split('.').slice(0, 2).join('.');
+  const res = await request.get(`/docs/${series}/guide/hello`, { maxRedirects: 0 });
+  expect(res.status()).toBe(301);
+  expect(res.headers()['location']).toMatch(/\/docs\/guide\/hello$/);
+  await page.goto(`/docs/${series}`);
+  await expect(page).toHaveURL(/\/docs$/);
+});
+
+test('the development status notice is on every main page', async ({ page }) => {
+  for (const path of ['/', '/docs', '/docs/guide/hello', '/playground']) {
+    await page.goto(path);
+    await expect(page.getByTestId('dev-status'), path).toContainText('API is not stable yet');
+  }
+});
+
+test('the playground says which oxframe it runs and warns about other versions', async ({
+  page,
+}) => {
+  await page.goto('/playground?ex=intro');
+  await expect(page.getByTestId('sdk-version')).toHaveText(/^oxframe \d+\.\d+\.\d+$/);
+  await expect(page.getByTestId('version-warning')).toHaveCount(0);
+  await page.goto('/playground?v=0.0&ex=intro');
+  await expect(page.getByTestId('version-warning')).toContainText('oxframe 0.0 docs');
+});
+
+// Mobile-friendliness (a ranking signal): no page scrolls sideways on a phone.
+test('no page is wider than a phone screen', async ({ browser, request }) => {
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]!).pathname);
+  const page = await browser.newPage({ viewport: { width: 320, height: 720 } });
+  const wide: string[] = [];
+  for (const path of paths) {
+    await page.goto(path);
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    if (width > 320) wide.push(`${path}: ${width}px`);
+  }
+  expect(wide).toEqual([]);
+});

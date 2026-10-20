@@ -27,6 +27,26 @@ also an SEO change; treat a regression like a failing test.
 - **Speed is ranking**: keep heavy code (Monaco, the engine) lazy and off
   pages that don't need it.
 - Non-production pages and errors are `noindex`.
+- **Mobile**: nothing may scroll sideways at 320 px (e2e: "no page is wider
+  than a phone screen"). Wrap rows, let wide tables and code scroll.
 
 `apps/site/e2e/docs.spec.ts` ("every sitemap page has complete, unique SEO
 metadata") enforces most of this; extend it when you add a rule.
+
+## Versioned docs
+
+The docs at `/docs/…` describe the SDK version in `apps/site/src/lib/sdk.ts`
+(the playground builds with the same one). Older minor versions are
+snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
+`/docs/…` (`apps/site/redirects.ts`), so version-pinned links always work.
+
+- The version switcher lists the current docs plus the snapshots
+  (`src/lib/docs-archive/`), labelled with the newest published patch from
+  crates.io (`src/lib/versions.json`, refreshed by `scripts/crate-versions.ts`
+  on every build, kept as is when crates.io is unreachable).
+- **Releasing a new minor version (0.1 → 0.2):** first
+  `bun scripts/archive-docs.ts 0.1` (snapshot of the 0.1 docs, links
+  rewritten), then `bun run format`, then bump `src/lib/sdk.ts` and change the
+  docs for 0.2. Patch releases only bump `sdk.ts`.
+- Archived pages are canonicalized to the current page and stay out of the
+  sitemap; "API reference" links to docs.rs for the selected version.

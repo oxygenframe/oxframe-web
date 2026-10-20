@@ -1,5 +1,6 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
+  import { SDK_VERSION } from '$lib/sdk';
   import { SITE } from '$lib/site';
   const sample = `use oxframe::prelude::*;
 
@@ -57,7 +58,7 @@ fn main() {
       applicationCategory: 'MultimediaApplication',
       applicationSubCategory: 'Animation software',
       operatingSystem: 'Linux, macOS, Windows',
-      softwareVersion: '0.1',
+      softwareVersion: SDK_VERSION,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       downloadUrl: 'https://crates.io/crates/oxframe-cli',
       sameAs: ['https://github.com/oxygenframe', 'https://crates.io/crates/oxframe'],
@@ -105,6 +106,7 @@ fn main() {
   }
   .cta {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     margin-top: 24px;
   }

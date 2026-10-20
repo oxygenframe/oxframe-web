@@ -85,3 +85,28 @@ h3 {
     color: #fff;
   }
 }
+
+/* Form controls follow the theme (native ones default to the OS look). */
+select {
+  font: inherit;
+  padding: 2px 4px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* Phones: nothing widens the page. Long inline code wraps; code blocks and
+   wide tables scroll on their own. */
+:not(pre) > code {
+  overflow-wrap: anywhere;
+}
+pre {
+  overflow-x: auto;
+}
+@media (max-width: 640px) {
+  article table {
+    display: block;
+    overflow-x: auto;
+  }
+}

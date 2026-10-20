@@ -1,3 +1,6 @@
+import { archives } from './docs-archive';
+import { CURRENT, locate } from './versions';
+
 // The documentation, in reading order. Each section builds on the previous
 // one; the sidebar and the "Next" links follow this list.
 export interface DocPage {
@@ -157,13 +160,22 @@ export const sections: DocSection[] = [
 
 export const pages: DocPage[] = sections.flatMap((s) => s.pages);
 
-export function href(slug: string): string {
-  return slug ? `/docs/${slug}` : '/docs';
+/** URL of a page; `series` other than the current one is an archived version. */
+export function href(slug: string, series: string = CURRENT): string {
+  const base = series === CURRENT ? '/docs' : `/docs/${series}`;
+  return slug ? `${base}/${slug}` : base;
 }
 
-/** Previous and next page around the current path. */
+/** Page list of a version: the current docs or an archived snapshot. */
+export function sectionsOf(series: string): DocSection[] {
+  return series === CURRENT ? sections : (archives[series] ?? []);
+}
+
+/** Previous and next page around the current path (in its version). */
 export function neighbors(path: string): { prev?: DocPage; next?: DocPage } {
-  const i = pages.findIndex((p) => href(p.slug) === path.replace(/\/$/, ''));
+  const { series, slug } = locate(path);
+  const list = sectionsOf(series).flatMap((s) => s.pages);
+  const i = list.findIndex((p) => p.slug === slug);
   if (i < 0) return {};
-  return { prev: pages[i - 1], next: pages[i + 1] };
+  return { prev: list[i - 1], next: list[i + 1] };
 }

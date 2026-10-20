@@ -10,3 +10,5 @@ test-results
 playwright-report
 .wrangler
 services/compile-cf/src/examples.gen.ts
+# Written by apps/site/scripts/crate-versions.ts on every build.
+apps/site/src/lib/versions.json

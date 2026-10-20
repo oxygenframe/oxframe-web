@@ -1,19 +1,36 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import Seo from '$lib/components/Seo.svelte';
-  import { href, neighbors, pages, sections } from '$lib/docs';
+  import { href, neighbors, sections, sectionsOf } from '$lib/docs';
   import { canonical, SITE } from '$lib/site';
+  import { CURRENT, DOCS_VERSIONS, docsRs, latestPatch, locate } from '$lib/versions';
   let { children } = $props();
+
+  const loc = $derived(locate(page.url.pathname));
+  const archived = $derived(loc.series !== CURRENT);
+  const list = $derived(sectionsOf(loc.series));
+  const doc = $derived(list.flatMap((s) => s.pages).find((p) => p.slug === loc.slug));
   const around = $derived(neighbors(page.url.pathname));
-  const current = (slug: string) => page.url.pathname.replace(/\/$/, '') === href(slug);
-  const doc = $derived(pages.find((p) => current(p.slug)));
+  // The same page in the current docs, if it still exists there.
+  const inCurrent = $derived(sections.flatMap((s) => s.pages).some((p) => p.slug === loc.slug));
+  const current = (slug: string) => slug === loc.slug;
+
   // "1. Your first animation" reads better in results without the number.
   const name = $derived(doc?.title.replace(/^\d+\.\s*/, '') ?? 'Docs');
   const title = $derived(
-    doc?.slug === '' ? 'oxframe docs — animation in Rust, step by step' : `${name} — oxframe docs`,
+    archived
+      ? `${name} — oxframe ${loc.series} docs`
+      : doc?.slug === ''
+        ? 'oxframe docs — animation in Rust, step by step'
+        : `${name} — oxframe docs`,
+  );
+  // Archived pages point search engines at the current page.
+  const canonicalUrl = $derived(
+    archived ? canonical(inCurrent ? href(loc.slug) : '/docs') : undefined,
   );
   const jsonld = $derived(
-    doc
+    doc && !archived
       ? [
           {
             '@type': 'TechArticle',
@@ -37,33 +54,99 @@
         ]
       : [],
   );
+
+  /** Same page in another version if it exists there, else that version's start. */
+  function switchTo(series: string) {
+    const has = sectionsOf(series)
+      .flatMap((s) => s.pages)
+      .some((p) => p.slug === loc.slug);
+    void goto(href(has ? loc.slug : '', series));
+  }
 </script>
 
-{#if doc}<Seo {title} description={doc.description} type="article" {jsonld} />{/if}
+{#if doc}<Seo
+    {title}
+    description={doc.description}
+    type="article"
+    canonical={canonicalUrl}
+    {jsonld}
+  />{/if}
 
 <div class="docs">
   <nav aria-label="Documentation">
-    {#each sections as s (s.title)}
+    <div class="version">
+      <label>
+        <span>Version</span>
+        <select
+          value={loc.series}
+          onchange={(e) => switchTo(e.currentTarget.value)}
+          data-testid="docs-version"
+        >
+          {#each DOCS_VERSIONS as v (v.series)}
+            <option value={v.series}>{v.version}{v.current ? ' (latest)' : ''}</option>
+          {/each}
+        </select>
+      </label>
+      <a href={docsRs(latestPatch(loc.series))} rel="external" data-testid="api-reference"
+        >API reference ↗</a
+      >
+    </div>
+    {#each list as s (s.title)}
       <p class="section">{s.title}</p>
       {#each s.pages as p (p.slug)}
-        <a href={href(p.slug)} aria-current={current(p.slug) ? 'page' : undefined}>{p.title}</a>
+        <a href={href(p.slug, loc.series)} aria-current={current(p.slug) ? 'page' : undefined}
+          >{p.title}</a
+        >
       {/each}
     {/each}
   </nav>
   <article>
+    {#if archived}
+      <p class="old" role="note" data-testid="old-version">
+        This is the documentation for oxframe {latestPatch(loc.series)}. The latest version is
+        {latestPatch(CURRENT)}:
+        <a href={inCurrent ? href(loc.slug) : '/docs'}>read the current docs</a>.
+      </p>
+    {/if}
     {@render children()}
     <footer class="pager">
       {#if around.prev}
-        <a class="prev" href={href(around.prev.slug)}><span>Previous</span>{around.prev.title}</a>
+        <a class="prev" href={href(around.prev.slug, loc.series)}
+          ><span>Previous</span>{around.prev.title}</a
+        >
       {:else}<span></span>{/if}
       {#if around.next}
-        <a class="next" href={href(around.next.slug)}><span>Next</span>{around.next.title}</a>
+        <a class="next" href={href(around.next.slug, loc.series)}
+          ><span>Next</span>{around.next.title}</a
+        >
       {/if}
     </footer>
   </article>
 </div>
 
 <style>
+  .version {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .version label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+  }
+  .version select {
+    flex: 1;
+  }
+  .old {
+    padding: 10px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+  }
   .docs {
     display: grid;
     grid-template-columns: 230px minmax(0, 1fr);

@@ -10,11 +10,20 @@
     description: string;
     type?: 'website' | 'article';
     noindex?: boolean;
+    /** Canonical URL when it is another page (e.g. an archived doc). */
+    canonical?: string;
     jsonld?: object[];
   }
-  let { title, description, type = 'website', noindex = false, jsonld = [] }: Props = $props();
+  let {
+    title,
+    description,
+    type = 'website',
+    noindex = false,
+    canonical: canonicalUrl,
+    jsonld = [],
+  }: Props = $props();
 
-  const url = $derived(canonical(page.url.pathname));
+  const url = $derived(canonicalUrl ?? canonical(page.url.pathname));
   // `<` is escaped so the JSON cannot close the script element.
   const ld = $derived(
     jsonld.map(

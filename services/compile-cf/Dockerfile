@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM oven/bun:1.3.14 AS bun
 
 FROM rust:1.97.1-slim-bookworm
-ARG OXFRAME_SDK_VERSION=0.1.0
+ARG OXFRAME_SDK_VERSION=0.2.1
 RUN rustup target add wasm32-unknown-unknown && useradd -m -u 10001 builder
 COPY --from=tools /usr/local/bin/wasm-bindgen /usr/local/bin/wasm-bindgen
 COPY --from=tools /usr/local/bin/wasm-opt /usr/local/bin/wasm-opt
@@ -25,6 +25,8 @@ COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 COPY services/compile/package.json services/compile/
 COPY services/compile/src services/compile/src
+# The SDK version (one source for the site, the playground and the service).
+COPY apps/site/src/lib/sdk.ts apps/site/src/lib/sdk.ts
 COPY services/compile-cf/container services/compile-cf/container
 COPY infra/sandbox/template infra/sandbox/template
 RUN chown -R builder /app

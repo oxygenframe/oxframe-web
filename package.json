@@ -14,7 +14,7 @@
     "deploy:preview": "bun run build && wrangler versions upload",
     "build:editor": "bun run --cwd packages/editor-ui build:standalone",
     "check": "bun run --cwd packages/editor-ui check && bun run --cwd apps/site check && tsc -p services/compile --noEmit && tsc -p packages/backends --noEmit && bun run --cwd services/compile-cf gen && tsc -p services/compile-cf",
-    "test": "bun run --cwd packages/backends test && bun run --cwd packages/editor-ui test && bun test --cwd services/compile && bun run --cwd services/compile-cf gen && bun test --cwd services/compile-cf",
+    "test": "bun test apps/site/scripts && bun run --cwd packages/backends test && bun run --cwd packages/editor-ui test && bun test --cwd services/compile && bun run --cwd services/compile-cf gen && bun test --cwd services/compile-cf",
     "e2e": "bun run --cwd packages/editor-ui e2e",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
