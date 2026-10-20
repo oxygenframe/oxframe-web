@@ -93,8 +93,17 @@ export function createService(d: Deps) {
       .catch(() => ({}))) as { error?: string };
     if (!error?.startsWith('this service builds with SDK')) return res;
     console.warn(`container for ${id} runs an old image (${error}); restarting it`);
-    await d.restartContainer(id);
-    return d.container(id, req);
+    // Destroying resets the machine's Durable Object, which can reject the
+    // call that did it; the machine is gone either way.
+    await d.restartContainer(id).catch((e: unknown) => console.warn('restart:', e));
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await d.container(id, req.clone());
+      } catch (e) {
+        if (attempt >= 2) throw e;
+        await new Promise((ok) => setTimeout(ok, 1000 * (attempt + 1)));
+      }
+    }
   }
 
   const json = (body: unknown, status = 200, headers: HeadersInit = {}) =>

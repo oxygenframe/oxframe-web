@@ -105,6 +105,8 @@ function setup(over: { examples?: Example[]; allow?: boolean; staleMachine?: boo
     restartContainer: async () => {
       calls.push('restart');
       stale = false;
+      // Like a real Durable Object reset: the call that destroys it fails.
+      throw new Error('Durable Object reset');
     },
     allowBuild: async () => over.allow ?? true,
     examples: over.examples ?? [],
