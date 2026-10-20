@@ -167,6 +167,7 @@ export class LocalRunner implements Runner {
     const r = await run(['cargo', 'build', '--release', '--target', 'wasm32-unknown-unknown'], {
       cwd: dir,
       timeoutMs: 30 * 60_000,
+      env: { CARGO_TARGET_DIR: join(dir, 'target') },
     });
     // The template must build: a broken one (e.g. after an SDK API change)
     // would otherwise only show up as a failed production image build.
@@ -190,7 +191,14 @@ export class LocalRunner implements Runner {
         'wasm32-unknown-unknown',
         '--message-format=json-diagnostic-rendered-ansi',
       ],
-      { cwd: dir, timeoutMs: t, env: { CARGO_TERM_COLOR: 'never' } },
+      {
+        cwd: dir,
+        timeoutMs: t,
+        // Pin the target dir. A CARGO_TARGET_DIR in the environment would
+        // make cargo write somewhere else, and the wasm below would be a
+        // stale scene from this directory.
+        env: { CARGO_TERM_COLOR: 'never', CARGO_TARGET_DIR: join(dir, 'target') },
+      },
     );
     if (cargo.killed) return timeout(t);
     const parsed = parseCargo(cargo.stdout);

@@ -63,6 +63,11 @@
       ><td><code>width height</code></td></tr
     >
     <tr
+      ><td><code>Svg</code></td><td
+        ><code>.src(include_bytes!(..)) .file(path) .width .height</code></td
+      ><td><code>width height</code>, <code>find("id")</code>, <code>paths()</code></td></tr
+    >
+    <tr
       ><td><code>Layout</code></td><td
         ><code>.row .column .wrap .grid(n) .gap .padding .align .justify .width .height</code></td
       ><td><code>gap padding width height radius</code></td></tr
@@ -86,6 +91,13 @@
   properties <code>grow shrink basis margin align_self</code>. <code>start</code>/<code>end</code>
   trim outlines — animate <code>end</code> from 0 to 1 to draw a shape on (on text it reveals glyph by
   glyph).
+</p>
+<p>
+  <code>Svg</code> reads a whole file and turns it into those nodes: groups stay groups, shapes
+  become <code>Path</code>s (so <code>data</code> still morphs), and embedded PNG or JPEG images
+  become <code>Img</code>. <code>find("id")</code> is the element with that id.
+  <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped
+  with a warning. See the <a href="/playground?ex=svg">logo example</a>.
 </p>
 
 <h2>Shapes and morphing</h2>

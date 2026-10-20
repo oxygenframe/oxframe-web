@@ -7,6 +7,11 @@ export interface GalleryItem {
 
 export const galleryItems: GalleryItem[] = [
   {
+    name: 'svg',
+    tags: ['logo'],
+    prompt: 'Bring in an SVG logo. Draw each path on in turn, then recolor the part with id "dot".',
+  },
+  {
     name: 'code_steps',
     tags: ['code', 'explainer'],
     prompt:

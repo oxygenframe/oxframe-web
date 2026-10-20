@@ -61,6 +61,12 @@ export function stripComments(s: string): string {
   let out = '';
   let i = 0;
   while (i < s.length) {
+    const raw = rawStringEnd(s, i);
+    if (raw !== null) {
+      out += s.slice(i, raw).replace(/[^\n]/g, ' ');
+      i = raw;
+      continue;
+    }
     if (s.startsWith('//', i)) {
       const end = s.indexOf('\n', i);
       const stop = end === -1 ? s.length : end;
@@ -91,6 +97,24 @@ export function stripComments(s: string): string {
     }
   }
   return out;
+}
+
+/** End index of a raw string (`r"…"`, `br##"…"##`) starting at `i`, or null. */
+function rawStringEnd(s: string, i: number): number | null {
+  if (i > 0 && /[A-Za-z0-9_]/.test(s[i - 1]!)) return null;
+  let j = i;
+  if (s[j] === 'b' || s[j] === 'c') j++;
+  if (s[j] !== 'r') return null;
+  j++;
+  let hashes = 0;
+  while (s[j] === '#') {
+    hashes++;
+    j++;
+  }
+  if (s[j] !== '"') return null;
+  const closer = '"' + '#'.repeat(hashes);
+  const k = s.indexOf(closer, j + 1);
+  return k === -1 ? s.length : k + closer.length;
 }
 
 function position(s: string, index: number) {

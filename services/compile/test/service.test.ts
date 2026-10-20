@@ -98,6 +98,9 @@ describe('validation', () => {
       validateSource(GOOD + '// #![no_std]\n/* asm!( */\nconst S: &str = "asm!(";\n', 65536),
     ).toEqual([]);
     expect(stripComments('a/*b*/c')).toBe('a     c');
+    const svg =
+      'const L: &[u8] = br##"<svg xmlns="http://www.w3.org/2000/svg">\n</svg>"##;\n' + GOOD;
+    expect(validateSource(svg, 65536)).toEqual([]);
   });
 });
 

@@ -21,6 +21,7 @@ const names = [
   'quicksort',
   'camera',
   'code_steps',
+  'svg',
   'components',
   'relative',
   'theme',
