@@ -26,12 +26,14 @@ export class Builder extends Container<Env> {
 
 function service(env: Env) {
   const pool = Math.max(1, Number(env.POOL_SIZE) || 1);
+  const machine = (id: string) =>
+    getContainer(env.BUILDER, `pool-${parseInt(id.slice(0, 8), 16) % pool}`);
   return createService({
     bucket: env.ARTIFACTS,
     // The same source always goes to the same machine, so concurrent
     // requests for it join one build.
-    container: (id, req) =>
-      getContainer(env.BUILDER, `pool-${parseInt(id.slice(0, 8), 16) % pool}`).fetch(req),
+    container: (id, req) => machine(id).fetch(req),
+    restartContainer: (id) => machine(id).destroy(),
     allowBuild: async (ip) => (await env.LIMITER.limit({ key: ip })).success,
     examples,
     sdkVersion: SDK_VERSION,

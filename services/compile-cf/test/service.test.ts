@@ -65,7 +65,7 @@ class MemoryBucket implements Bucket {
   }
 }
 
-function setup(over: { examples?: Example[]; allow?: boolean } = {}) {
+function setup(over: { examples?: Example[]; allow?: boolean; staleMachine?: boolean } = {}) {
   const cfg: Config = {
     port: 0,
     host: '127.0.0.1',
@@ -89,11 +89,22 @@ function setup(over: { examples?: Example[]; allow?: boolean } = {}) {
   const container = createApp(cfg, runner).app;
   const bucket = new MemoryBucket();
   const calls: string[] = [];
+  let stale = over.staleMachine ?? false;
   const svc = createService({
     bucket,
     container: async (_key, req) => {
       calls.push(`${req.method} ${new URL(req.url).pathname}`);
+      // A machine still on the previous image refuses this SDK version.
+      if (stale)
+        return Response.json(
+          { error: 'this service builds with SDK 0.0.1, not x' },
+          { status: 422 },
+        );
       return container.fetch(req);
+    },
+    restartContainer: async () => {
+      calls.push('restart');
+      stale = false;
     },
     allowBuild: async () => over.allow ?? true,
     examples: over.examples ?? [],
@@ -167,6 +178,12 @@ describe('compile worker', () => {
     expect(invalid.status).toBe('error');
     expect((await compile(svc, GOOD)).status).toBe(429);
     expect(runner.builds).toBe(0);
+  });
+
+  it('replaces a machine that still runs the previous image', async () => {
+    const { svc, calls } = setup({ staleMachine: true });
+    expect((await body(compile(svc, GOOD))).status).toBe('done');
+    expect(calls.slice(0, 3)).toEqual(['POST /api/compile', 'restart', 'POST /api/compile']);
   });
 
   it('does not rate-limit building the site examples', async () => {

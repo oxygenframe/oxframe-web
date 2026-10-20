@@ -52,6 +52,8 @@ export interface Deps {
   bucket: Bucket;
   /** Sends a request to the build container responsible for `key`. */
   container(key: string, req: Request): Promise<Response>;
+  /** Stops that container; the next request starts it from the current image. */
+  restartContainer?(key: string): Promise<void>;
   /** Returns false when the caller is over its build rate. */
   allowBuild(ip: string): Promise<boolean>;
   examples: Example[];
@@ -77,6 +79,24 @@ export async function jobId(source: string, sdkVersion: string, buildId: string)
 }
 
 export function createService(d: Deps) {
+  /**
+   * A container started before the last deploy keeps running the previous
+   * image (and SDK) until it stops. When it says so, replace it and retry
+   * once: the restarted machine comes up from the current image.
+   */
+  async function toContainer(id: string, req: Request): Promise<Response> {
+    const res = await d.container(id, req.clone());
+    if (res.status !== 422 || !d.restartContainer) return res;
+    const { error } = (await res
+      .clone()
+      .json()
+      .catch(() => ({}))) as { error?: string };
+    if (!error?.startsWith('this service builds with SDK')) return res;
+    console.warn(`container for ${id} runs an old image (${error}); restarting it`);
+    await d.restartContainer(id);
+    return d.container(id, req);
+  }
+
   const json = (body: unknown, status = 200, headers: HeadersInit = {}) =>
     new Response(JSON.stringify(body), {
       status,
@@ -107,7 +127,7 @@ export function createService(d: Deps) {
         ['bundle.js', 'text/javascript; charset=utf-8'],
       ] as const) {
         // `identity`: the raw wasm, not the container's .br copy.
-        const r = await d.container(
+        const r = await toContainer(
           id,
           new Request(`http://container/api/artifact/${id}/${file}`, {
             headers: { 'Accept-Encoding': 'identity' },
@@ -139,7 +159,7 @@ export function createService(d: Deps) {
 
   /** Builds (or joins the build of) `source` in its container. */
   async function build(id: string, source: string): Promise<CompileResponse | Response> {
-    const r = await d.container(
+    const r = await toContainer(
       id,
       new Request('http://container/api/compile', {
         method: 'POST',
@@ -194,7 +214,7 @@ export function createService(d: Deps) {
     if (!isJobId(id)) return json({ error: 'unknown id' }, 404);
     const hit = await cached(id);
     if (hit) return json(respond(hit, origin));
-    const r = await d.container(id, new Request(`http://container/api/compile/${id}`));
+    const r = await toContainer(id, new Request(`http://container/api/compile/${id}`));
     if (!r.ok) return json({ error: 'unknown id' }, 404);
     const res = (await r.json()) as CompileResponse;
     await persist(id, res);
