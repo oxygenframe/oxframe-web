@@ -100,10 +100,10 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   so it ducks a soundtrack built with <code>.duck_under_voice()</code>.
 </p>
 <pre><code
-    >{`let line = voice("Сначала нарисуем квадрат, а потом повернём его").start();
-line.at_word("квадрат").await;
+    >{`let line = voice("First draw a square, then rotate it").start();
+line.at_word("square").await;
 square.draw_on().await;
-line.at_word("повернём").await;
+line.at_word("rotate").await;
 square.rotation().to(90.0, 0.8).await;
 line.await;`}</code
   ></pre>
