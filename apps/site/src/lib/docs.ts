@@ -96,6 +96,24 @@ export const sections: DocSection[] = [
         description:
           'Lesson 10: background tasks and seeded randomness — many things moving on their own while the story continues, rendering the same video every time.',
       },
+      {
+        slug: 'guide/scenes',
+        title: '11. Scenes and transitions',
+        description:
+          'Lesson 11: build a video from several scenes and blend them with slide, fade, wipe and zoom transitions, all in one oxframe render.',
+      },
+      {
+        slug: 'guide/sound',
+        title: '12. Sound and voice',
+        description:
+          'Lesson 12: add sound effects on the beat, a soundtrack that ducks under speech, and time animations to the words of a spoken line.',
+      },
+      {
+        slug: 'guide/shaders',
+        title: '13. Shaders and effects',
+        description:
+          'Lesson 13: animated water, drops on the camera lens, ripples on a node and a water transition — shader presets you animate like any property.',
+      },
     ],
   },
   {

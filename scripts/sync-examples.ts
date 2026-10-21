@@ -44,6 +44,9 @@ const names = [
   'learn_08_signals',
   'learn_09_drawing',
   'learn_10_random',
+  'learn_11_scenes',
+  'learn_12_sound',
+  'learn_13_shaders',
 ];
 /** Drop `#[cfg(test)]` modules. They guard the SDK example, not the scene a visitor edits. */
 export function sceneSource(source: string): string {

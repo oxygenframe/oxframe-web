@@ -57,10 +57,8 @@
   </ul>
 </Recap>
 
-<h2>You made it</h2>
+<h2>Next</h2>
 <p>
-  That is the whole core of oxframe. From here, browse <a href="/docs/nodes">all nodes</a> and
-  <a href="/docs/effects">effects</a>, open the
-  <a href="/playground?ex=quicksort">quicksort showcase</a>
-  to see everything working together, or read <a href="/docs/how-it-works">how oxframe works</a> inside.
+  One scene is not a whole video yet. <a href="/docs/guide/scenes">Lesson 11</a> puts several scenes in
+  a row and blends them together.
 </p>

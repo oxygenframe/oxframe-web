@@ -21,6 +21,9 @@ Full text: https://oxframe.dev/llms-full.txt
 - [8. Signals](https://oxframe.dev/docs/guide/signals): Lesson 8: signals make one value follow another — a line that always connects two dots, a label that always shows a number.
 - [9. Drawing and morphing](https://oxframe.dev/docs/guide/drawing): Lesson 9: draw an outline as if with a pen, then morph one shape into another — path drawing and shape morphing in oxframe.
 - [10. Randomness and background tasks](https://oxframe.dev/docs/guide/random): Lesson 10: background tasks and seeded randomness — many things moving on their own while the story continues, rendering the same video every time.
+- [11. Scenes and transitions](https://oxframe.dev/docs/guide/scenes): Lesson 11: build a video from several scenes and blend them with slide, fade, wipe and zoom transitions, all in one oxframe render.
+- [12. Sound and voice](https://oxframe.dev/docs/guide/sound): Lesson 12: add sound effects on the beat, a soundtrack that ducks under speech, and time animations to the words of a spoken line.
+- [13. Shaders and effects](https://oxframe.dev/docs/guide/shaders): Lesson 13: animated water, drops on the camera lens, ripples on a node and a water transition — shader presets you animate like any property.
 
 ## Going further
 

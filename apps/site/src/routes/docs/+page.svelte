@@ -27,8 +27,8 @@ async fn intro(view: View) {
     <a href="/playground">playground</a>: it runs in your browser, nothing to install.
   </li>
   <li>
-    <strong>Guide</strong> is ten short lessons. Each one adds a single idea and has a live preview you
-    can play with. Read them in order — none of them assumes more than the lessons before it.
+    <strong>Guide</strong> is thirteen short lessons. Each one adds a single idea and has a live preview
+    you can play with. Read them in order — none of them assumes more than the lessons before it.
   </li>
   <li>
     <strong>Going further</strong> is the reference: every node, effect, editor feature and command.

@@ -179,7 +179,7 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   offset is saved in <code>meta.json</code>.
 </p>
 
-<h2>Voice</h2>
+<h2 id="voice">Voice</h2>
 <p>
   <code>voice("one two").start()</code> speaks the line and keeps going. <code>.at_word()</code>
   waits until that word. Awaiting the line waits until the end. A line is <code>.priority()</code>,
