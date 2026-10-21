@@ -108,6 +108,19 @@ test('the site has a logo for search results', async ({ request }) => {
   expect(site?.publisher?.['@id']).toBe(org?.['@id']);
 });
 
+// The page CSP must allow what the layout loads: analytics and the star count.
+test('main pages load without a CSP violation', async ({ page }) => {
+  const blocked: string[] = [];
+  page.on('console', (m) => {
+    if (/Content Security Policy/i.test(m.text())) blocked.push(m.text());
+  });
+  for (const path of ['/', '/docs', '/gallery', '/playground']) {
+    await page.goto(path);
+    await page.waitForLoadState('networkidle');
+  }
+  expect(blocked).toEqual([]);
+});
+
 test('docs are versioned: switcher, API reference, versioned URLs', async ({ page, request }) => {
   await page.goto('/docs/guide/hello');
   const select = page.getByTestId('docs-version');

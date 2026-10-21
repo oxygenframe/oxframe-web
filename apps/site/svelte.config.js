@@ -17,11 +17,14 @@ export default {
       mode: 'hash',
       directives: {
         'default-src': ['self'],
-        'script-src': ['self'],
+        // Plausible analytics (routes/+layout.svelte) loads its script and
+        // posts events to its own origin.
+        'script-src': ['self', 'https://plausible.io'],
         'style-src': ['self', 'unsafe-inline'],
         'img-src': ['self', 'data:', 'blob:'],
         'font-src': ['self', 'data:'],
-        'connect-src': ['self', compile],
+        // The star count in the header reads the GitHub API.
+        'connect-src': ['self', compile, 'https://plausible.io', 'https://api.github.com'],
         'worker-src': ['self', 'blob:'],
         'object-src': ['none'],
         'base-uri': ['self'],
