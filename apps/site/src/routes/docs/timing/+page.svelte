@@ -40,6 +40,8 @@ let speed = tune!("speed", 1.4);               // tunable: a number with a slide
   </tbody>
 </table>
 
+<LiveExample name="chart" />
+
 <h2>The meta file</h2>
 <p>
   Each scene has a <code>src/&lt;scene&gt;.meta.json</code> next to its source. Code provides defaults;
@@ -73,5 +75,7 @@ let speed = tune!("speed", 1.4);               // tunable: a number with a slide
 </ul>
 
 <h2>A bigger example</h2>
-<p>This chart uses a marker to sync the bars with a beat and named eases for their motion.</p>
-<LiveExample name="chart" />
+<p>
+  The player above is that chart. It uses a marker to sync the bars with a beat and named eases for
+  their motion.
+</p>

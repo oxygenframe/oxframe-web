@@ -1,3 +1,7 @@
+<script lang="ts">
+  import LiveExample from '$lib/components/LiveExample.svelte';
+</script>
+
 <h1>Rendering video</h1>
 <p class="lead">
   When the animation looks right in the editor, one command turns it into a video file.
@@ -40,6 +44,7 @@ async fn outro(view: View) {
     end.enter().await;
 }`}</code
   ></pre>
+<LiveExample name="transitions" />
 <p>
   <code>fade</code>, <code>slide(Dir::Left)</code> (<code>Right</code>, <code>Up</code>,
   <code>Down</code>), <code>wipe(dir)</code>, <code>zoom_in</code> and <code>zoom_out</code> are

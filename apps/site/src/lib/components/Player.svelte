@@ -9,11 +9,20 @@
     wasmUrl: string;
     jsUrl: string;
     compact?: boolean;
+    /** Open the playhead at this time, in seconds. */
+    at?: number;
     /** Metas by scene, kept across recompiles. */
     metas?: Record<string, Meta>;
     onFirstFrame?: (ms: number) => void;
   }
-  let { wasmUrl, jsUrl, compact = false, metas = $bindable({}), onFirstFrame }: Props = $props();
+  let {
+    wasmUrl,
+    jsUrl,
+    compact = false,
+    at = 0,
+    metas = $bindable({}),
+    onFirstFrame,
+  }: Props = $props();
 
   // Initial values; later URL changes reload the worker (effect below).
   const initial = untrack(() => ({ wasmUrl, jsUrl, metas: $state.snapshot(metas), compact }));
@@ -58,6 +67,15 @@
   let renderer = $state<string | null>(null);
   $effect(() => {
     if (editor.ready) renderer = backend.renderer;
+  });
+
+  // Ready seeks to 0. Place the playhead once the timeline length is known.
+  let placed = false;
+  $effect(() => {
+    if (!placed && at > 0 && editor.ready && editor.frames > 0) {
+      placed = true;
+      editor.seek(Math.round(at * editor.fps));
+    }
   });
 
   onDestroy(() => editor.stop());

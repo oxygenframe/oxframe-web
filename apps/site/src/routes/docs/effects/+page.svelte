@@ -10,6 +10,8 @@
   all work.
 </p>
 
+<LiveExample name="effects" />
+
 <h2>Paint</h2>
 <pre><code
     >{`Rect::new()
@@ -44,8 +46,6 @@ Circle::new().glow(color!("#68abdf"), 20.0)      // shadow without offset`}</cod
     >{`Rect::new().z_index(-1.0)            // drawn below its siblings
 Rect::new().anchor((-1.0, -1.0))     // (x, y) is the top-left corner and the rotation pivot`}</code
   ></pre>
-
-<LiveExample name="effects" />
 
 <p>
   Blur and shadows are rasterized by the same code on both renderers (tiny-skia), so CPU and GPU

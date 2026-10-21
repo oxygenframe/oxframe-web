@@ -7,8 +7,8 @@
   import { CURRENT, locate } from '../versions';
   import Player from './Player.svelte';
 
-  /** `open`: show the source expanded (lessons). */
-  let { name, open = false }: { name: string; open?: boolean } = $props();
+  /** `open`: show the source expanded (lessons). `at`: playhead in seconds. */
+  let { name, open = false, at = 0 }: { name: string; open?: boolean; at?: number } = $props();
   let urls = $state<{ wasm: string; js: string } | null>(null);
   let building = $state(false);
   let failed = $state(false);
@@ -47,7 +47,7 @@
 
 <figure class="live">
   {#if urls}
-    <Player wasmUrl={urls.wasm} jsUrl={urls.js} compact />
+    <Player wasmUrl={urls.wasm} jsUrl={urls.js} compact {at} />
   {:else if failed}
     <p class="off">Live preview unavailable right now. The code:</p>
   {:else if building}

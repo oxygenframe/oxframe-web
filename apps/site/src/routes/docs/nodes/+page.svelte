@@ -106,9 +106,10 @@
   <code>Svg</code> reads a whole file and turns it into those nodes: groups stay groups, shapes
   become <code>Path</code>s (so <code>data</code> still morphs), and embedded PNG or JPEG images
   become <code>Img</code>. <code>find("id")</code> is the element with that id.
-  <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped
-  with a warning. See the <a href="/playground?ex=svg">logo example</a>.
+  <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped with
+  a warning.
 </p>
+<LiveExample name="svg" />
 
 <h2>Your own geometry</h2>
 <p>
@@ -123,9 +124,9 @@
 <p>
   <code>Particles</code> keeps a seeded spray: <code>.seed(7).gravity(900.0).toward_camera()</code>
   and <code>burst(origin, count).await</code>. Seeking back replays from a checkpoint, so the dots
-  match. <code>toward_camera</code> only scales them. See the
-  <a href="/playground?ex=spray">spray example</a>.
+  match. <code>toward_camera</code> only scales them.
 </p>
+<LiveExample name="spray" />
 
 <h2>Shapes and morphing</h2>
 <p>
