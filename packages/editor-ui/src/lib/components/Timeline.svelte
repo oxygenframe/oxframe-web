@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { MarkerInfo, SceneInfo } from '@oxframe/protocol';
+  import { fileName } from '../audio';
   import { formatTime, type EditorState } from '../state.svelte';
   import { t } from '../i18n';
 
@@ -10,6 +11,19 @@
   let width = $state(0);
 
   const total = $derived(Math.max(1, editor.frames));
+  const tracks = $derived.by(() => {
+    const rows: { name: string; file: string; start: number }[] = [];
+    const seen = new Set<string>();
+    for (const meta of Object.values(editor.metas)) {
+      const file = meta.audio?.file;
+      if (!file) continue;
+      const name = fileName(file);
+      if (seen.has(name)) continue;
+      seen.add(name);
+      rows.push({ name, file, start: meta.audio?.offset ?? 0 });
+    }
+    return rows;
+  });
   const x = (frame: number) => (frame / Math.max(1, total - 1)) * width;
   const frameAt = (clientX: number) => {
     const r = track.getBoundingClientRect();
@@ -111,7 +125,8 @@
     const n = data.length;
     for (let i = 0; i < width; i++) {
       const v = data[Math.min(n - 1, Math.floor((i / width) * n))] ?? 0;
-      const bar = Math.max(1, v * h);
+      // A quiet bed (the example tone) would otherwise be a hairline.
+      const bar = Math.max(v > 0.02 ? 2 : 1, Math.pow(v, 0.55) * h);
       ctx.fillRect(i, (h - bar) / 2, 1, bar);
     }
   });
@@ -154,6 +169,7 @@
 
   <div
     class="track"
+    class:with-music={tracks.length > 0}
     bind:this={track}
     bind:clientWidth={width}
     onpointerdown={onTrackDown}
@@ -209,9 +225,21 @@
         {/if}
       {/each}
     </div>
+    {#each tracks as track (track.name)}
+      <div
+        class="clip music"
+        style:left="{x(track.start * editor.fps)}px"
+        style:width="{Math.max(2, width - x(track.start * editor.fps))}px"
+        title={t('timeline.soundtrack', { name: track.file })}
+        data-testid="audio-track"
+      >
+        <span>{track.name}</span>
+      </div>
+    {/each}
     {#each editor.clips as c, i (c.name + ':' + i)}
       <div
         class="clip"
+        class:effect={tracks.length > 0}
         class:priority={c.priority}
         style:left="{x(c.start * editor.fps)}px"
         style:width="{Math.max(
@@ -221,7 +249,7 @@
         title={c.text ?? c.name}
         data-testid="audio-clip"
       >
-        {#if c.text}<span>{c.text}</span>{/if}
+        <span>{c.text ?? fileName(c.name)}</span>
       </div>
     {/each}
     <canvas class="wave" bind:this={wave} style:width="{width}px" aria-hidden="true"></canvas>
@@ -286,6 +314,9 @@
     cursor: ew-resize;
     touch-action: none;
   }
+  .track.with-music {
+    height: 96px;
+  }
   .scenes {
     position: absolute;
     inset: 0 0 auto 0;
@@ -329,21 +360,30 @@
     position: absolute;
     top: 22px;
     height: 16px;
-    overflow: hidden;
+    overflow: visible;
     background: var(--m-accent);
-    opacity: 0.45;
+    opacity: 0.82;
     border-radius: 2px;
     pointer-events: none;
     color: #fff;
     font-size: 10px;
     line-height: 16px;
     white-space: nowrap;
+    z-index: 2;
   }
   .clip span {
+    display: inline-block;
     padding: 0 4px;
   }
   .clip.priority {
-    opacity: 0.85;
+    opacity: 1;
+    outline: 1px solid #fff;
+  }
+  .clip.music {
+    opacity: 0.72;
+  }
+  .track.with-music .clip.effect {
+    top: 42px;
   }
   .wave {
     position: absolute;

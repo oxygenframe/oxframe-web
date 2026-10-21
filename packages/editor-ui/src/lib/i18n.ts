@@ -25,6 +25,7 @@ const en = {
   'timeline.marker': 'Marker {name} at {time} s. Drag or use ←/→ to move.',
   'timeline.addMarker': 'Add marker at playhead (M)',
   'timeline.transition': 'Transition into {name}, {seconds} s. Drag the right edge to change it.',
+  'timeline.soundtrack': 'Soundtrack {name}',
   'inspector.tree': 'Scene',
   'inspector.signals': 'Signals',
   'inspector.noSelection': 'Click a node in the viewport or the tree.',

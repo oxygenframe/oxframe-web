@@ -12,6 +12,15 @@ import type {
   Span,
 } from '@oxframe/protocol';
 import { PROTOCOL_VERSION } from '@oxframe/protocol';
+import {
+  fileName,
+  hostedAudioUrl,
+  loadHostedWav,
+  mixHosted,
+  waveformPeaks,
+  MIX_RATE,
+  type MixClip,
+} from './audio';
 import * as persist from './persist';
 
 export interface EditorError {
@@ -67,6 +76,9 @@ export class EditorState {
   private readonly persistEnabled: boolean;
   private readonly uiVersion: string;
   private pcm: { rate: number; samples: Float32Array } | null = null;
+  /** True once the engine streamed a mix. Hosted files must not play over it. */
+  private pcmFromEngine = false;
+  private audioGen = 0;
   private audioCtx: AudioContext | null = null;
   private audioNode: AudioBufferSourceNode | null = null;
 
@@ -140,6 +152,10 @@ export class EditorState {
         this.error = null;
         this.stopAudio();
         this.pcm = null;
+        this.pcmFromEngine = false;
+        this.audioGen++;
+        this.waveform = null;
+        this.clips = [];
         this.resync();
         break;
       case 'Building':
@@ -166,6 +182,7 @@ export class EditorState {
         this.scenes = e.scenes;
         this.clips = e.audio_clips ?? [];
         if (e.audio_waveform) this.waveform = e.audio_waveform;
+        void this.loadHostedAudio();
         break;
       case 'Tree':
         this.tree = e.nodes;
@@ -187,6 +204,7 @@ export class EditorState {
       case 'MetaChanged':
         this.metas = { ...this.metas, [e.scene]: e.meta };
         if (this.error?.kind === 'Meta') this.error = null;
+        void this.loadHostedAudio();
         break;
     }
   }
@@ -230,8 +248,87 @@ export class EditorState {
     const view = new Int16Array(clip.pcm);
     const samples = new Float32Array(view.length);
     for (let i = 0; i < view.length; i++) samples[i] = (view[i] ?? 0) / 32768;
+    this.pcmFromEngine = true;
+    this.audioGen++;
     this.pcm = { rate: clip.rate, samples };
     if (this.playing) this.startAudio(this.frame);
+  }
+
+  /**
+   * The wasm preview cannot open example wavs. When the engine sent no mix,
+   * fetch `/audio/<filename>` and play those clips (and the soundtrack in
+   * scene meta) on the same clock as the timeline.
+   */
+  private async loadHostedAudio(): Promise<void> {
+    if (this.pcmFromEngine || this.frames <= 0 || typeof fetch !== 'function') return;
+    const plan = this.hostedPlan();
+    if (plan.length === 0) return;
+    const gen = ++this.audioGen;
+    const decoded = new Map<string, { rate: number; samples: Float32Array }>();
+    for (const item of plan) {
+      const url = hostedAudioUrl(item.file);
+      if (!url || decoded.has(url)) continue;
+      const pcm = await loadHostedWav(url);
+      if (pcm) decoded.set(url, pcm);
+    }
+    if (gen !== this.audioGen || this.pcmFromEngine) return;
+    const clips: MixClip[] = [];
+    for (const item of plan) {
+      const pcm = decoded.get(hostedAudioUrl(item.file) ?? '');
+      if (!pcm) continue;
+      clips.push({
+        samples: pcm.samples,
+        rate: pcm.rate,
+        start: item.start,
+        seconds: item.seconds,
+        music: item.music,
+        priority: item.priority,
+      });
+    }
+    if (clips.length === 0) return;
+    const seconds = this.frames / Math.max(1, this.fps);
+    const samples = mixHosted(clips, seconds);
+    this.pcm = { rate: MIX_RATE, samples };
+    if (!this.waveform || this.waveform.length === 0) {
+      this.waveform = waveformPeaks(samples, Math.min(this.frames, 4096));
+    }
+    if (this.playing) this.startAudio(this.frame);
+  }
+
+  private hostedPlan(): {
+    file: string;
+    start: number;
+    seconds: number;
+    music: boolean;
+    priority: boolean;
+  }[] {
+    const plan: {
+      file: string;
+      start: number;
+      seconds: number;
+      music: boolean;
+      priority: boolean;
+    }[] = [];
+    const music = new Set<string>();
+    for (const meta of Object.values(this.metas)) {
+      const file = meta.audio?.file;
+      if (!file) continue;
+      const name = fileName(file);
+      if (music.has(name)) continue;
+      music.add(name);
+      plan.push({ file, start: meta.audio?.offset ?? 0, seconds: 0, music: true, priority: false });
+    }
+    for (const clip of this.clips) {
+      if (clip.text) continue;
+      plan.push({
+        file: clip.name,
+        start: clip.start,
+        seconds: clip.seconds,
+        music: false,
+        priority: clip.priority,
+      });
+    }
+    return plan;
   }
 
   private startAudio(frame: number): void {
