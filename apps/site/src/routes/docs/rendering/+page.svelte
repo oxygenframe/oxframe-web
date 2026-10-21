@@ -50,8 +50,11 @@ async fn outro(view: View) {
   <code>Down</code>), <code>wipe(dir)</code>, <code>zoom_in</code> and <code>zoom_out</code> are
   built in. <code>.ease(...)</code> changes the curve, <code>.overlap()</code> lets the previous
   scene keep playing instead of holding its last frame, and <code>Transition::custom(|t| ...)</code>
-  places the two layers itself with opacity, offset, scale and a wipe. The first scene has nothing to
-  blend from, so the call does nothing there.
+  places the two layers itself with opacity, offset, scale and a wipe.
+  <code>Transition::shader(shaders::water_wipe())</code> raises a wavy waterline over the frame;
+  below it is the next scene, rippled near the line, and <code>.wave()</code> sets the wave height
+  (see <a href="#shaders-that-read-pixels">shaders that read pixels</a>). The first scene has
+  nothing to blend from, so the call does nothing there.
 </p>
 <p>
   <code>oxframe render</code> includes every transition. <code>oxframe render --scene outro</code>
@@ -89,6 +92,58 @@ sea.amp().to(0.12, 1.2).await;`}</code
   <code>Params</code> fails the check, and the message lists the fields. WGSL that does not compile
   fails it too, with the line in your source. A custom <code>shade</code> is type-checked on every draw.
   The waves preset is what gets painted.
+</p>
+
+<h3 id="shaders-that-read-pixels">Shaders that read pixels</h3>
+<p>
+  Three presets work on what is already drawn: drops on the lens, rings on a node, and water that
+  rises into the next scene.
+</p>
+<pre><code
+    >{`#[oxframe::scene]
+async fn sea(view: View) {
+    let water = view.add(shaders::waves().deep(Accent).foam(Surface)
+        .width(pct(100)).height(pct(45)).to_edge(Edge::Bottom));
+    let lens = view.add(shaders::lens_drops().wetness(0.0).seed(7).fullscreen()); // last
+
+    let rings = water.effect(shaders::ripple().strength(0.0));
+    rings.strength().to(1.0, 0.4).await;
+    lens.wetness().to(1.0, 0.4).await;
+}
+
+#[oxframe::scene]
+async fn shore(view: View) {
+    view.add(shaders::waves().amp(0.02).width(pct(100)).height(pct(20)).to_edge(Edge::Bottom));
+    transition(Transition::shader(shaders::water_wipe())).await;
+    view.add(EndCard::new("Made with oxframe")).enter().await;
+}`}</code
+  ></pre>
+<LiveExample name="splash" />
+<p>
+  <code>shaders::lens_drops()</code> bends everything drawn before it, inside its box, so add it
+  last and make it <code>.fullscreen()</code>. <code>.wetness()</code> runs from 0 (dry) to 1 and is
+  a signal: <code>lens.wetness().to(1.0, 0.4)</code> is a splash. <code>.seed()</code> places the
+  drops and <code>.drop_size()</code> scales them. <code>.input("scene", Input::frame())</code>
+  names what the shader reads, and outside a layer <code>Input::backdrop()</code> is the same thing.
+</p>
+<p>
+  <code>Node::effect</code> runs a shader on one node's pixels, children included, and returns an
+  <code>Effect</code>. <code>shaders::ripple()</code> sends rings out from the node's center;
+  <code>.strength()</code> and <code>.speed()</code> are signals. The colors move and the outline stays,
+  so use it on water, text, a gradient or an image: a flat fill shows no rings. A node has one effect.
+</p>
+<p>
+  A shader can only read finished pixels. <code>lens_drops</code> or an effect inside a group with
+  opacity below 1, a blur, a clip, a blend, a shadow or another effect fails
+  <code>oxframe check</code> with <code>input_cycle</code>, and the shader is skipped. Put the
+  effect on that group instead. <code>oxframe inspect --graph</code> lists these shaders as
+  <code>effect</code> passes, and a <code>Shader</code> handle works wherever a <code>Node</code>
+  does, for example in <code>Camera::center_on</code>.
+</p>
+<p>
+  Not there yet: <code>Input::node</code> (another node as a texture), <code>Input::image</code>
+  (a texture file), <code>.offscreen()</code>, and running your own <code>shade</code>, which is
+  still only checked.
 </p>
 
 <h2>Sound</h2>
@@ -202,8 +257,10 @@ Project::new("explainer")
   available. Vector scenes match across the two: they pass the same reference-frame tests within a
   color difference of ΔE 1, which you cannot see. The CPU renderer is also byte-for-byte identical
   between runs, which is what you want in automated tests. A <code>shaders::waves()</code> node is
-  painted into an image before either backend, so the two show the same crest. A layer whose vectors
-  did not change is reused on the next frame. A scene with no effects is one vector pass;
+  painted into an image before either backend, so the two show the same crest. The same goes for
+  <code>lens_drops</code>, <code>ripple</code> and <code>water_wipe</code>: both renderers draw the
+  vectors, and the shader runs on those pixels on the CPU. A layer whose vectors did not change is
+  reused on the next frame. A scene with no effects is one vector pass;
   <code>oxframe inspect --graph</code> lists the passes.
 </p>
 

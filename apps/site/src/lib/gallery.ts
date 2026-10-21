@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'splash',
+    tags: ['explainer'],
+    prompt:
+      'A drop rings the water, a splash wets the lens, then the water rises into an end card. Use the lens_drops, ripple and water_wipe presets.',
+  },
+  {
     name: 'waves',
     tags: ['explainer'],
     prompt:

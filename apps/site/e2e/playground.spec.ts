@@ -94,3 +94,24 @@ test('the quicksort showcase compiles and plays', async ({ page }) => {
   // Tunables from tune!() appear in the inspector.
   await expect(page.getByTestId('tunable-bars')).toBeVisible();
 });
+
+// Shader presets run inside the wasm engine. 0.11.0 shipped a waves example
+// that panicked there ("unreachable executed"), so each one plays to its end.
+for (const ex of ['waves', 'splash']) {
+  test(`the ${ex} shaders play to the last frame in the browser`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    page.on('console', (m) => {
+      if (m.type() === 'error') errors.push(m.text());
+    });
+    await page.goto(`/playground?ex=${ex}`);
+    // An unknown name falls back to intro, which would pass for the wrong reason.
+    await expect(page.getByTestId('example')).toHaveValue(ex);
+    await expect(page.getByTestId('compile-status')).toHaveText(/Compiled/, { timeout: 300_000 });
+    await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThanOrEqual(0);
+    await page.locator('[data-testid=viewport]').click();
+    await page.keyboard.press('End');
+    await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThan(30);
+    expect(errors.filter((e) => /unreachable|panicked/i.test(e))).toEqual([]);
+  });
+}

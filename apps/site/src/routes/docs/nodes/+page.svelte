@@ -106,8 +106,10 @@
   <code>Svg</code> reads a whole file and turns it into those nodes: groups stay groups, shapes
   become <code>Path</code>s (so <code>data</code> still morphs), and embedded PNG or JPEG images
   become <code>Img</code>. <code>find("id")</code> is the element with that id.
-  <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped with
-  a warning.
+  <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped
+  with a warning. <code>Svg::new().width()</code> and <code>.height()</code> take pixels or
+  <code>pct()</code> of the parent, read when the node is added; set one and the other keeps the drawing's
+  aspect.
 </p>
 <LiveExample name="svg" />
 
