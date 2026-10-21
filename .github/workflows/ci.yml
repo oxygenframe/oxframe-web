@@ -49,7 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: docker build -f infra/sandbox/Dockerfile -t oxframe-sandbox:ci .
+      # The SDK the site documents, so the template's features exist in it.
+      - run: |
+          sdk=$(sed -n "s/^export const SDK_VERSION = '\\(.*\\)';/\\1/p" apps/site/src/lib/sdk.ts)
+          test -n "$sdk"
+          docker build -f infra/sandbox/Dockerfile --build-arg OXFRAME_SDK_VERSION="$sdk" -t oxframe-sandbox:ci .
 
   # Local-stack images: one executable each on a bare Alpine. They must
   # build, start and answer.
