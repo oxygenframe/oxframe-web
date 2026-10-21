@@ -22,9 +22,13 @@ export class Builder extends Container<Env> {
   defaultPort = 8080;
   sleepAfter = '2m';
   enableInternet = false;
+  // The SDK version comes from the image (Dockerfile ENV), not from here.
+  // A machine still on the previous image then answers 422 "this service
+  // builds with SDK …" and service.ts restarts it on the new one. Passing
+  // the Worker's version made an old machine accept the new version and
+  // build with the old SDK, and that result was cached under the new key.
   envVars = {
     OXFRAME_BUILD_ID: BUILD_ID,
-    OXFRAME_SDK_VERSION: SDK_VERSION,
   };
 }
 
