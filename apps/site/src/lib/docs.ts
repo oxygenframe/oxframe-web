@@ -120,6 +120,12 @@ export const sections: DocSection[] = [
         description:
           'Lesson 14: plot functions on axes, ride a dot along a curve, morph it into another function and zoom — the whole chart follows the ranges.',
       },
+      {
+        slug: 'guide/matrices',
+        title: '15. Vectors and matrices',
+        description:
+          'Lesson 15: draw a vector on axes, stretch the whole plane with a 2 × 2 matrix and show the numbers in brackets — the grid and the arrow follow.',
+      },
     ],
   },
   {
@@ -148,6 +154,12 @@ export const sections: DocSection[] = [
         title: 'Animated charts and plots',
         description:
           'Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.',
+      },
+      {
+        slug: 'matrices',
+        title: 'Matrices, vectors and tables',
+        description:
+          'Animated matrices, vectors and tables in Rust: matrix multiplication step by step, linear maps that bend the grid, and rows that sort themselves.',
       },
       {
         slug: 'custom-nodes',

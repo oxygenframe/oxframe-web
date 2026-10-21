@@ -25,6 +25,7 @@ Full text: https://oxframe.dev/llms-full.txt
 - [12. Sound and voice](https://oxframe.dev/docs/guide/sound): Lesson 12: add sound effects on the beat, a soundtrack that ducks under speech, and time animations to the words of a spoken line.
 - [13. Shaders and effects](https://oxframe.dev/docs/guide/shaders): Lesson 13: animated water, drops on the camera lens, ripples on a node and a water transition — shader presets you animate like any property.
 - [14. Charts and graphs](https://oxframe.dev/docs/guide/charts): Lesson 14: plot functions on axes, ride a dot along a curve, morph it into another function and zoom — the whole chart follows the ranges.
+- [15. Vectors and matrices](https://oxframe.dev/docs/guide/matrices): Lesson 15: draw a vector on axes, stretch the whole plane with a 2 × 2 matrix and show the numbers in brackets — the grid and the arrow follow.
 
 ## Going further
 
@@ -32,6 +33,7 @@ Full text: https://oxframe.dev/llms-full.txt
 - [All nodes](https://oxframe.dev/docs/nodes): Reference of every oxframe node and its properties: Rect, Circle, Line, Path, Polygon, Star, Txt, Code, Img, Layout and Grid.
 - [Effects](https://oxframe.dev/docs/effects): Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.
 - [Animated charts and plots](https://oxframe.dev/docs/charts): Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.
+- [Matrices, vectors and tables](https://oxframe.dev/docs/matrices): Animated matrices, vectors and tables in Rust: matrix multiplication step by step, linear maps that bend the grid, and rows that sort themselves.
 - [Writing your own node](https://oxframe.dev/docs/custom-nodes): Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.
 - [Icons: Lucide, Tabler and brand logos](https://oxframe.dev/docs/icons): Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.
 - [Camera](https://oxframe.dev/docs/camera): Zoom, pan and rotate the view in oxframe: fit a whole diagram, center on a detail, follow a moving node, and keep titles on screen.

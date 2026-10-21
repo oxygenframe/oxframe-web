@@ -33,6 +33,9 @@ const names = [
   'charts',
   'gauge',
   'architecture',
+  'matrix_multiply',
+  'linear_map',
+  'table_sort',
   'components',
   'relative',
   'theme',
@@ -51,6 +54,7 @@ const names = [
   'learn_12_sound',
   'learn_13_shaders',
   'learn_14_charts',
+  'learn_15_matrices',
 ];
 /** Drop `#[cfg(test)]` modules. They guard the SDK example, not the scene a visitor edits. */
 export function sceneSource(source: string): string {

@@ -27,7 +27,7 @@ async fn intro(view: View) {
     <a href="/playground">playground</a>: it runs in your browser, nothing to install.
   </li>
   <li>
-    <strong>Guide</strong> is fourteen short lessons. Each one adds a single idea and has a live preview
+    <strong>Guide</strong> is fifteen short lessons. Each one adds a single idea and has a live preview
     you can play with. Read them in order — none of them assumes more than the lessons before it.
   </li>
   <li>

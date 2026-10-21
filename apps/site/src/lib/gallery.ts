@@ -13,6 +13,24 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'matrix_multiply',
+    tags: ['explainer'],
+    prompt:
+      'Multiply two 2 × 2 matrices step by step: frame a row of A and a column of B, show the dot product, and fill in that cell of the result.',
+  },
+  {
+    name: 'linear_map',
+    tags: ['explainer'],
+    prompt:
+      'Show basis vectors i and j and a vector v on axes, shear the plane and then rotate it, with the matrix of the map shown beside the grid.',
+  },
+  {
+    name: 'table_sort',
+    tags: ['explainer'],
+    prompt:
+      'A table of renderers and frame times: insert a row, sort by frame time, highlight the fastest and remove the slowest.',
+  },
+  {
     name: 'architecture',
     tags: ['explainer'],
     prompt:
