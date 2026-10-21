@@ -59,10 +59,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: oxygenframe/release-video-action@v1.0.3
+      - uses: oxygenframe/release-video-action@v1.2.0
         with:
           portrait: true</code
     ></pre>
+  <p>
+    A release made by a workflow with <code>GITHUB_TOKEN</code> does not start
+    <code>on: release</code>; pass <code>tag: $&#123;&#123; github.ref_name &#125;&#125;</code> in the
+    job that creates it. The SDK build is cached between runs, so only the first video after a new oxframe
+    release compiles it. Every oxframe release gets its video this way.
+  </p>
   <p>
     <a class="btn" href="/playground?ex=release">Open release in the playground</a>
     <a class="btn" href="https://github.com/oxygenframe/release-video-action"
