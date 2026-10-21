@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'waves',
+    tags: ['explainer'],
+    prompt:
+      'A wave along the bottom grows taller. The title stays at the top. Use the waves preset, not a hand-written shader.',
+  },
+  {
     name: 'voice',
     tags: ['explainer'],
     prompt:

@@ -60,6 +60,37 @@ async fn outro(view: View) {
   same blend keeps its alpha on a transparent background, in 16:9, 9:16 and 1:1.
 </p>
 
+<h2>Shaders</h2>
+<p>
+  <code>shaders::waves()</code> is a node: a crest of foam over deeper water, painted inside its
+  box.
+  <code>.amp()</code> is the height of that crest and a signal, so it can move.
+  <code>.deep()</code> and <code>.foam()</code> take a color or a theme role such as
+  <code>Accent</code>. The node has no children. A title goes on the view, above the water.
+</p>
+<pre><code
+    >{`let sea = view.add(shaders::waves().amp(0.05).deep(Accent).foam(Surface)
+    .width(pct(100)).height(pct(40)).to_edge(Edge::Bottom));
+sea.amp().to(0.12, 1.2).await;`}</code
+  ></pre>
+<LiveExample name="waves" />
+<p>
+  The preset is rasterized first and then drawn by the CPU or the GPU, so a check with no GPU still
+  shows it. Draft checks paint the layer at half resolution. That does not move the box or change
+  the timing.
+</p>
+<p>
+  Your own shader is WGSL. It defines <code>struct Params</code>, the uniform <code>p</code>, and
+  <code>fn shade</code>. oxframe adds <code>ox</code> (time, frame, resolution, the box size, seed,
+  the camera matrix, and progress) and <code>ShadeIn</code> (uv, local, world, and screen).
+  <code>Shader::source</code> keeps the text in the scene.
+  <code>Shader::file</code> reads a <code>.wgsl</code> file on every draw, so saving it updates the
+  picture without a rebuild. <code>.uniform()</code> sets a number. A name or a type that is not in
+  <code>Params</code> fails the check, and the message lists the fields. WGSL that does not compile
+  fails it too, with the line in your source. A custom <code>shade</code> is type-checked on every draw.
+  The waves preset is what gets painted.
+</p>
+
 <h2>Sound</h2>
 <p>
   A soundtrack plays for the whole video. <code>Project::audio("music.mp3")</code> still works, and
@@ -168,11 +199,12 @@ Project::new("explainer")
 <h2>GPU or CPU?</h2>
 <p>
   By default frames are drawn on the GPU (vello) and fall back to the CPU (tiny-skia) when no GPU is
-  available. Both produce the same picture: they pass the same reference-frame tests within a color
-  difference of ΔE 1, which you cannot see. The CPU renderer is also byte-for-byte identical between
-  runs, which is what you want in automated tests. A layer whose vectors did not change is reused on
-  the next frame. A scene with no effects is one vector pass; <code>oxframe inspect --graph</code>
-  lists the passes.
+  available. Vector scenes match across the two: they pass the same reference-frame tests within a
+  color difference of ΔE 1, which you cannot see. The CPU renderer is also byte-for-byte identical
+  between runs, which is what you want in automated tests. A <code>shaders::waves()</code> node is
+  painted into an image before either backend, so the two show the same crest. A layer whose vectors
+  did not change is reused on the next frame. A scene with no effects is one vector pass;
+  <code>oxframe inspect --graph</code> lists the passes.
 </p>
 
 <h2>In the browser</h2>
