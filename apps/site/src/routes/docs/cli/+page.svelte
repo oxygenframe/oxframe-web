@@ -66,6 +66,14 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
   </tbody>
 </table>
 
+<h3><code>oxframe present</code></h3>
+<p>
+  Builds the project like <code>oxframe dev</code> and opens it as a presentation: full screen,
+  stopping at every <code>slide_break</code> and scene end. N opens the speaker notes. Takes
+  <code>--port</code>, <code>--no-open</code>, <code>--release</code> and <code>--cpu</code>. See
+  <a href="/docs/presentations">Presentations from scenes</a>.
+</p>
+
 <h3><code>oxframe snapshot --at &lt;seconds&gt;</code></h3>
 <p>
   Renders single frames as PNG without ffmpeg — handy to check a moment in the animation, to put a

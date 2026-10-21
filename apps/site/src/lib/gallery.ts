@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'slides',
+    tags: ['explainer'],
+    prompt:
+      'A short talk: a title, three points that appear one per click, and a closing card, with speaker notes for oxframe present.',
+  },
+  {
     name: 'matrix_multiply',
     tags: ['explainer'],
     prompt:

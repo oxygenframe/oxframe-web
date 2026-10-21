@@ -36,6 +36,7 @@ const names = [
   'matrix_multiply',
   'linear_map',
   'table_sort',
+  'slides',
   'components',
   'relative',
   'theme',

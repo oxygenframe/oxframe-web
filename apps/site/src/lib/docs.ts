@@ -162,6 +162,12 @@ export const sections: DocSection[] = [
           'Animated matrices, vectors and tables in Rust: matrix multiplication step by step, linear maps that bend the grid, and rows that sort themselves.',
       },
       {
+        slug: 'presentations',
+        title: 'Presentations from scenes',
+        description:
+          'Turn oxframe scenes into a talk: slide_break stops, speaker notes in a presenter window, clicker keys, and every stop as a PDF page.',
+      },
+      {
         slug: 'custom-nodes',
         title: 'Writing your own node',
         description:
