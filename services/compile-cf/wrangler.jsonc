@@ -12,7 +12,7 @@
   "compatibility_date": "2026-10-01",
   "vars": {
     "CORS_ORIGINS": "https://oxframe.dev,https://www.oxframe.dev",
-    "POOL_SIZE": "3",
+    "POOL_SIZE": "1",
   },
   "r2_buckets": [{ "binding": "ARTIFACTS", "bucket_name": "oxframe" }],
   // Builds per client IP (cache hits are not limited).
@@ -27,8 +27,8 @@
       "image": "./Dockerfile",
       "image_build_context": "../..",
       // 4 vCPU / 12 GiB / 20 GB disk: the toolchain and a warm SDK build.
-      "instance_type": "standard-4",
-      "max_instances": 3,
+      "instance_type": "standard-3",
+      "max_instances": 2,
     },
   ],
   // Prebuild examples that are not in R2 yet (after every deploy).

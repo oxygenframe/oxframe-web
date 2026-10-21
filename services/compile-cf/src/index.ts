@@ -13,10 +13,14 @@ interface Env {
 }
 
 /** One build machine: services/compile with the local runner, inside a
- *  Firecracker VM that has no internet (the image carries every crate). */
+ *  Firecracker VM that has no internet (the image carries every crate).
+ *
+ *  Billing is for provisioned memory while the machine is awake, so it
+ *  sleeps soon after the last build. standard-3 (2 vCPU, 8 GiB) builds a
+ *  scene in ~15 s; a build peaks under 1 GB. */
 export class Builder extends Container<Env> {
   defaultPort = 8080;
-  sleepAfter = '5m';
+  sleepAfter = '2m';
   enableInternet = false;
   envVars = {
     OXFRAME_BUILD_ID: BUILD_ID,
