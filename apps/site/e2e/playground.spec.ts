@@ -97,7 +97,7 @@ test('the quicksort showcase compiles and plays', async ({ page }) => {
 
 // Shader presets run inside the wasm engine. 0.11.0 shipped a waves example
 // that panicked there ("unreachable executed"), so each one plays to its end.
-for (const ex of ['waves', 'splash']) {
+for (const ex of ['waves', 'splash', 'ocean']) {
   test(`the ${ex} shaders play to the last frame in the browser`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));

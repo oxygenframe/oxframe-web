@@ -82,8 +82,11 @@ oxframe agents --force  # also replaces files you made your own`}</code
   <code>oxframe mcp</code> speaks MCP over stdin and stdout. Point Claude Code, or any other client,
   at that command with the project directory as its working directory. The tools are
   <code>check</code>, <code>storyboard</code>, <code>render_frame</code>, <code>inspect</code>,
-  <code>list_components</code>, <code>docs_search</code> and <code>render</code>.
-  <code>docs_search</code> looks through the docs of the CLI's own version.
+  <code>render_graph</code>, <code>list_components</code>, <code>docs_search</code> and
+  <code>render</code>. <code>docs_search</code> looks through the docs of the CLI's own version.
+  <code>render_graph</code> lists the render passes at one time, so an agent can see that a
+  <code>lens_drops</code> or a <code>ripple</code> runs, or why <code>check</code> reports
+  <code>input_cycle</code>.
 </p>
 <pre><code
     >{`{

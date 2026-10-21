@@ -188,10 +188,12 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
 <p>
   An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
   serves <code>check</code>, <code>storyboard</code>, <code>render_frame</code>,
-  <code>inspect</code>,
-  <code>list_components</code>, <code>docs_search</code> and <code>render</code>. Messages are
-  newline-delimited JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the protocol
-  is written to stdout.
+  <code>inspect</code>, <code>render_graph</code>,
+  <code>list_components</code>, <code>docs_search</code> and <code>render</code>.
+  <code>render_graph</code> is <code>oxframe inspect --graph</code> without the node tree: the
+  render passes at one time, with the shader of each effect pass. Messages are newline-delimited
+  JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the protocol is written to
+  stdout.
 </p>
 
 <h2>Updating</h2>

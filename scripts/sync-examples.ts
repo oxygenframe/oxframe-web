@@ -29,6 +29,7 @@ const names = [
   'voice',
   'waves',
   'splash',
+  'ocean',
   'components',
   'relative',
   'theme',

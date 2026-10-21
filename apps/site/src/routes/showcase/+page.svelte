@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LiveExample from '$lib/components/LiveExample.svelte';
   import Seo from '$lib/components/Seo.svelte';
 </script>
 
@@ -12,6 +13,14 @@
   The videos on the <a href="/gallery">gallery</a> are the examples that ship with oxframe. Work from
   other people is not listed yet.
 </p>
+
+<h2>Into the wave</h2>
+<p>
+  Made by the oxframe team as the target of hybrid rendering: waves under a camera, a swell and a
+  splash on markers you can drag, drops on the lens, a dive into the water, and the sea washing into
+  the last scene. It is ordinary scene code with presets, and every shader in it runs on the CPU.
+</p>
+<LiveExample name="ocean" />
 
 <h2>Send yours</h2>
 <p>
