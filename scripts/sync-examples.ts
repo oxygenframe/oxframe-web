@@ -32,6 +32,7 @@ const names = [
   'ocean',
   'charts',
   'gauge',
+  'architecture',
   'components',
   'relative',
   'theme',

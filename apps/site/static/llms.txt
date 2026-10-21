@@ -33,6 +33,7 @@ Full text: https://oxframe.dev/llms-full.txt
 - [Effects](https://oxframe.dev/docs/effects): Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.
 - [Animated charts and plots](https://oxframe.dev/docs/charts): Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.
 - [Writing your own node](https://oxframe.dev/docs/custom-nodes): Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.
+- [Icons: Lucide, Tabler and brand logos](https://oxframe.dev/docs/icons): Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.
 - [Camera](https://oxframe.dev/docs/camera): Zoom, pan and rotate the view in oxframe: fit a whole diagram, center on a detail, follow a moving node, and keep titles on screen.
 - [Markers, eases, tunables](https://oxframe.dev/docs/timing): Markers, custom eases and tunables: timing values stored outside your Rust code so you can adjust them visually in the oxframe editor.
 - [The editor](https://oxframe.dev/docs/editor): A tour of the oxframe editor: viewport, timeline, inspector and hot reload — the same app in oxframe dev and in the browser playground.

@@ -156,6 +156,12 @@ export const sections: DocSection[] = [
           'Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.',
       },
       {
+        slug: 'icons',
+        title: 'Icons: Lucide, Tabler and brand logos',
+        description:
+          'Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.',
+      },
+      {
         slug: 'camera',
         title: 'Camera',
         description:

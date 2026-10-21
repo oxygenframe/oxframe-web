@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 path = "src/lib.rs"
 
 [dependencies]
-oxframe = { {{OXFRAME_DEP}}, default-features = false, features = ["wasm", "gpu", "unstable-node-api"] }
+oxframe = { {{OXFRAME_DEP}}, default-features = false, features = ["wasm", "gpu", "unstable-node-api", "icons"] }
 wasm-bindgen = "=0.2.129"
 
 # No LTO: incremental rebuilds of scene.rs stay under a second; wasm-opt

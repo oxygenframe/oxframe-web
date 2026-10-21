@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'architecture',
+    tags: ['explainer'],
+    prompt:
+      'Draw how a request is served as a flow diagram with Lucide icons, flash the database red for a slow query, then show three brand logos.',
+  },
+  {
     name: 'gauge',
     tags: ['explainer'],
     prompt:
