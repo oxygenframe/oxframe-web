@@ -109,6 +109,12 @@ if (import.meta.main) {
     sections,
   });
   console.log(`archived the docs as ${series}: ${files.length} files`);
-  const { writeLlms } = await import('./llms');
-  console.log(`wrote ${writeLlms().length} llms files`);
+  // A new process: this one loaded the list of archives before the new
+  // series was added to it, so an import here would leave the new series
+  // without its llms files until the next build.
+  const llms = Bun.spawnSync(['bun', join(import.meta.dir, 'llms.ts')], {
+    stdout: 'inherit',
+    stderr: 'inherit',
+  });
+  if (llms.exitCode !== 0) process.exit(llms.exitCode ?? 1);
 }
