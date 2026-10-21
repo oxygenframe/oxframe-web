@@ -3,12 +3,13 @@
 /**
  * A property value in [`Event::Signals`].
  */
-export type SignalValue = { 
-/**
- * Property name.
- */
-name: string, 
-/**
- * Human-readable value, e.g. `"120.5"` or `"#ff0000ff"`.
- */
-value: string, };
+export type SignalValue = {
+  /**
+   * Property name.
+   */
+  name: string;
+  /**
+   * Human-readable value, e.g. `"120.5"` or `"#ff0000ff"`.
+   */
+  value: string;
+};

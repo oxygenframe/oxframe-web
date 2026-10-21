@@ -67,6 +67,12 @@ export class MockBackend implements Backend {
       markers: this.markers(),
       scenes: this.scenes,
       audio_waveform: Array.from({ length: 240 }, (_, i) => Math.abs(Math.sin(i / 7)) * 0.8),
+      // A slide_break at 1 s in intro, then the end of each scene.
+      slides: [
+        { scene: 'intro', frame: 30, notes: 'Say hello.' },
+        { scene: 'intro', frame: 59, notes: 'The square moves.' },
+        { scene: 'outro', frame: 119, notes: '' },
+      ],
     });
   }
 

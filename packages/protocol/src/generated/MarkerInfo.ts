@@ -3,16 +3,17 @@
 /**
  * A marker on the timeline.
  */
-export type MarkerInfo = { 
-/**
- * Scene the marker belongs to.
- */
-scene: string, 
-/**
- * Marker name.
- */
-name: string, 
-/**
- * Seconds from the start of its scene.
- */
-time: number, };
+export type MarkerInfo = {
+  /**
+   * Scene the marker belongs to.
+   */
+  scene: string;
+  /**
+   * Marker name.
+   */
+  name: string;
+  /**
+   * Seconds from the start of its scene.
+   */
+  time: number;
+};

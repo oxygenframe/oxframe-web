@@ -6,8 +6,9 @@
  * Absent on scenes that do not start with one. An older `meta.json` has
  * no such key and still loads.
  */
-export type TransitionMeta = { 
-/**
- * Blend length in seconds.
- */
-seconds: number, };
+export type TransitionMeta = {
+  /**
+   * Blend length in seconds.
+   */
+  seconds: number;
+};

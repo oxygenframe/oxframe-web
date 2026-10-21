@@ -3,20 +3,21 @@
 /**
  * A node in [`Event::Tree`].
  */
-export type NodeInfo = { 
-/**
- * Node index.
- */
-id: number, 
-/**
- * Parent index; `None` for the root.
- */
-parent: number | null, 
-/**
- * Node type, e.g. `"Rect"`.
- */
-kind: string, 
-/**
- * Name set with `.name(..)`.
- */
-name: string | null, };
+export type NodeInfo = {
+  /**
+   * Node index.
+   */
+  id: number;
+  /**
+   * Parent index; `None` for the root.
+   */
+  parent: number | null;
+  /**
+   * Node type, e.g. `"Rect"`.
+   */
+  kind: string;
+  /**
+   * Name set with `.name(..)`.
+   */
+  name: string | null;
+};

@@ -3,24 +3,25 @@
 /**
  * A scene on the timeline.
  */
-export type SceneInfo = { 
-/**
- * Scene name (its function name).
- */
-name: string, 
-/**
- * First global frame of the scene.
- */
-start: number, 
-/**
- * Length in frames.
- */
-frames: number, 
-/**
- * Incoming blend length in frames. 0 if this scene has no transition.
- */
-transition: number, 
-/**
- * Frame inside the scene where that blend starts.
- */
-transition_at: number, };
+export type SceneInfo = {
+  /**
+   * Scene name (its function name).
+   */
+  name: string;
+  /**
+   * First global frame of the scene.
+   */
+  start: number;
+  /**
+   * Length in frames.
+   */
+  frames: number;
+  /**
+   * Incoming blend length in frames. 0 if this scene has no transition.
+   */
+  transition: number;
+  /**
+   * Frame inside the scene where that blend starts.
+   */
+  transition_at: number;
+};

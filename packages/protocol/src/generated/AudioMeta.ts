@@ -3,12 +3,13 @@
 /**
  * Where the soundtrack plays.
  */
-export type AudioMeta = { 
-/**
- * Audio file, relative to the project.
- */
-file: string, 
-/**
- * Start of the audio in seconds on the project timeline.
- */
-offset: number, };
+export type AudioMeta = {
+  /**
+   * Audio file, relative to the project.
+   */
+  file: string;
+  /**
+   * Start of the audio in seconds on the project timeline.
+   */
+  offset: number;
+};

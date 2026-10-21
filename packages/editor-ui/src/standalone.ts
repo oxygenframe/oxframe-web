@@ -1,10 +1,11 @@
 // Standalone editor served by `oxframe dev`. Configuration comes from
 // `window.__OXFRAME_CONFIG__` (injected by the CLI) and the page URL:
 // `?token=…` authenticates the WebSocket, `?backend=mock` runs a fake
-// engine (tests, demos).
+// engine (tests, demos). `?present` shows the project as a presentation
+// and `?present=notes` is its presenter window.
 import { mount } from 'svelte';
 import { LocalWs, MockBackend, type Backend } from '@oxframe/backends';
-import { Editor, EditorState } from './lib';
+import { Editor, EditorState, Present, PresentNotes } from './lib';
 
 interface OxframeConfig {
   backend?: 'ws' | 'wasm' | 'mock';
@@ -27,8 +28,15 @@ const backend: Backend =
     ? new MockBackend()
     : new LocalWs({ url: cfg.url ?? '/ws', token: params.get('token') ?? undefined });
 
-const editor = new EditorState(backend, { uiVersion: __EDITOR_VERSION__ });
+const present = params.get('present');
+const editor = new EditorState(backend, {
+  uiVersion: __EDITOR_VERSION__,
+  persist: present === null,
+});
 // Exposed for debugging and end-to-end tests.
 window.__oxframe = { editor, backend };
 
-mount(Editor, { target: document.getElementById('app')!, props: { editor } });
+const target = document.getElementById('app')!;
+if (present === 'notes') mount(PresentNotes, { target });
+else if (present !== null) mount(Present, { target, props: { editor } });
+else mount(Editor, { target, props: { editor } });

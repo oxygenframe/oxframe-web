@@ -3,4 +3,4 @@
 /**
  * Category of an [`Event::Error`].
  */
-export type ErrorKind = "Incompatible" | "Build" | "Runtime" | "Meta";
+export type ErrorKind = 'Incompatible' | 'Build' | 'Runtime' | 'Meta';

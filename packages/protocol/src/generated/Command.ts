@@ -3,80 +3,113 @@
 /**
  * UI → engine.
  */
-export type Command = { "type": "Hello", 
-/**
- * [`PROTOCOL_VERSION`](crate::PROTOCOL_VERSION) of the UI.
- */
-protocol_version: number, 
-/**
- * Version of the editor build, for error messages.
- */
-ui_version: string, } | { "type": "Seek", 
-/**
- * Global frame index.
- */
-frame: number, } | { "type": "Play" } | { "type": "Pause" } | { "type": "Step", 
-/**
- * Frames to move; negative goes back.
- */
-delta: number, } | { "type": "SetViewport", 
-/**
- * Width in CSS pixels (including the editor's zoom).
- */
-w: number, 
-/**
- * Height in CSS pixels (including the editor's zoom).
- */
-h: number, 
-/**
- * Device pixel ratio.
- */
-dpr: number, } | { "type": "SetMarker", 
-/**
- * Marker name.
- */
-name: string, 
-/**
- * Seconds from the start of the scene.
- */
-time: number, 
-/**
- * Scene to create the marker in.
- */
-scene?: string | null, } | { "type": "SetEase", 
-/**
- * Ease name.
- */
-name: string, 
-/**
- * Control points `[x1, y1, x2, y2]`.
- */
-value: [number, number, number, number], } | { "type": "SetTunable", 
-/**
- * Tunable name.
- */
-name: string, 
-/**
- * New value.
- */
-value: number, } | { "type": "SetTransition", 
-/**
- * Scene the transition belongs to.
- */
-scene: string, 
-/**
- * Blend length. Zero removes it.
- */
-seconds: number, } | { "type": "Pick", 
-/**
- * Horizontal position.
- */
-x: number, 
-/**
- * Vertical position.
- */
-y: number, } | { "type": "Select", 
-/**
- * Node to select; `None` clears.
- */
-node_id: number | null, } | { "type": "Shutdown" };
+export type Command =
+  | {
+      type: 'Hello';
+      /**
+       * [`PROTOCOL_VERSION`](crate::PROTOCOL_VERSION) of the UI.
+       */
+      protocol_version: number;
+      /**
+       * Version of the editor build, for error messages.
+       */
+      ui_version: string;
+    }
+  | {
+      type: 'Seek';
+      /**
+       * Global frame index.
+       */
+      frame: number;
+    }
+  | { type: 'Play' }
+  | { type: 'Pause' }
+  | {
+      type: 'Step';
+      /**
+       * Frames to move; negative goes back.
+       */
+      delta: number;
+    }
+  | {
+      type: 'SetViewport';
+      /**
+       * Width in CSS pixels (including the editor's zoom).
+       */
+      w: number;
+      /**
+       * Height in CSS pixels (including the editor's zoom).
+       */
+      h: number;
+      /**
+       * Device pixel ratio.
+       */
+      dpr: number;
+    }
+  | {
+      type: 'SetMarker';
+      /**
+       * Marker name.
+       */
+      name: string;
+      /**
+       * Seconds from the start of the scene.
+       */
+      time: number;
+      /**
+       * Scene to create the marker in.
+       */
+      scene?: string | null;
+    }
+  | {
+      type: 'SetEase';
+      /**
+       * Ease name.
+       */
+      name: string;
+      /**
+       * Control points `[x1, y1, x2, y2]`.
+       */
+      value: [number, number, number, number];
+    }
+  | {
+      type: 'SetTunable';
+      /**
+       * Tunable name.
+       */
+      name: string;
+      /**
+       * New value.
+       */
+      value: number;
+    }
+  | {
+      type: 'SetTransition';
+      /**
+       * Scene the transition belongs to.
+       */
+      scene: string;
+      /**
+       * Blend length. Zero removes it.
+       */
+      seconds: number;
+    }
+  | {
+      type: 'Pick';
+      /**
+       * Horizontal position.
+       */
+      x: number;
+      /**
+       * Vertical position.
+       */
+      y: number;
+    }
+  | {
+      type: 'Select';
+      /**
+       * Node to select; `None` clears.
+       */
+      node_id: number | null;
+    }
+  | { type: 'Shutdown' };

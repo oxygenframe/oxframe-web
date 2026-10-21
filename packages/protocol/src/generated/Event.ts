@@ -6,6 +6,7 @@ import type { Meta } from './Meta';
 import type { NodeInfo } from './NodeInfo';
 import type { SceneInfo } from './SceneInfo';
 import type { SignalValue } from './SignalValue';
+import type { SlideInfo } from './SlideInfo';
 import type { Span } from './Span';
 
 /**
@@ -81,6 +82,11 @@ export type Event =
        * Sound effects on the timeline.
        */
       audio_clips?: Array<AudioClipInfo>;
+      /**
+       * Stops for `oxframe present`, in order: every `slide_break` and
+       * the end of every scene.
+       */
+      slides?: Array<SlideInfo>;
     }
   | {
       type: 'Tree';

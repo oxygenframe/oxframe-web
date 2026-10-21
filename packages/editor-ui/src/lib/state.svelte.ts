@@ -9,6 +9,7 @@ import type {
   NodeInfo,
   SceneInfo,
   SignalValue,
+  SlideInfo,
   Span,
 } from '@oxframe/protocol';
 import { PROTOCOL_VERSION } from '@oxframe/protocol';
@@ -52,6 +53,8 @@ export class EditorState {
   markers = $state<MarkerInfo[]>([]);
   waveform = $state.raw<number[] | null>(null);
   clips = $state<AudioClipInfo[]>([]);
+  /** Stops for presentation mode (`slide_break` and scene ends). */
+  slides = $state<SlideInfo[]>([]);
   metas = $state<Record<string, Meta>>({});
   tree = $state<NodeInfo[]>([]);
   selected = $state<number | null>(null);
@@ -181,6 +184,7 @@ export class EditorState {
         this.markers = e.markers;
         this.scenes = e.scenes;
         this.clips = e.audio_clips ?? [];
+        this.slides = e.slides ?? [];
         if (e.audio_waveform) this.waveform = e.audio_waveform;
         void this.loadHostedAudio();
         break;

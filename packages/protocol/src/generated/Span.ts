@@ -3,20 +3,21 @@
 /**
  * A source location in an error.
  */
-export type Span = { 
-/**
- * Path relative to the project.
- */
-file: string, 
-/**
- * 1-based line.
- */
-line: number, 
-/**
- * 1-based column.
- */
-column: number, 
-/**
- * Label for this location, may be empty.
- */
-message: string, };
+export type Span = {
+  /**
+   * Path relative to the project.
+   */
+  file: string;
+  /**
+   * 1-based line.
+   */
+  line: number;
+  /**
+   * 1-based column.
+   */
+  column: number;
+  /**
+   * Label for this location, may be empty.
+   */
+  message: string;
+};

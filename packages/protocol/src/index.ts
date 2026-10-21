@@ -6,6 +6,7 @@ export type { Span } from './generated/Span';
 export type { SceneInfo } from './generated/SceneInfo';
 export type { MarkerInfo } from './generated/MarkerInfo';
 export type { AudioClipInfo } from './generated/AudioClipInfo';
+export type { SlideInfo } from './generated/SlideInfo';
 export type { NodeInfo } from './generated/NodeInfo';
 export type { SignalValue } from './generated/SignalValue';
 export type { Meta } from './generated/Meta';
