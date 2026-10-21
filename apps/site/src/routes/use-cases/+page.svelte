@@ -64,6 +64,7 @@ jobs:
           portrait: true</code
     ></pre>
   <p>
+    <a class="btn" href="/playground?ex=release">Open release in the playground</a>
     <a class="btn" href="https://github.com/oxygenframe/release-video-action"
       >oxygenframe/release-video-action</a
     >
@@ -97,5 +98,8 @@ jobs:
   }
   article p {
     color: var(--muted);
+  }
+  article .btn + .btn {
+    margin-left: 8px;
   }
 </style>

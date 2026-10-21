@@ -23,6 +23,7 @@ const names = [
   'code_steps',
   'svg',
   'transitions',
+  'release',
   'components',
   'relative',
   'theme',

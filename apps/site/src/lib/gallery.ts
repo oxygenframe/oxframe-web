@@ -7,6 +7,12 @@ export interface GalleryItem {
 
 export const galleryItems: GalleryItem[] = [
   {
+    name: 'release',
+    tags: ['release'],
+    prompt:
+      'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
+  },
+  {
     name: 'transitions',
     tags: ['explainer'],
     prompt: 'Open on a title card, then slide left into an end card.',
