@@ -113,6 +113,36 @@
 </p>
 <LiveExample name="svg" />
 
+<h2>Video</h2>
+<p>
+  <code>Video::new().file("assets/demo.mp4")</code> shows a clip as a node: a screen recording in a
+  laptop frame, a product demo next to a diagram. Turn on the <code>video</code> feature of
+  <code>oxframe</code>; clips are decoded with ffmpeg, which <code>oxframe render</code> already
+  needs. Size it like an image with <code>.width(pct(70))</code> — the height follows the clip —
+  round it with <code>.radius(24.0)</code>, and add effects or put it under a camera like any node.
+</p>
+<pre><code
+    >{`let demo = view.add(Video::new().file("assets/demo.mp4").width(pct(70)).radius(24.0));
+demo.play();
+wait_for(2.0).await;
+demo.playback_rate().to(0.25, 0.5).await;   // slow motion`}</code
+  ></pre>
+<p>
+  <code>demo.play()</code> returns at once and the clip plays alongside the scene;
+  <code>demo.pause()</code> holds the frame and <code>demo.seek(2.0)</code> jumps.
+  <code>demo.playback_rate()</code> and <code>demo.time()</code> are signals, so
+  <code>demo.playback_rate().to(0.25, 0.5)</code> eases into slow motion and animating
+  <code>time</code> scrubs. The frame shown is a function of the scene's time, so a render and a seek
+  in the editor show the same frame. MP4 (H.264), WebM (VP9, with alpha) and ProRes 4444 (with alpha)
+  are read.
+</p>
+<p>
+  The clip's sound goes into the mix while it plays at rate 1; <code>.muted(true)</code> leaves it
+  out. A clip that cannot be opened draws a dark box and fails <code>oxframe check</code> with
+  <code>video_unavailable</code>. The browser playground cannot read your files, so there a video is
+  always that box; <code>oxframe dev</code> plays it.
+</p>
+
 <h2>Your own geometry</h2>
 <p>
   <code>Custom::new(|ctx, t| {'{ … }'})</code> paints the frame itself.
