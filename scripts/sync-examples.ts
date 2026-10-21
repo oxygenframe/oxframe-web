@@ -24,6 +24,7 @@ const names = [
   'svg',
   'transitions',
   'release',
+  'spray',
   'components',
   'relative',
   'theme',

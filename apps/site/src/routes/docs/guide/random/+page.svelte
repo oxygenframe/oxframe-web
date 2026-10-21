@@ -21,6 +21,12 @@
   same confetti. Change the seed for a different, again repeatable, result.
 </p>
 <p>
+  Inside <code>Custom</code>, use <code>ctx.rng(seed)</code> instead. <code>random()</code> only
+  runs while the scene is stepping, and paint happens after that. A spray that keeps its own motion
+  is a
+  <code>Particles</code> node, not a counter in the closure.
+</p>
+<p>
   This is a rule worth knowing: oxframe renders the same frames every time. That is why scenes must
   not use the clock or other sources of real randomness.
 </p>
@@ -45,6 +51,7 @@
   <ul>
     <li>
       <code>random()</code> and <code>random_range()</code> are seeded: same video every time.
+      Inside <code>Custom</code>, use <code>ctx.rng(seed)</code>.
     </li>
     <li><code>spawn</code> runs animations in the background.</li>
   </ul>

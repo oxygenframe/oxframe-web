@@ -81,7 +81,9 @@ async fn outro(view: View) {
   By default frames are drawn on the GPU (vello) and fall back to the CPU (tiny-skia) when no GPU is
   available. Both produce the same picture: they pass the same reference-frame tests within a color
   difference of ΔE 1, which you cannot see. The CPU renderer is also byte-for-byte identical between
-  runs, which is what you want in automated tests.
+  runs, which is what you want in automated tests. A layer whose vectors did not change is reused on
+  the next frame. A scene with no effects is one vector pass; <code>oxframe inspect --graph</code>
+  lists the passes.
 </p>
 
 <h2>In the browser</h2>

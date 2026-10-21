@@ -79,6 +79,16 @@
     >
     <tr><td><code>Group</code></td><td>—</td><td>—</td></tr>
     <tr
+      ><td><code>Custom</code></td><td><code>.new(|ctx, t| …) .size .fullscreen</code></td><td
+        >paints each frame; <code>ctx.rng(seed)</code>, <code>ctx.time()</code></td
+      ></tr
+    >
+    <tr
+      ><td><code>Particles</code></td><td
+        ><code>.seed .gravity .life .speed .radius .toward_camera</code></td
+      ><td><code>gravity</code>, <code>burst(origin, count)</code></td></tr
+    >
+    <tr
       ><td><a href="/docs/camera"><code>Camera</code></a></td><td><code>.zoom</code></td><td
         ><code>zoom</code> (and <code>x y rotation</code>), <code>center_on fit reset</code></td
       ></tr
@@ -98,6 +108,23 @@
   become <code>Img</code>. <code>find("id")</code> is the element with that id.
   <code>paths()</code> is every contour in paint order. Filters, masks and clip paths are skipped
   with a warning. See the <a href="/playground?ex=svg">logo example</a>.
+</p>
+
+<h2>Your own geometry</h2>
+<p>
+  <code>Custom::new(|ctx, t| {'{ … }'})</code> paints the frame itself.
+  <code>ctx.line</code>, <code>ctx.circle</code>, <code>ctx.rect</code> and <code>ctx.path</code>
+  take
+  <code>.fill</code> or <code>.stroke</code>. Take numbers from <code>t</code> and
+  <code>ctx.rng(seed)</code>. The closure runs after the scene step, so <code>random()</code> is not
+  available there, and a counter closed over from outside fails <code>check</code> as
+  <code>nondeterministic</code>.
+</p>
+<p>
+  <code>Particles</code> keeps a seeded spray: <code>.seed(7).gravity(900.0).toward_camera()</code>
+  and <code>burst(origin, count).await</code>. Seeking back replays from a checkpoint, so the dots
+  match. <code>toward_camera</code> only scales them. See the
+  <a href="/playground?ex=spray">spray example</a>.
 </p>
 
 <h2>Shapes and morphing</h2>

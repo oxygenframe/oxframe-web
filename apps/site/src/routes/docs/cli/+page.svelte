@@ -145,6 +145,10 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
     <code>dead_time</code> — nothing on screen changes for several seconds and the project has no soundtrack
     (warning).
   </li>
+  <li>
+    <code>nondeterministic</code> — painting the same frame twice did not match. Draw from the time
+    and <code>ctx.rng(seed)</code>, not from a counter saved in the closure.
+  </li>
 </ul>
 <p>
   Errors make the command exit 1; warnings do not. A project that declares
@@ -162,6 +166,8 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
 <p>
   Prints the scene tree at that time as JSON: kind, name, source location, scene bounds, opacity,
   text and draw order. <code>--scene outro</code> measures the time from the start of that scene.
+  <code>--graph</code> adds a <code>passes</code> array: one vector pass, then a composite for each layer
+  (a group opacity, a blend, a blur, a shadow or a clip). Without the flag the JSON is unchanged.
 </p>
 
 <h3><code>oxframe agents</code></h3>
