@@ -61,16 +61,36 @@ async fn outro(view: View) {
 </p>
 
 <h2>Sound</h2>
-<p>Attach a soundtrack to the project:</p>
+<p>
+  A soundtrack plays for the whole video. <code>Project::audio("music.mp3")</code> still works, and
+  it is the same as <code>Audio::track</code>:
+</p>
 <pre><code
-    >{`Project::new("my-video")
-    .audio("assets/voice.mp3")
+    >{`Project::new("explainer")
+    .audio(Audio::track("assets/music.mp3").duck_under_voice().volume(0.8))
     .scene(intro())`}</code
   ></pre>
 <p>
-  The waveform appears on the editor's timeline; drag it to shift the sound against the picture. The
-  offset is saved in <code>meta.json</code> and used by <code>oxframe render</code>. Pass
-  <code>--no-audio</code> to leave it out.
+  <code>.duck_under_voice()</code> lowers the music while a sound marked <code>.priority()</code> is
+  playing. <code>.volume()</code>, <code>.fade_in()</code> and <code>.fade_out()</code> shape the
+  track. <code>.master_fade()</code> fades the whole mix, including the effects.
+</p>
+<p>
+  <code>sound("click.wav")</code> starts at the current frame. <code>.play()</code> does not wait.
+  Awaiting the sound waits until it ends, and <code>.trim()</code> plays a slice of the file (that slice
+  is also how long the wait is):
+</p>
+<pre><code
+    >{`sound("assets/whoosh.wav").volume(0.6).fade_in(0.05).play();
+sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
+  ></pre>
+<LiveExample name="sounds" />
+<p>
+  Effects show up as clips on the timeline and play with the picture, including after a seek. The
+  mix is written before ffmpeg encodes it, so two renders of the same scene match.
+  <code>--no-audio</code> leaves the soundtrack and the effects out. <code>--range</code> keeps only
+  the part of them that falls inside that span. Drag the waveform to shift the soundtrack; the
+  offset is saved in <code>meta.json</code>.
 </p>
 
 <h2>Transparent backgrounds</h2>

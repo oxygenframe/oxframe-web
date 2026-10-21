@@ -9,7 +9,9 @@ const MIME: Record<number, string> = {
 /** Decodes a binary frame message (header + JPEG/WebP/RGBA body). */
 export async function decodeFrame(buf: ArrayBuffer): Promise<Frame | null> {
   const header = decodeFrameHeader(buf);
-  if (!header) return null;
+  if (!header || header.format === FrameFormat.Pcm || header.format === FrameFormat.Surface) {
+    return null;
+  }
   const body = new Uint8Array(buf, FRAME_HEADER_SIZE, header.len);
   let image: ImageBitmap;
   if (header.format === FrameFormat.Rgba) {

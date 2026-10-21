@@ -5,6 +5,7 @@ export type { ErrorKind } from './generated/ErrorKind';
 export type { Span } from './generated/Span';
 export type { SceneInfo } from './generated/SceneInfo';
 export type { MarkerInfo } from './generated/MarkerInfo';
+export type { AudioClipInfo } from './generated/AudioClipInfo';
 export type { NodeInfo } from './generated/NodeInfo';
 export type { SignalValue } from './generated/SignalValue';
 export type { Meta } from './generated/Meta';
@@ -14,7 +15,7 @@ export type { TransitionMeta } from './generated/TransitionMeta';
 /** Must equal `PROTOCOL_VERSION` in oxframe-protocol. */
 export const PROTOCOL_VERSION = 1;
 
-export const FrameFormat = { Webp: 1, Jpeg: 2, Rgba: 3, Surface: 4 } as const;
+export const FrameFormat = { Webp: 1, Jpeg: 2, Rgba: 3, Surface: 4, Pcm: 5 } as const;
 export type FrameFormat = (typeof FrameFormat)[keyof typeof FrameFormat];
 
 /** 16-byte little-endian header of binary frame messages. */
@@ -32,7 +33,7 @@ export function decodeFrameHeader(buf: ArrayBuffer): FrameHeader | null {
   if (buf.byteLength < FRAME_HEADER_SIZE) return null;
   const dv = new DataView(buf);
   const format = dv.getUint8(8);
-  if (format < 1 || format > 4) return null;
+  if (format < 1 || format > 5) return null;
   return {
     frame: dv.getUint32(0, true),
     width: dv.getUint16(4, true),

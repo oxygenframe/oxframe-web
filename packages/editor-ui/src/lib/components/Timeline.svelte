@@ -209,6 +209,19 @@
         {/if}
       {/each}
     </div>
+    {#each editor.clips as c, i (c.name + ':' + i)}
+      <div
+        class="clip"
+        class:priority={c.priority}
+        style:left="{x(c.start * editor.fps)}px"
+        style:width="{Math.max(
+          2,
+          x((c.start + c.seconds) * editor.fps) - x(c.start * editor.fps),
+        )}px"
+        title={c.name}
+        data-testid="audio-clip"
+      ></div>
+    {/each}
     <canvas class="wave" bind:this={wave} style:width="{width}px" aria-hidden="true"></canvas>
     {#each editor.markers as m (m.scene + '/' + m.name)}
       {@const f = markerFrame(m)}
@@ -309,6 +322,18 @@
     background: transparent;
     cursor: ew-resize;
     pointer-events: auto;
+  }
+  .clip {
+    position: absolute;
+    top: 22px;
+    height: 16px;
+    background: var(--m-accent);
+    opacity: 0.45;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .clip.priority {
+    opacity: 0.85;
   }
   .wave {
     position: absolute;

@@ -16,6 +16,8 @@ export interface BackendHandlers {
   event(e: Event): void;
   frame(f: Frame): void;
   status(s: ConnectionStatus): void;
+  /** Mixed preview audio. `rate` is samples per second; `pcm` is s16le mono. */
+  audio?(clip: { rate: number; pcm: ArrayBuffer }): void;
 }
 
 /**

@@ -1,5 +1,6 @@
 import type { Backend, ConnectionStatus, Frame } from '@oxframe/backends';
 import type {
+  AudioClipInfo,
   Command,
   ErrorKind,
   Event,
@@ -41,6 +42,7 @@ export class EditorState {
   scenes = $state<SceneInfo[]>([]);
   markers = $state<MarkerInfo[]>([]);
   waveform = $state.raw<number[] | null>(null);
+  clips = $state<AudioClipInfo[]>([]);
   metas = $state<Record<string, Meta>>({});
   tree = $state<NodeInfo[]>([]);
   selected = $state<number | null>(null);
@@ -64,6 +66,9 @@ export class EditorState {
   private restoredFrame: number | null = null;
   private readonly persistEnabled: boolean;
   private readonly uiVersion: string;
+  private pcm: { rate: number; samples: Float32Array } | null = null;
+  private audioCtx: AudioContext | null = null;
+  private audioNode: AudioBufferSourceNode | null = null;
 
   constructor(
     readonly backend: Backend,
@@ -86,6 +91,7 @@ export class EditorState {
       event: (e) => this.handle(e),
       frame: (f) => this.onFrame(f),
       status: (s) => this.onStatus(s),
+      audio: (clip) => this.onPcm(clip),
     });
   }
 
@@ -106,6 +112,7 @@ export class EditorState {
     } else {
       this.ready = false;
       this.playing = false;
+      this.stopAudio();
     }
   }
 
@@ -131,6 +138,8 @@ export class EditorState {
         this.reloadedAt = Date.now();
         this.building = false;
         this.error = null;
+        this.stopAudio();
+        this.pcm = null;
         this.resync();
         break;
       case 'Building':
@@ -141,17 +150,21 @@ export class EditorState {
         this.error = { kind: e.kind, message: e.message, spans: e.spans ?? [] };
         break;
       case 'Frame':
+        if (this.playing && e.index < this.frame) this.startAudio(e.index);
         this.frame = e.index;
         this.savePersist();
         break;
       case 'Playback':
         this.playing = e.playing;
         this.frame = e.frame;
+        if (e.playing) this.startAudio(e.frame);
+        else this.stopAudio();
         break;
       case 'Timeline':
         this.frames = e.frames;
         this.markers = e.markers;
         this.scenes = e.scenes;
+        this.clips = e.audio_clips ?? [];
         if (e.audio_waveform) this.waveform = e.audio_waveform;
         break;
       case 'Tree':
@@ -210,6 +223,41 @@ export class EditorState {
     const f = Math.max(0, Math.min(this.lastFrame, Math.round(frame)));
     this.frame = f;
     this.send({ type: 'Seek', frame: f });
+    if (this.playing) this.startAudio(f);
+  }
+
+  private onPcm(clip: { rate: number; pcm: ArrayBuffer }): void {
+    const view = new Int16Array(clip.pcm);
+    const samples = new Float32Array(view.length);
+    for (let i = 0; i < view.length; i++) samples[i] = (view[i] ?? 0) / 32768;
+    this.pcm = { rate: clip.rate, samples };
+    if (this.playing) this.startAudio(this.frame);
+  }
+
+  private startAudio(frame: number): void {
+    this.stopAudio();
+    const pcm = this.pcm;
+    if (!pcm || pcm.samples.length === 0 || typeof AudioContext === 'undefined') return;
+    this.audioCtx ??= new AudioContext();
+    const buffer = this.audioCtx.createBuffer(1, pcm.samples.length, pcm.rate);
+    buffer.getChannelData(0).set(pcm.samples);
+    const node = this.audioCtx.createBufferSource();
+    node.buffer = buffer;
+    node.connect(this.audioCtx.destination);
+    const offset = Math.max(0, Math.min(buffer.duration, frame / Math.max(1, this.fps)));
+    node.start(0, offset);
+    this.audioNode = node;
+  }
+
+  private stopAudio(): void {
+    const node = this.audioNode;
+    this.audioNode = null;
+    if (!node) return;
+    try {
+      node.stop();
+    } catch {
+      // Already stopped.
+    }
   }
 
   play(): void {

@@ -1,4 +1,10 @@
-import type { Command, Event } from '@oxframe/protocol';
+import {
+  decodeFrameHeader,
+  FRAME_HEADER_SIZE,
+  FrameFormat,
+  type Command,
+  type Event,
+} from '@oxframe/protocol';
 import { decodeFrame } from './frames';
 import type { Backend, BackendHandlers } from './types';
 
@@ -94,6 +100,13 @@ export class LocalWs implements Backend {
         return;
       }
       const buf = m.data as ArrayBuffer;
+      const header = decodeFrameHeader(buf);
+      if (header?.format === FrameFormat.Pcm) {
+        const end = Math.min(buf.byteLength, FRAME_HEADER_SIZE + header.len);
+        const pcm = buf.slice(FRAME_HEADER_SIZE, end);
+        this.decodeChain = this.decodeChain.then(() => h.audio?.({ rate: header.width, pcm }));
+        return;
+      }
       this.decodeChain = this.decodeChain.then(async () => {
         const f = await decodeFrame(buf);
         if (f) {
