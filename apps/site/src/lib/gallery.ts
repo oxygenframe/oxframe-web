@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'charts',
+    tags: ['explainer'],
+    prompt:
+      'Plot sin(x) with a dot riding it, morph it into sin(2x) and zoom out; then a benchmark whose bars grow with their values.',
+  },
+  {
     name: 'ocean',
     tags: ['explainer'],
     prompt:

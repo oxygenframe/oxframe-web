@@ -30,6 +30,7 @@ const names = [
   'waves',
   'splash',
   'ocean',
+  'charts',
   'components',
   'relative',
   'theme',
@@ -47,6 +48,7 @@ const names = [
   'learn_11_scenes',
   'learn_12_sound',
   'learn_13_shaders',
+  'learn_14_charts',
 ];
 /** Drop `#[cfg(test)]` modules. They guard the SDK example, not the scene a visitor edits. */
 export function sceneSource(source: string): string {

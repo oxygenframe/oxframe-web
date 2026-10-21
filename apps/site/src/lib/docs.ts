@@ -114,6 +114,12 @@ export const sections: DocSection[] = [
         description:
           'Lesson 13: animated water, drops on the camera lens, ripples on a node and a water transition — shader presets you animate like any property.',
       },
+      {
+        slug: 'guide/charts',
+        title: '14. Charts and graphs',
+        description:
+          'Lesson 14: plot functions on axes, ride a dot along a curve, morph it into another function and zoom — the whole chart follows the ranges.',
+      },
     ],
   },
   {
@@ -136,6 +142,12 @@ export const sections: DocSection[] = [
         title: 'Effects',
         description:
           'Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.',
+      },
+      {
+        slug: 'charts',
+        title: 'Animated charts and plots',
+        description:
+          'Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.',
       },
       {
         slug: 'camera',
