@@ -23,7 +23,8 @@ oxframe render --format png --out frames/  # one PNG per frame
 oxframe render --size 3840x2160            # 4K
 oxframe render --scene outro               # just one scene
 oxframe render --range 1..3                # seconds 1 to 3
-oxframe render --cpu                       # no GPU available (CI, servers)`}</code
+oxframe render --cpu                       # no GPU available (CI, servers)
+oxframe render --jobs 4                    # four segments at once`}</code
   ></pre>
 <p>
   Need just one still? <code>oxframe snapshot --at 2.5</code> writes a PNG of that moment — no ffmpeg,
@@ -249,6 +250,23 @@ Project::new("explainer")
   and render to <code>webm</code>, <code>prores</code> or <code>png</code>: those keep the alpha
   channel, so you can lay the animation over footage in a video editor. MP4 (H.264) has no
   transparency.
+</p>
+
+<h2>Parallel rendering</h2>
+<p>
+  A video longer than two seconds renders in 2-second segments, several at once: each one runs in
+  its own process, is encoded on its own, and the segments are joined without encoding them again.
+  The soundtrack is added once at the end. <code>--jobs 4</code> sets how many run at a time; the default
+  is one per core, at most eight.
+</p>
+<p>
+  The segments are the same whatever <code>--jobs</code> is, so <code>--jobs 1</code> and
+  <code>--jobs 8</code> write the same bytes: a render on your laptop and one in CI match. Scenes
+  that take long to draw gain the most — a 7-second 3D scene on 8 cores renders 2.7 times faster —
+  while a short or simple one gains little, because every segment first runs the scene up to where
+  it starts. Each process holds one frame at a time, so memory does not grow with the length of the
+  video. A PNG sequence is split the same way. A tool of your own that encodes segments can join
+  them the same way with <code>oxframe_export::concat</code>.
 </p>
 
 <h2>GPU or CPU?</h2>
