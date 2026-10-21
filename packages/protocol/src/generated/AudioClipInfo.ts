@@ -20,4 +20,8 @@ export type AudioClipInfo = {
    * This clip ducks the soundtrack.
    */
   priority: boolean;
+  /**
+   * Spoken text, when this clip is a line.
+   */
+  text?: string | null;
 };

@@ -93,6 +93,35 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   offset is saved in <code>meta.json</code>.
 </p>
 
+<h2>Voice</h2>
+<p>
+  <code>voice("one two").start()</code> speaks the line and keeps going. <code>.at_word()</code>
+  waits until that word. Awaiting the line waits until the end. A line is <code>.priority()</code>,
+  so it ducks a soundtrack built with <code>.duck_under_voice()</code>.
+</p>
+<pre><code
+    >{`let line = voice("Сначала нарисуем квадрат, а потом повернём его").start();
+line.at_word("квадрат").await;
+square.draw_on().await;
+line.at_word("повернём").await;
+square.rotation().to(90.0, 0.8).await;
+line.await;`}</code
+  ></pre>
+<p>
+  Pass a <code>TtsProvider</code> with <code>Project::tts</code>. The provider reads its own API
+  key. A missing key or a failed call falls back to a speech-rate estimate and the scene still runs.
+  The recording is cached under <code>tts/</code> next to the scene, so the next render does not call
+  the provider again. Commit that folder to render in CI without a key. Without a provider, oxframe reads
+  a committed cache and otherwise estimates the length. The playground always estimates.
+</p>
+<LiveExample name="voice" />
+<p>
+  <code>oxframe render --subtitles out.srt</code> writes the lines. A path ending in
+  <code>.vtt</code>
+  writes WebVTT. <code>--no-audio</code> still writes them, and <code>--range</code> shifts the cues into
+  that part of the video. A line that runs past the scene is an error; two lines that overlap are a warning.
+</p>
+
 <h2>Transparent backgrounds</h2>
 <p>
   Make the background transparent with <code>.background(Color::TRANSPARENT)</code> on the project

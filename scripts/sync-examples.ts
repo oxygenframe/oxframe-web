@@ -26,6 +26,7 @@ const names = [
   'release',
   'spray',
   'sounds',
+  'voice',
   'components',
   'relative',
   'theme',

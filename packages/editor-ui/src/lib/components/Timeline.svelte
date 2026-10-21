@@ -218,9 +218,11 @@
           2,
           x((c.start + c.seconds) * editor.fps) - x(c.start * editor.fps),
         )}px"
-        title={c.name}
+        title={c.text ?? c.name}
         data-testid="audio-clip"
-      ></div>
+      >
+        {#if c.text}<span>{c.text}</span>{/if}
+      </div>
     {/each}
     <canvas class="wave" bind:this={wave} style:width="{width}px" aria-hidden="true"></canvas>
     {#each editor.markers as m (m.scene + '/' + m.name)}
@@ -327,10 +329,18 @@
     position: absolute;
     top: 22px;
     height: 16px;
+    overflow: hidden;
     background: var(--m-accent);
     opacity: 0.45;
     border-radius: 2px;
     pointer-events: none;
+    color: #fff;
+    font-size: 10px;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+  .clip span {
+    padding: 0 4px;
   }
   .clip.priority {
     opacity: 0.85;

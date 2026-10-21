@@ -15,7 +15,7 @@ async function one(i: number) {
   const res = await fetch(`${url}/api/compile`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-forwarded-for': `10.0.${i >> 8}.${i & 255}` },
-    body: JSON.stringify({ source, sdk_version: '0.9.0' }),
+    body: JSON.stringify({ source, sdk_version: '0.10.0' }),
   });
   let body = (await res.json()) as { id?: string; status?: string };
   // Like the playground: poll until the build finishes.
