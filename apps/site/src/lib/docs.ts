@@ -221,6 +221,12 @@ export const sections: DocSection[] = [
         description:
           'Use Claude Code, Codex or Cursor to write oxframe animations: every project ships agent instructions and a way for agents to see what they made.',
       },
+      {
+        slug: 'check-rules',
+        title: 'Check rules',
+        description:
+          'Every rule in an oxframe check report, out_of_frame to too_fast and low_contrast, with before and after frames and how to fix each one.',
+      },
     ],
   },
   {

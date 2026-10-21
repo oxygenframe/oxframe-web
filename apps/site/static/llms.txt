@@ -44,6 +44,7 @@ Full text: https://oxframe.dev/llms-full.txt
 - [Rendering video](https://oxframe.dev/docs/rendering): Render oxframe animations to MP4, WebM with alpha, ProRes 4444 or PNG sequences with one command, on the GPU or CPU, with audio and scene transitions.
 - [CLI reference](https://oxframe.dev/docs/cli): Reference for the oxframe command line: init, dev, render, snapshot, check, agents, upgrade and mcp, with all options.
 - [Working with AI agents](https://oxframe.dev/docs/agents): Use Claude Code, Codex or Cursor to write oxframe animations: every project ships agent instructions and a way for agents to see what they made.
+- [Check rules](https://oxframe.dev/docs/check-rules): Every rule in an oxframe check report, out_of_frame to too_fast and low_contrast, with before and after frames and how to fix each one.
 
 ## Under the hood
 

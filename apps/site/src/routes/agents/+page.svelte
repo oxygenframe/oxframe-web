@@ -38,9 +38,11 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
   <code>out/check/storyboard.png</code> and <code>report.json</code>. Each issue names a rule (text
   that leaves the frame, type too small to read, a shot that stands still), a time range, the node
   and the line of code. The agent fixes them and checks again; the
-  <a href="/agents/skills/oxframe-check">oxframe-check skill</a> lists every rule and its fix. With
-  the MCP server (<code>oxframe mcp</code>) the same check, an inspector, single frames and a docs
-  search are tools the agent calls directly.
+  <a href="/agents/skills/oxframe-check">oxframe-check skill</a> lists every rule and its fix, and
+  <a href="/docs/check-rules">Check rules</a> shows each one before and after. With the MCP server (<code
+    >oxframe mcp</code
+  >) the same check, an inspector, single frames and a docs search are tools the agent calls
+  directly.
 </p>
 
 <h2>Skills</h2>
