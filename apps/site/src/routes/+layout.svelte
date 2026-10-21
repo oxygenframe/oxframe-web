@@ -1,7 +1,8 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { onMount } from 'svelte';
   import '../app.css';
+  import { SDK_VERSION } from '$lib/sdk';
+  import starsFile from '$lib/stars.json';
   let { children } = $props();
   const links = [
     { href: '/docs', label: 'Docs' },
@@ -11,15 +12,10 @@
     { href: '/use-cases', label: 'Use cases' },
   ];
   const playground = $derived(page.url.pathname.startsWith('/playground'));
-  let stars = $state<number | null>(null);
-  onMount(() => {
-    fetch('https://api.github.com/repos/oxygenframe/oxframe-sdk')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: { stargazers_count?: number } | null) => {
-        if (typeof data?.stargazers_count === 'number') stars = data.stargazers_count;
-      })
-      .catch(() => {});
-  });
+  // Fetched at build time (scripts/github-stars.ts), not by each visitor.
+  const stars: number | null = starsFile.stars;
+  const series = SDK_VERSION.split('.').slice(0, 2).join('.');
+  const docs = $derived(page.url.pathname.startsWith('/docs'));
 </script>
 
 <svelte:head>
@@ -27,13 +23,15 @@
 </svelte:head>
 
 <div class="shell" class:full={page.url.pathname.startsWith('/playground')}>
-  <p class="status" role="note" data-testid="dev-status">
-    <strong>Early days:</strong> oxframe is under very active development. The API is not stable yet
-    and may change from version to version. Pin the exact version in your Cargo.toml and check the
-    <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md" rel="external"
-      >changelog</a
-    > before upgrading.
-  </p>
+  {#if docs}
+    <p class="status" role="note" data-testid="dev-status">
+      <strong>Pre-1.0:</strong> the API is not stable yet and may change from version to version.
+      Pin the exact version in your Cargo.toml and check the
+      <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md" rel="external"
+        >changelog</a
+      > before upgrading.
+    </p>
+  {/if}
   <header class="nav">
     <a class="brand" href="/">
       <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"
@@ -46,6 +44,16 @@
       >
       oxframe
     </a>
+    {#if !docs}
+      <a
+        class="version"
+        href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md"
+        rel="external"
+        data-testid="dev-status"
+        title="Pre-1.0: the API is not stable yet and may change from version to version. Pin the exact version."
+        >v{series} · pre-1.0</a
+      >
+    {/if}
     <nav aria-label="Main">
       {#each links as l (l.href)}
         <a href={l.href} aria-current={page.url.pathname.startsWith(l.href) ? 'page' : undefined}
@@ -62,13 +70,19 @@
   {#if !playground}
     <footer class="foot">
       <a href="https://github.com/oxygenframe/oxframe-sdk" rel="external">
-        GitHub{stars == null ? '' : ` · ${stars} stars`}
+        GitHub{stars ? ` · ${stars} stars` : ''}
       </a>
       <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md" rel="external"
         >Changelog</a
       >
+      <a href="https://crates.io/crates/oxframe" rel="external">crates.io</a>
+      <a href="https://docs.rs/oxframe" rel="external">docs.rs</a>
+      <a href="https://github.com/oxygenframe/release-video-action" rel="external"
+        >Release video Action</a
+      >
       <a href="/showcase">Showcase</a>
       <a href="/llms.txt">llms.txt</a>
+      <span class="license">MIT or Apache-2.0 · no seats, no per-render fees</span>
     </footer>
   {/if}
 </div>
@@ -144,6 +158,19 @@
     margin-top: auto;
     padding: 18px 20px 28px;
     border-top: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .version {
+    margin-left: -12px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .license {
     color: var(--muted);
   }
   .status {

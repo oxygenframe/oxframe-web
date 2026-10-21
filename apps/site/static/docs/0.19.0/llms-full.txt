@@ -255,9 +255,9 @@ cam.fit(diagram, 120.0, 1.4).await;    // and lets go here
 
  Checking
 
-    oxframe check   does not report nodes inside a camera as out of frame:
-  when you zoom in on a detail, the rest of the world is supposed to be outside. Text overlap and contrast
-  are still checked, and nodes added to the view are checked as usual.
+    oxframe check   does not report nodes inside a camera as out
+  of frame: when you zoom in on a detail, the rest of the world is supposed to be outside. Text overlap
+  and contrast are still checked, and nodes added to the view are checked as usual.
 
 Animated charts and plots
 
@@ -701,7 +701,7 @@ oxframe dev --open
        assets/   Images and audio.
        AGENTS.md ,  .claude/   Instructions for AI coding assistants (see  Working with AI agents ).
 
- Next,  lesson 1  walks through that first scene line by line.
+  Next,  lesson 1  walks through that first scene line by line.
 
 14. Charts and graphs
 
@@ -1004,14 +1004,16 @@ end.exit().await;
       axes.vector  draws an arrow; its tip is signals.
       apply_matrix  maps the plane, and everything on the axes follows.
 
-       Matrices, vectors and tables  has row and column frames, matrix multiplication
-      step by step, and tables.
+       Matrices, vectors and tables  has row and column frames, matrix
+      multiplication step by step, and tables.
 
  You made it
 
-  That is the whole core of oxframe. From here, browse  all nodes  and
+  That is the whole core of oxframe. From here, browse  all nodes
+  and
    effects , open the
-   ocean scene  to see everything working together, or read
+   ocean scene  to see everything working together, or
+  read
    how oxframe works  inside.
 
 10. Randomness and background tasks
@@ -1051,8 +1053,8 @@ end.exit().await;
 
  Next
 
-  One scene is not a whole video yet.  Lesson 11  puts several scenes in
-  a row and blends them together.
+  One scene is not a whole video yet.  Lesson 11  puts several scenes
+  in a row and blends them together.
 
 11. Scenes and transitions
 
@@ -1115,7 +1117,8 @@ end.exit().await;
   A splash at two seconds is a signal change at that moment, not a formula of time. That way the
   editor shows it on the timeline and  oxframe check  sees it. A shader can only read
   finished pixels: inside a fading group or a blur,  check  reports
-   input_cycle .  Rendering video
+   input_cycle .
+   Rendering video
   has the details.
 
      A light drizzle:  .wetness(0.3) .
@@ -1127,7 +1130,8 @@ end.exit().await;
 
  Next
 
-   Lesson 14  plots functions and data on axes that follow animated ranges.
+   Lesson 14  plots functions and data on axes that follow animated
+  ranges.
 
 3. Shapes, colors, transforms
 
@@ -1279,7 +1283,8 @@ let label = view.add(Txt::new().text("mid").caption().next_to(card, Side::Bottom
    voice("Sound follows the picture").start()  starts a line and returns a handle.
    line.at_word("follows").await  waits for that word, and  line.await  waits
   for the end. Without a speech provider oxframe estimates how long the line takes, which is enough
-  to time the picture;  Rendering  shows how to plug in a real voice.
+  to time the picture;  Rendering  shows how to plug in a real
+  voice.
 
      Wait for the word  "picture"  instead of  "follows" .
      Turn the soundtrack up with  .volume(0.8)  and listen to it duck.
@@ -1322,8 +1327,8 @@ let label = view.add(Txt::new().text("mid").caption().next_to(card, Side::Bottom
    remove(((line, col), (line, col)), seconds)
   and  replace  edit one spot; lines are counted from 1 and columns from 0.
    .flash()  on that tween lights the inserted text for a moment. A focus on lines that
-  move rides with them. The  code steps  example writes a function
-  this way.
+  move rides with them. The  code steps  example writes
+  a function this way.
 
      Replace the typewriter with  title.morph_to("Hello, world", 1.0).await;
      Make the code bigger with  .font_size(48.0) .
@@ -1624,8 +1629,8 @@ All nodes
         Camera     .zoom    zoom  (and  x y rotation ),  center_on fit reset
 
   Every node has  x y rotation scale opacity fill stroke line_width start end , the paint
-  and compositing properties described in  Effects , and the flex item
-  properties  grow shrink basis margin align_self .  start / end
+  and compositing properties described in  Effects , and the flex
+  item properties  grow shrink basis margin align_self .  start / end
   trim outlines — animate  end  from 0 to 1 to draw a shape on (on text it reveals glyph by
   glyph).
 
@@ -1975,8 +1980,8 @@ Project::new("explainer")
 
 Markers, eases, tunables
 
-  The full story behind  lesson 7 : values that live outside your
-  code so you can adjust them in the editor.
+  The full story behind  lesson 7 : values that live outside
+  your code so you can adjust them in the editor.
 
  The three kinds
 

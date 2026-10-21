@@ -109,6 +109,14 @@ if (import.meta.main) {
     sections,
   });
   console.log(`archived the docs as ${series}: ${files.length} files`);
+  // Format the snapshot first: the llms files are made from its pages, and
+  // the next build would make them again from the formatted ones.
+  const repo = join(site, '../..');
+  const format = Bun.spawnSync(
+    ['bunx', 'prettier', '--write', ...files.filter((f) => /\.(svelte|ts)$/.test(f))],
+    { cwd: repo, stdout: 'ignore', stderr: 'inherit' },
+  );
+  if (format.exitCode !== 0) process.exit(format.exitCode ?? 1);
   // A new process: this one loaded the list of archives before the new
   // series was added to it, so an import here would leave the new series
   // without its llms files until the next build.

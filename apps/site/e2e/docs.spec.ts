@@ -141,6 +141,16 @@ test('docs are versioned: switcher, API reference, versioned URLs', async ({ pag
   // ...and at their exact version.
   const exact = await request.get(`/docs/${latest}/cli`, { maxRedirects: 0 });
   expect(exact.status()).toBe(301);
+  // A series with an exact snapshot, and a version that never got one,
+  // land on the nearest docs instead of 404.
+  for (const [from, to] of [
+    ['/docs/0.15/nodes', '/docs/0.15.0/nodes'],
+    ['/docs/0.7.0/camera', '/docs/0.8.0/camera'],
+  ]) {
+    const r = await request.get(from, { maxRedirects: 0 });
+    expect(r.status(), from).toBe(301);
+    expect(r.headers()['location'], from).toMatch(new RegExp(`${to}$`));
+  }
 
   // Every older version keeps its snapshot, with a banner pointing to the
   // current docs and a docs.rs link of its own.
@@ -159,10 +169,14 @@ test('docs are versioned: switcher, API reference, versioned URLs', async ({ pag
   }
 });
 
-test('the development status notice is on every main page', async ({ page }) => {
-  for (const path of ['/', '/docs', '/docs/guide/hello', '/playground']) {
+test('the development status is in the docs and next to the logo elsewhere', async ({ page }) => {
+  for (const path of ['/docs', '/docs/guide/hello']) {
     await page.goto(path);
     await expect(page.getByTestId('dev-status'), path).toContainText('API is not stable yet');
+  }
+  for (const path of ['/', '/playground']) {
+    await page.goto(path);
+    await expect(page.getByTestId('dev-status'), path).toContainText('pre-1.0');
   }
 });
 
