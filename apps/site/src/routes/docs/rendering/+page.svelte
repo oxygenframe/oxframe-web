@@ -108,11 +108,46 @@ square.rotation().to(90.0, 0.8).await;
 line.await;`}</code
   ></pre>
 <p>
-  Pass a <code>TtsProvider</code> with <code>Project::tts</code>. The provider reads its own API
-  key. A missing key or a failed call falls back to a speech-rate estimate and the scene still runs.
-  The recording is cached under <code>tts/</code> next to the scene, so the next render does not call
-  the provider again. Commit that folder to render in CI without a key. Without a provider, oxframe reads
-  a committed cache and otherwise estimates the length. The playground always estimates.
+  oxframe does not call a speech service itself. To get real audio, implement
+  <code>TtsProvider</code> and pass it to <code>Project::tts</code>. <code>synthesize</code>
+  receives the line and the voice name and returns mono <code>i16</code> samples plus one
+  <code>TimedWord</code> per word. <code>.at_word()</code> waits on those times, not on a guess. The
+  key stays inside the provider, read from the environment. <code>speak</code> below is your function:
+  the HTTP call and the decode.
+</p>
+<pre><code
+    >{`use oxframe::{Synthesis, TimedWord, TtsProvider, TtsRequest};
+
+struct ElevenLabs;
+
+impl TtsProvider for ElevenLabs {
+    fn id(&self) -> &str {
+        "elevenlabs"
+    }
+
+    fn synthesize(&self, req: &TtsRequest) -> Result<Synthesis, String> {
+        let key = std::env::var("ELEVENLABS_API_KEY")
+            .map_err(|_| "set ELEVENLABS_API_KEY".to_string())?;
+        // Send req.text and req.voice to ElevenLabs with key.
+        // Decode the body into mono i16 samples and one TimedWord per word.
+        let (rate, samples, words) = speak(&key, req.voice, req.text)?;
+        Ok(Synthesis { rate, samples, words })
+    }
+}
+
+Project::new("explainer")
+    .tts(ElevenLabs)
+    .speaker("Rachel")
+    .audio(Audio::track("assets/music.mp3").duck_under_voice())
+    .scene(intro())`}</code
+  ></pre>
+<p>
+  The first render calls <code>synthesize</code> and saves <code>tts/&#123;hash&#125;.wav</code> and
+  <code>tts/&#123;hash&#125;.json</code>. The next render plays that file. Commit the folder to
+  render in CI without a key. A missing key or a failed call does not fail the scene: oxframe
+  estimates the length (2.5 words per second, at least 0.3s) and there is no speech audio. An
+  estimate is not cached. With no provider, a committed cache is still used when the text and voice
+  match. The playground always estimates.
 </p>
 <LiveExample name="voice" />
 <p>
