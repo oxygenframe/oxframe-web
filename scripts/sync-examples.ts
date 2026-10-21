@@ -37,6 +37,7 @@ const names = [
   'linear_map',
   'table_sort',
   'slides',
+  'cube_3d',
   'components',
   'relative',
   'theme',

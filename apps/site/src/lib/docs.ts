@@ -162,6 +162,12 @@ export const sections: DocSection[] = [
           'Animated matrices, vectors and tables in Rust: matrix multiplication step by step, linear maps that bend the grid, and rows that sort themselves.',
       },
       {
+        slug: '3d',
+        title: '3D scenes in 2D animations',
+        description:
+          'Add lit 3D models to oxframe animations: cubes, spheres and glTF models, a camera and lights as signals, and 2D labels pinned to 3D points.',
+      },
+      {
         slug: 'presentations',
         title: 'Presentations from scenes',
         description:

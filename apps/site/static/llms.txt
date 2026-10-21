@@ -34,6 +34,7 @@ Full text: https://oxframe.dev/llms-full.txt
 - [Effects](https://oxframe.dev/docs/effects): Gradients, dashes, shadows, blur, blend modes and clipping in oxframe. Every effect is a signal and animates like any other property.
 - [Animated charts and plots](https://oxframe.dev/docs/charts): Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.
 - [Matrices, vectors and tables](https://oxframe.dev/docs/matrices): Animated matrices, vectors and tables in Rust: matrix multiplication step by step, linear maps that bend the grid, and rows that sort themselves.
+- [3D scenes in 2D animations](https://oxframe.dev/docs/3d): Add lit 3D models to oxframe animations: cubes, spheres and glTF models, a camera and lights as signals, and 2D labels pinned to 3D points.
 - [Presentations from scenes](https://oxframe.dev/docs/presentations): Turn oxframe scenes into a talk: slide_break stops, speaker notes in a presenter window, clicker keys, and every stop as a PDF page.
 - [Writing your own node](https://oxframe.dev/docs/custom-nodes): Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.
 - [Icons: Lucide, Tabler and brand logos](https://oxframe.dev/docs/icons): Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.

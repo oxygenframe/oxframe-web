@@ -108,6 +108,7 @@ for (const ex of [
   'gauge',
   'architecture',
   'matrix_multiply',
+  'cube_3d',
 ]) {
   test(`the ${ex} example plays to the last frame in the browser`, async ({ page }) => {
     const errors: string[] = [];

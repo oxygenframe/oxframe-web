@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'cube_3d',
+    tags: ['explainer'],
+    prompt:
+      'Put a lit 3D cube that turns once inside a 2D diagram, with labels that follow its top and front faces while the camera moves in.',
+  },
+  {
     name: 'slides',
     tags: ['explainer'],
     prompt:
