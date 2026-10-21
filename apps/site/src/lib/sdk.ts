@@ -1,2 +1,2 @@
 /** The oxframe SDK version the playground builds with and the docs describe. */
-export const SDK_VERSION = '0.13.0';
+export const SDK_VERSION = '0.14.0';

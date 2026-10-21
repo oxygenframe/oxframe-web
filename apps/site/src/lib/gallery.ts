@@ -13,6 +13,12 @@ export const galleryItems: GalleryItem[] = [
       'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
   },
   {
+    name: 'gauge',
+    tags: ['explainer'],
+    prompt:
+      'Write a gauge node of your own with #[derive(Node)] and Draw, then fill three of them in a row to different values.',
+  },
+  {
     name: 'charts',
     tags: ['explainer'],
     prompt:

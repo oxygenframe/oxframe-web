@@ -150,6 +150,12 @@ export const sections: DocSection[] = [
           'Animated charts in Rust: axes with labels, function plots that follow animated ranges, bars that grow with their values, and number lines.',
       },
       {
+        slug: 'custom-nodes',
+        title: 'Writing your own node',
+        description:
+          'Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.',
+      },
+      {
         slug: 'camera',
         title: 'Camera',
         description:

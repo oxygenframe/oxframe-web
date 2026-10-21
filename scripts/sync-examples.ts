@@ -31,6 +31,7 @@ const names = [
   'splash',
   'ocean',
   'charts',
+  'gauge',
   'components',
   'relative',
   'theme',

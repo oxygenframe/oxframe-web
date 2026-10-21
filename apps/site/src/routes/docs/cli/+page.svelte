@@ -26,6 +26,8 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
   <code>src/main.rs</code> with one scene, its <code>meta.json</code>, <code>oxframe.toml</code>,
   <code>.gitignore</code> and instructions for AI coding agents (see
   <a href="/docs/agents">Working with AI agents</a>).
+  <code>--template node</code> makes a library crate with a node of your own instead (see
+  <a href="/docs/custom-nodes">Writing your own node</a>).
 </p>
 <table>
   <tbody>
