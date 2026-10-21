@@ -7,6 +7,7 @@
   const links = [
     { href: '/docs', label: 'Docs' },
     { href: '/playground', label: 'Playground' },
+    { href: '/agents', label: 'Agents' },
     { href: '/gallery', label: 'Gallery' },
     { href: '/compare', label: 'Compare' },
     { href: '/use-cases', label: 'Use cases' },

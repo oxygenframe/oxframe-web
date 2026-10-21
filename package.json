@@ -21,7 +21,7 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "sync-protocol": "bun scripts/sync-protocol.ts",
-    "sync-examples": "bun scripts/sync-examples.ts",
+    "sync-examples": "bun scripts/sync-examples.ts && bun scripts/sync-skills.ts",
     "dev:site": "bun run --cwd apps/site dev",
     "dev:compile": "RUNNER=local bun --cwd services/compile src/index.ts"
   },

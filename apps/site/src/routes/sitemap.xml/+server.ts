@@ -1,4 +1,5 @@
 // /sitemap.xml, prerendered from the docs list so new pages appear in it.
+import { agents, skills } from '$lib/agents';
 import { href, pages } from '$lib/docs';
 import { SITE } from '$lib/site';
 
@@ -16,6 +17,9 @@ export function GET(): Response {
     '/manim-alternative',
     '/ai-video-from-code',
     '/programmatic-video-rust',
+    '/agents',
+    ...agents.map((a) => `/agents/${a.slug}`),
+    ...skills.map((s) => `/agents/skills/${s.name}`),
     ...pages.map((p) => href(p.slug)),
   ];
   const urls = paths.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join('\n');
