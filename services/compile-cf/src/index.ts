@@ -34,8 +34,11 @@ export class Builder extends Container<Env> {
 
 function service(env: Env) {
   const pool = Math.max(1, Number(env.POOL_SIZE) || 1);
+  // The image's BUILD_ID is part of the name, so a new image gets new
+  // machines. A machine started on the old image keeps that image until it
+  // is destroyed, even after the rollout reports the new one.
   const machine = (id: string) =>
-    getContainer(env.BUILDER, `pool-${parseInt(id.slice(0, 8), 16) % pool}`);
+    getContainer(env.BUILDER, `${BUILD_ID}-pool-${parseInt(id.slice(0, 8), 16) % pool}`);
   return createService({
     bucket: env.ARTIFACTS,
     // The same source always goes to the same machine, so concurrent
