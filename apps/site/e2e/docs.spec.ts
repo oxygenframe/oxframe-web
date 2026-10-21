@@ -73,6 +73,41 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
   expect((await request.get('/og.png')).headers()['content-type']).toBe('image/png');
 });
 
+// Search results show a favicon only from a square raster icon, and a site
+// name and logo from Organization and WebSite JSON-LD on the home page.
+test('the site has a logo for search results', async ({ request }) => {
+  const html = await (await request.get('/')).text();
+  for (const icon of [
+    '/favicon.ico',
+    '/favicon-96.png',
+    '/favicon-192.png',
+    '/apple-touch-icon.png',
+  ]) {
+    expect(html).toContain(`href="${icon}"`);
+  }
+  for (const [path, type] of [
+    ['/favicon.ico', 'image/'],
+    ['/favicon-48.png', 'image/png'],
+    ['/favicon-96.png', 'image/png'],
+    ['/logo-512.png', 'image/png'],
+    ['/site.webmanifest', ''],
+  ]) {
+    const res = await request.get(path!);
+    expect(res.status(), path).toBe(200);
+    expect(res.headers()['content-type'], path).toContain(type!);
+  }
+  const graph = [...html.matchAll(/<script type="application\/ld\+json">([^<]*)<\/script>/g)].map(
+    (m) => JSON.parse(m[1]!),
+  );
+  const org = graph.find((d) => d['@type'] === 'Organization');
+  expect(org?.name).toBe('oxframe');
+  expect(org?.logo?.url).toBe('https://oxframe.dev/logo-512.png');
+  expect(org?.sameAs).toContain('https://github.com/oxygenframe');
+  const site = graph.find((d) => d['@type'] === 'WebSite');
+  expect(site?.name).toBe('oxframe');
+  expect(site?.publisher?.['@id']).toBe(org?.['@id']);
+});
+
 test('docs are versioned: switcher, API reference, versioned URLs', async ({ page, request }) => {
   await page.goto('/docs/guide/hello');
   const select = page.getByTestId('docs-version');

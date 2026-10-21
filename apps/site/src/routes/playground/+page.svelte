@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, type Component } from 'svelte';
   import Seo from '$lib/components/Seo.svelte';
+  import { ORGANIZATION } from '$lib/site';
 
   // The app needs the browser; the prerendered page carries the title,
   // description and a short intro for crawlers and slow connections.
@@ -22,7 +23,9 @@
       operatingSystem: 'Any (web browser)',
       browserRequirements: 'Requires WebAssembly',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      publisher: { '@id': ORGANIZATION['@id'] },
     },
+    ORGANIZATION,
   ]}
 />
 

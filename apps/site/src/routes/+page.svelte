@@ -1,7 +1,7 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
   import { measurements } from '$lib/measurements';
-  import { SITE } from '$lib/site';
+  import { LOGO, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { track } from '$lib/track';
 
   const features = [
@@ -111,9 +111,12 @@
       softwareVersion: measurements.version,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       downloadUrl: 'https://crates.io/crates/oxframe-cli',
+      image: LOGO,
+      publisher: { '@id': ORGANIZATION['@id'] },
       sameAs: ['https://github.com/oxygenframe', 'https://crates.io/crates/oxframe'],
     },
-    { '@type': 'WebSite', name: 'oxframe', url: `${SITE}/` },
+    ORGANIZATION,
+    WEBSITE,
   ]}
 />
 

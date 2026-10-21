@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import Seo from '$lib/components/Seo.svelte';
   import { href, neighbors, sections, sectionsOf } from '$lib/docs';
-  import { canonical, SITE } from '$lib/site';
+  import { canonical, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { CURRENT, DOCS_VERSIONS, docsRs, latestPatch, locate } from '$lib/versions';
   let { children } = $props();
 
@@ -38,8 +38,9 @@
             description: doc.description,
             url: canonical(href(doc.slug)),
             inLanguage: 'en',
-            isPartOf: { '@type': 'WebSite', name: 'oxframe', url: SITE },
+            isPartOf: { '@id': WEBSITE['@id'], '@type': 'WebSite', name: 'oxframe', url: SITE },
             about: { '@type': 'SoftwareApplication', name: 'oxframe' },
+            publisher: ORGANIZATION,
           },
           {
             '@type': 'BreadcrumbList',
