@@ -97,8 +97,10 @@
 </table>
 <p>
   Every node has <code>x y rotation scale opacity fill stroke line_width start end</code>, the paint
-  and compositing properties described in <a href="/docs/0.15.0/effects">Effects</a>, and the flex item
-  properties <code>grow shrink basis margin align_self</code>. <code>start</code>/<code>end</code>
+  and compositing properties described in <a href="/docs/0.15.0/effects">Effects</a>, and the flex
+  item properties <code>grow shrink basis margin align_self</code>. <code>start</code>/<code
+    >end</code
+  >
   trim outlines — animate <code>end</code> from 0 to 1 to draw a shape on (on text it reveals glyph by
   glyph).
 </p>

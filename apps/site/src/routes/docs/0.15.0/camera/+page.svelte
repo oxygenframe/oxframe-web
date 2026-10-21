@@ -65,7 +65,7 @@ cam.fit(diagram, 120.0, 1.4).await;    // and lets go here`}</code
 
 <h2>Checking</h2>
 <p>
-  <a href="/docs/0.15.0/cli"><code>oxframe check</code></a> does not report nodes inside a camera as out of frame:
-  when you zoom in on a detail, the rest of the world is supposed to be outside. Text overlap and contrast
-  are still checked, and nodes added to the view are checked as usual.
+  <a href="/docs/0.15.0/cli"><code>oxframe check</code></a> does not report nodes inside a camera as out
+  of frame: when you zoom in on a detail, the rest of the world is supposed to be outside. Text overlap
+  and contrast are still checked, and nodes added to the view are checked as usual.
 </p>

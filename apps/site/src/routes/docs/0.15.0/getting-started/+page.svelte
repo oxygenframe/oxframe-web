@@ -60,14 +60,17 @@ oxframe dev --open`}</code
     <tr><td><code>assets/</code></td><td>Images and audio.</td></tr>
     <tr
       ><td><code>AGENTS.md</code>, <code>.claude/</code></td><td
-        >Instructions for AI coding assistants (see <a href="/docs/0.15.0/agents">Working with AI agents</a
+        >Instructions for AI coding assistants (see <a href="/docs/0.15.0/agents"
+          >Working with AI agents</a
         >).</td
       ></tr
     >
   </tbody>
 </table>
 
-<p>Next, <a href="/docs/0.15.0/guide/hello">lesson 1</a> walks through that first scene line by line.</p>
+<p>
+  Next, <a href="/docs/0.15.0/guide/hello">lesson 1</a> walks through that first scene line by line.
+</p>
 
 <style>
   td {

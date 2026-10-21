@@ -47,8 +47,8 @@
   <code>remove(((line, col), (line, col)), seconds)</code>
   and <code>replace</code> edit one spot; lines are counted from 1 and columns from 0.
   <code>.flash()</code> on that tween lights the inserted text for a moment. A focus on lines that
-  move rides with them. The <a href="/playground?v=0.15.0&ex=code_steps">code steps</a> example writes a function
-  this way.
+  move rides with them. The <a href="/playground?v=0.15.0&ex=code_steps">code steps</a> example writes
+  a function this way.
 </p>
 
 <Try>

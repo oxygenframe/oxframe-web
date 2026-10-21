@@ -4,8 +4,8 @@
 
 <h1>Markers, eases, tunables</h1>
 <p class="lead">
-  The full story behind <a href="/docs/0.15.0/guide/editor">lesson 7</a>: values that live outside your
-  code so you can adjust them in the editor.
+  The full story behind <a href="/docs/0.15.0/guide/editor">lesson 7</a>: values that live outside
+  your code so you can adjust them in the editor.
 </p>
 
 <h2>The three kinds</h2>

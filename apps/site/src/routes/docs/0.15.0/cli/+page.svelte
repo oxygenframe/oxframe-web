@@ -84,7 +84,9 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
 
 <h3><code>oxframe render</code></h3>
 <p>
-  Builds in release mode and renders a video. See <a href="/docs/0.15.0/rendering">Rendering video</a> for examples.
+  Builds in release mode and renders a video. See <a href="/docs/0.15.0/rendering"
+    >Rendering video</a
+  > for examples.
 </p>
 <table>
   <tbody>

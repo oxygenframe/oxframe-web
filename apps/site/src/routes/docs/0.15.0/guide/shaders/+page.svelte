@@ -41,7 +41,8 @@
   A splash at two seconds is a signal change at that moment, not a formula of time. That way the
   editor shows it on the timeline and <code>oxframe check</code> sees it. A shader can only read
   finished pixels: inside a fading group or a blur, <code>check</code> reports
-  <code>input_cycle</code>. <a href="/docs/0.15.0/rendering#shaders-that-read-pixels">Rendering video</a>
+  <code>input_cycle</code>.
+  <a href="/docs/0.15.0/rendering#shaders-that-read-pixels">Rendering video</a>
   has the details.
 </p>
 
@@ -62,5 +63,6 @@
 
 <h2>Next</h2>
 <p>
-  <a href="/docs/0.15.0/guide/charts">Lesson 14</a> plots functions and data on axes that follow animated ranges.
+  <a href="/docs/0.15.0/guide/charts">Lesson 14</a> plots functions and data on axes that follow animated
+  ranges.
 </p>

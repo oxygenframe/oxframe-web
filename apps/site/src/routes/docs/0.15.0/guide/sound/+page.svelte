@@ -31,7 +31,8 @@
   <code>voice("Sound follows the picture").start()</code> starts a line and returns a handle.
   <code>line.at_word("follows").await</code> waits for that word, and <code>line.await</code> waits
   for the end. Without a speech provider oxframe estimates how long the line takes, which is enough
-  to time the picture; <a href="/docs/0.15.0/rendering#voice">Rendering</a> shows how to plug in a real voice.
+  to time the picture; <a href="/docs/0.15.0/rendering#voice">Rendering</a> shows how to plug in a real
+  voice.
 </p>
 
 <Try>

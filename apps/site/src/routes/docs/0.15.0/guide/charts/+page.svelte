@@ -52,8 +52,10 @@
 
 <h2>You made it</h2>
 <p>
-  That is the whole core of oxframe. From here, browse <a href="/docs/0.15.0/nodes">all nodes</a> and
+  That is the whole core of oxframe. From here, browse <a href="/docs/0.15.0/nodes">all nodes</a>
+  and
   <a href="/docs/0.15.0/effects">effects</a>, open the
-  <a href="/playground?v=0.15.0&ex=ocean">ocean scene</a> to see everything working together, or read
+  <a href="/playground?v=0.15.0&ex=ocean">ocean scene</a> to see everything working together, or
+  read
   <a href="/docs/0.15.0/how-it-works">how oxframe works</a> inside.
 </p>

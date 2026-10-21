@@ -59,6 +59,6 @@
 
 <h2>Next</h2>
 <p>
-  One scene is not a whole video yet. <a href="/docs/0.15.0/guide/scenes">Lesson 11</a> puts several scenes in
-  a row and blends them together.
+  One scene is not a whole video yet. <a href="/docs/0.15.0/guide/scenes">Lesson 11</a> puts several scenes
+  in a row and blends them together.
 </p>
