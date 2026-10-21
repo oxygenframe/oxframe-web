@@ -1,16 +1,21 @@
 {
-  "version": "0.4.0",
-  "date": "2026-10-20",
-  "machine": "Intel Core Ultra 7 255H, 16 threads, rustc 1.97.1, Linux",
-  "scene": "One scene: a title card, a bullet list and an end card. oxframe was already built in the same target directory.",
-  "editSeconds": 0.72,
-  "checkWarmSeconds": 0.26,
-  "checkVisualSeconds": 0.02,
-  "checkAfterEditSeconds": 4.8,
+  "version": "0.20.0",
+  "date": "2026-10-22",
+  "machine": "Intel(R) Core(TM) Ultra 7 255H, 16 threads, rustc 1.97.1, Linux",
+  "scene": "One scene: a title card, a bullet list and an end card, 30 seconds. oxframe was already built in the same target directory.",
+  "editSeconds": 0.6,
+  "checkWarmSeconds": 0.37,
+  "checkAfterEditSeconds": 0.83,
+  "render30Seconds": 8.41,
+  "render30OneJobSeconds": 34.02,
+  "render30Jobs": 8,
+  "render30VideoSeconds": 27.52,
+  "render30SameBytes": true,
   "a7": null,
   "commands": [
-    "cargo build (one-line change, warm dependencies): 0.72s",
-    "oxframe check with a current dev build: 0.26s, of which the visual lint reported 0.02s",
-    "oxframe check immediately after that edit, including cargo check of the SDK graph: 4.80s"
+    "cargo build (one-line change, warm dependencies): 0.60s",
+    "oxframe check with a current dev build: 0.37s",
+    "oxframe check immediately after an edit, including cargo check: 0.83s",
+    "render of the 27.5-second video on the CPU, 8 jobs: 8.41s; one job: 34.02s"
   ]
 }

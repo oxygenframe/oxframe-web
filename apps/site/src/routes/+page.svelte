@@ -220,9 +220,19 @@
     <article>
       <p class="figure">{measurements.checkWarmSeconds}s</p>
       <h3>Warm check</h3>
+      <p><code>oxframe check</code> when that build is already current.</p>
+    </article>
+    <article>
+      <p class="figure">{measurements.checkAfterEditSeconds}s</p>
+      <h3>Check after an edit</h3>
+      <p><code>oxframe check</code> right after a change, the build included.</p>
+    </article>
+    <article>
+      <p class="figure">{measurements.render30Seconds}s</p>
+      <h3>{measurements.render30VideoSeconds}-second video</h3>
       <p>
-        <code>oxframe check</code> when that build is already current. The visual lint itself
-        reported {measurements.checkVisualSeconds}s.
+        <code>oxframe render --cpu</code> in {measurements.render30Jobs} parallel segments ({measurements.render30OneJobSeconds}s
+        with one), no GPU. Both files are byte for byte the same.
       </p>
     </article>
   </div>
