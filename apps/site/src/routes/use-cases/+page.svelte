@@ -33,13 +33,42 @@
 
 <Seo
   title="What people make with oxframe — oxframe"
-  description="Release notes, algorithm explainers, code tutorials, product updates and vertical videos, each with a gallery example and the brief it answers."
+  description="A GitHub release's notes become a video on that release. Gallery scenes cover explainers, tutorials, product updates and vertical videos."
 />
 
 <h1>Use cases</h1>
 <p class="lead">
-  Each one is a scene already in the gallery. The brief is the request; the playground has the code.
+  A GitHub release can grow its video from the notes alone. The scenes below are already in the
+  gallery: the brief is the request, and the playground has the code.
 </p>
+
+<article>
+  <h2>A video on every release</h2>
+  <p>
+    Publish a release and the notes become the MP4 attached to it. Headings and lists turn into
+    title cards and bullet lists. Text that does not fit is split across cards, and the end card
+    says "made with oxframe".
+  </p>
+  <pre><code
+      >on:
+  release:
+    types: [published]
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: oxygenframe/release-video-action@v1
+        with:
+          portrait: true</code
+    ></pre>
+  <p>
+    <a class="btn" href="https://github.com/oxygenframe/release-video-action"
+      >oxygenframe/release-video-action</a
+    >
+  </p>
+</article>
 
 {#each cases as item (item.example)}
   {@const card = galleryItem(item.example)}
