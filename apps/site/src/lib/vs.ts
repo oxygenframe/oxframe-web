@@ -30,7 +30,14 @@ export interface VsPage {
   };
   sections: { heading: string; html: string }[];
   /** Code from lib/migrate shown under its own heading, e.g. a batch render. */
-  example?: { heading: string; intro: string; files: string[]; outro: string };
+  example?: {
+    heading: string;
+    intro: string;
+    files: string[];
+    outro: string;
+    /** A port in lib/migrate the page opens in the playground. */
+    playground?: string;
+  };
   pickThem: string[];
   pickOxframe: string[];
   migrate?: string;
@@ -423,7 +430,36 @@ cd my-video && oxframe dev</code></pre>
 <p>oxframe's case is the workflow around the scene. <code>oxframe dev</code> shows the video with a timeline, markers you drag to retime it, and tunables you change without rebuilding; the <a href="/playground">playground</a> runs the same scene in a browser with nothing to install. One scene can hold a plot, a code block, a video clip and a voice line, and render 16:9, 9:16 and 1:1. And <code>oxframe check</code> tells an agent what is wrong in a frame before you watch it.</p>
 <p>Cairo is quick on simple scenes; most of the gap below is start-up and encoding. Manim's real cost is its install, which the playground avoids altogether.</p>`,
       },
+      {
+        heading: 'How the code maps',
+        html: `<table>
+<thead><tr><th>Manim</th><th>oxframe</th></tr></thead>
+<tbody>
+<tr><td><code>class S(Scene): def construct(self)</code></td><td><code>#[oxframe::scene] async fn s(view: View)</code></td></tr>
+<tr><td><code>self.add(m)</code></td><td><code>view.add(…)</code></td></tr>
+<tr><td><code>self.play(Create(m))</code></td><td><code>m.draw_on().await</code></td></tr>
+<tr><td><code>FadeIn</code>, <code>FadeOut</code></td><td><code>m.fade_in().await</code>, <code>m.fade_out().await</code></td></tr>
+<tr><td><code>Transform(a, b)</code></td><td><code>a.data().to(path, 1.0)</code> for shapes, <code>t.morph_to("new", 1.0)</code> for text</td></tr>
+<tr><td><code>self.play(a, b)</code></td><td><code>all((a, b)).await</code></td></tr>
+<tr><td><code>LaggedStart(…, lag_ratio=0.1)</code></td><td><code>stagger(0.1, &amp;items, |m| m.fade_in()).await</code></td></tr>
+<tr><td><code>ValueTracker</code>, <code>always_redraw</code></td><td><code>Signal::new(…)</code>, <code>.bind(move || …)</code></td></tr>
+<tr><td><code>Axes</code>, <code>axes.plot</code>, <code>NumberLine</code></td><td><code>Axes::new()</code>, <code>axes.plot(|x| …)</code>, <code>NumberLine::new(…)</code></td></tr>
+<tr><td><code>Matrix</code>, <code>Vector</code>, <code>ApplyMatrix</code></td><td><code>Matrix::new</code>, <code>axes.vector</code>, <code>axes.apply_matrix</code></td></tr>
+<tr><td><code>MovingCameraScene</code></td><td><code>Camera</code>: zoom, <code>center_on</code>, <code>fit</code></td></tr>
+<tr><td><code>MathTex</code>, <code>Tex</code></td><td>not yet</td></tr>
+</tbody>
+</table>`,
+      },
     ],
+    example: {
+      heading: 'A scene in the style of 3Blue1Brown',
+      intro:
+        'From chapter 3 of <em>Essence of linear algebra</em>: î lands on (1, −2) and ĵ on (3, 0), so v = −1 î + 2 ĵ lands on (5, 2). The grid, the basis vectors and v follow the matrix; the matrix shows where the basis vectors land.',
+      files: ['essence.rs'],
+      outro:
+        'It runs in the browser with nothing to install. Change the matrix and watch the plane follow.',
+      playground: 'essence',
+    },
     pickThem: [
       'The video is about formulas and needs LaTeX or Typst.',
       'You write Python and want its scientific libraries in the scene.',

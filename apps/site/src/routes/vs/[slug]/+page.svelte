@@ -2,7 +2,7 @@
   // oxframe next to one other tool: when to pick which, a dated table, one
   // scene in both with its render time, migration and an FAQ.
   import Seo from '$lib/components/Seo.svelte';
-  import { code } from '$lib/migrate';
+  import { code, playground } from '$lib/migrate';
   import { SITE } from '$lib/site';
   import { CHECKED, vsPage, vsPages } from '$lib/vs';
   import measurements from '$lib/vs-measurements.json';
@@ -157,6 +157,11 @@
   {/if}
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- our own text -->
   <p>{@html p.example.outro}</p>
+  {#if p.example.playground}
+    <p>
+      <a class="btn primary" href={playground(p.example.playground)}>Open it in the playground</a>
+    </p>
+  {/if}
 {/if}
 
 <h2>When to pick {p.name}</h2>
