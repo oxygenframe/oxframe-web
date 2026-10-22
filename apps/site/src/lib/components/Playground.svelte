@@ -11,6 +11,7 @@
   import { CURRENT } from '$lib/versions';
   import { exampleByName, lessonExamples, localExamples, showcaseExamples } from '$lib/examples';
   import { decodeShare, encodeShare } from '$lib/share';
+  import { MAX_SHARE_SECONDS, posterOf, SHARE_BITRATE, uploadShare } from '$lib/share-video';
   import { track, trackOnce } from '$lib/track';
 
   const initialName = page.url.searchParams.get('ex') ?? 'intro';
@@ -34,7 +35,7 @@
   let compileMs = $state<number | null>(null);
   let copied = $state(false);
   let player = $state<{
-    exportMp4: (p?: (d: number, t: number) => void) => Promise<Blob>;
+    exportMp4: (p?: (d: number, t: number) => void, bitrate?: number) => Promise<Blob>;
     restart: () => void;
   }>();
   let exportState = $state<{ done: number; total: number } | null>(null);
@@ -110,6 +111,36 @@
     void run();
   }
 
+  // Share with video: render, take a poster, upload, copy the /s/<id> link.
+  let sharing = $state<{ done: number; total: number } | 'upload' | null>(null);
+  let sharedUrl = $state<string | null>(null);
+  async function shareVideo() {
+    if (!player || sharing) return;
+    sharing = { done: 0, total: 1 };
+    message = '';
+    try {
+      const video = await player.exportMp4(
+        (done, total) => (sharing = { done, total }),
+        SHARE_BITRATE,
+      );
+      const { poster, seconds } = await posterOf(video);
+      if (seconds > MAX_SHARE_SECONDS + 0.5) {
+        throw new Error(
+          `Videos up to ${MAX_SHARE_SECONDS} s can be shared; this one is ${Math.round(seconds)} s. Export mp4 instead.`,
+        );
+      }
+      sharing = 'upload';
+      sharedUrl = await uploadShare(video, poster, encodeShare(source));
+      track('Share video', { example: example || 'shared' });
+      await navigator.clipboard.writeText(sharedUrl).catch(() => {});
+    } catch (e) {
+      message = (e as Error).message;
+      status = 'error';
+    } finally {
+      sharing = null;
+    }
+  }
+
   async function share() {
     const url = `${location.origin}/playground${encodeShare(source)}`;
     history.replaceState(history.state, '', url);
@@ -168,6 +199,24 @@
           ? `Exporting ${Math.round((100 * exportState.done) / exportState.total)}%`
           : 'Export mp4'}
       </button>
+      <button
+        class="btn"
+        onclick={shareVideo}
+        disabled={!artifact || !!sharing || !!exportState}
+        title="Renders the video and shares a link that plays it (kept 30 days)"
+        data-testid="share-video"
+      >
+        {sharing === 'upload'
+          ? 'Uploading…'
+          : sharing
+            ? `Rendering ${Math.round((100 * sharing.done) / sharing.total)}%`
+            : 'Share video'}
+      </button>
+      {#if sharedUrl}
+        <a class="btn" href={sharedUrl} target="_blank" rel="noopener" data-testid="shared-link"
+          >Video link copied</a
+        >
+      {/if}
       {#if download}
         <a class="btn" href={download.url} download={download.name} data-testid="download"
           >Download</a

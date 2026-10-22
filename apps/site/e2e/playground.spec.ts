@@ -33,7 +33,7 @@ test('share links restore the code', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/playground?ex=morph');
   await expect(page.getByTestId('compile-status')).toHaveText(/Compiled/, { timeout: 300_000 });
-  await page.getByRole('button', { name: /Share/ }).click();
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
   // Under a full e2e run the link can take longer than the default 5 s.
   await expect
     .poll(() => page.evaluate(() => location.hash), { timeout: 15_000 })

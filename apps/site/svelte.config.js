@@ -36,6 +36,8 @@ export default {
         'script-src': ['self', 'https://plausible.io'],
         'style-src': ['self', 'unsafe-inline'],
         'img-src': ['self', 'data:', 'blob:'],
+        // A shared video's poster is taken from its MP4 in a <video>.
+        'media-src': ['self', 'blob:'],
         'font-src': ['self', 'data:'],
         'connect-src': ['self', compile, 'https://plausible.io'],
         'worker-src': ['self', 'blob:'],

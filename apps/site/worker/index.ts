@@ -1,11 +1,14 @@
 // oxframe.dev: the static site, plus /media/* from R2 (rendered videos and
-// their posters, uploaded by scripts/render-media.ts). Only /media/* reaches
-// this code (`run_worker_first` in wrangler.jsonc); everything else is a
-// static asset.
+// their posters, uploaded by scripts/render-media.ts) and shared playground
+// videos (/api/share, /s/<id>, see share.ts). Only those paths reach this
+// code (`run_worker_first` in wrangler.jsonc); everything else is a static
+// asset.
 //
 // Media paths carry the SDK version (/media/0.20.0/gallery/intro.mp4), so a
 // file never changes once uploaded and is cached for a year. Range requests
 // are answered, so a video can seek before it has fully loaded.
+
+import { page, upload, type RateLimit, type ShareBucket } from './share';
 
 interface R2Range {
   offset?: number;
@@ -25,7 +28,8 @@ interface R2Bucket {
 }
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
-  MEDIA: R2Bucket;
+  MEDIA: R2Bucket & ShareBucket;
+  SHARE_LIMIT?: RateLimit;
 }
 
 const TYPES: Record<string, string> = {
@@ -47,15 +51,19 @@ export function parseRange(header: string | null): R2Range | null {
 }
 
 export async function media(request: Request, bucket: R2Bucket): Promise<Response> {
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
-    return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
-  }
   const path = new URL(request.url).pathname;
   // Only plain file names under /media/: no `..`, no empty segments.
   if (!/^\/media(\/[\w.-]+)+$/.test(path) || path.includes('..')) {
     return new Response('Not found', { status: 404 });
   }
-  const key = path.slice(1);
+  return file(request, bucket, path.slice(1));
+}
+
+/** One object of the bucket, with ranges; its key never changes content. */
+export async function file(request: Request, bucket: R2Bucket, key: string): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
+  }
   const ext = key.split('.').pop() ?? '';
   const headers = new Headers({
     'Content-Type': TYPES[ext] ?? 'application/octet-stream',
@@ -92,7 +100,19 @@ export async function media(request: Request, bucket: R2Bucket): Promise<Respons
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    if (new URL(request.url).pathname.startsWith('/media/')) return media(request, env.MEDIA);
+    const path = new URL(request.url).pathname;
+    if (path.startsWith('/media/')) return media(request, env.MEDIA);
+    if (path === '/api/share') return upload(request, env.MEDIA, env.SHARE_LIMIT);
+    // A share's files (ids are random, so a file never changes) and its page.
+    const shared = /^\/s\/([A-Za-z0-9]{10})\/(video\.mp4|poster\.jpg)$/.exec(path);
+    if (shared) return file(request, env.MEDIA, `shares/${shared[1]}/${shared[2]}`);
+    if (path.startsWith('/s/')) {
+      const res = await page(request, env.MEDIA);
+      if (res) return res;
+      // The site's 404 page, with a 404 status.
+      const missing = await env.ASSETS.fetch(new Request(new URL('/404', request.url)));
+      return new Response(missing.body, { status: 404, headers: missing.headers });
+    }
     return env.ASSETS.fetch(request);
   },
 };

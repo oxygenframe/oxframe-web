@@ -86,9 +86,12 @@
   }
 
   /** Renders the whole project to MP4 in the browser (WebCodecs). */
-  export function exportMp4(onProgress?: (done: number, total: number) => void): Promise<Blob> {
+  export function exportMp4(
+    onProgress?: (done: number, total: number) => void,
+    bitrate?: number,
+  ): Promise<Blob> {
     if (editor.playing) editor.pause();
-    return backend.exportMp4(onProgress);
+    return backend.exportMp4(onProgress, bitrate);
   }
   const webgpu = typeof navigator !== 'undefined' && 'gpu' in navigator;
 </script>

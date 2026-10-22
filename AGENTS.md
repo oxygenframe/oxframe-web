@@ -50,6 +50,16 @@ plugin directory: `docs_search`, `get_page`, `list_components`,
 docs without a redeploy. Deployed by `.github/workflows/deploy-mcp.yml` on
 changes to `services/mcp`.
 
+## Shared videos
+
+The playground's "Share video" renders the scene in the browser and posts
+it to `/api/share` (`apps/site/worker/share.ts`): MP4 checked by its boxes,
+at most 16 MB and 30 s, a JPEG poster, the scene's share link, 3 uploads a
+minute per address. Files live in R2 under `shares/<id>/` and an R2
+lifecycle rule (`shares-30-days`) deletes them after 30 days; `/s/<id>` is
+a `noindex` page with `og:video`. Remove one earlier with `bun
+scripts/delete-share.ts <id>`.
+
 ## Migration guides
 
 `/docs/migrate/*` show the same scene in another tool and in oxframe. The
