@@ -3,7 +3,8 @@
   // description, canonical URL, Open Graph / Twitter cards and optional
   // JSON-LD. Pages render exactly one of these.
   import { page } from '$app/state';
-  import { canonical, OG_IMAGE } from '$lib/site';
+  import { canonical, OG_IMAGE, SITE } from '$lib/site';
+  import cards from '$lib/og.json';
 
   interface Props {
     title: string;
@@ -24,6 +25,15 @@
   }: Props = $props();
 
   const url = $derived(canonicalUrl ?? canonical(page.url.pathname));
+  // The page's own card (scripts/og-images.ts), else the site card. Looked
+  // up by the canonical URL, so an archived doc shows its current page's.
+  const card = $derived(
+    (cards as Record<string, { title: string; image: string }>)[url.slice(SITE.length) || '/'],
+  );
+  const image = $derived(card ? SITE + card.image : OG_IMAGE);
+  const imageAlt = $derived(
+    card ? `${card.title} — oxframe` : 'oxframe — motion graphics your AI agent can see',
+  );
   // `<` is escaped so the JSON cannot close the script element.
   const ld = $derived(
     jsonld.map(
@@ -44,14 +54,14 @@
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={url} />
-  <meta property="og:image" content={OG_IMAGE} />
+  <meta property="og:image" content={image} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="oxframe — motion graphics your AI agent can see" />
+  <meta property="og:image:alt" content={imageAlt} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={OG_IMAGE} />
+  <meta name="twitter:image" content={image} />
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- JSON-LD built from our own data -->
   {#each ld as s, i (i)}{@html s}{/each}
 </svelte:head>

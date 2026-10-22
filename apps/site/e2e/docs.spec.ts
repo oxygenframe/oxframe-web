@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { href, pages } from '../src/lib/docs';
+import { topic } from '../scripts/og-images';
+import { readFileSync } from 'node:fs';
+
+const cards = JSON.parse(
+  readFileSync(new URL('../src/lib/og.json', import.meta.url), 'utf8'),
+) as Record<string, { title: string; image: string }>;
 
 // Every page in the docs list exists, has a title, and its "Next" link leads
 // to the following page; internal links on it point to pages that exist.
@@ -59,7 +65,29 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
     expect(description!.length, `${path} description length`).toBeLessThanOrEqual(170);
     expect(attr(html, /<link rel="canonical" href="([^"]*)"/), path).toBe(url);
     expect(attr(html, /<meta property="og:url" content="([^"]*)"/), path).toBe(url);
-    expect(html, path).toContain('<meta property="og:image" content="https://oxframe.dev/og.png"');
+    // Each page's own card, drawn by oxframe with the page's current title
+    // (bun scripts/og-images.ts after a build); the home page has og.png.
+    const card = cards[path];
+    if (path === '/') {
+      expect(html, path).toContain(
+        '<meta property="og:image" content="https://oxframe.dev/og.png"',
+      );
+    } else {
+      expect(card, `${path}: no card, run bun scripts/og-images.ts`).toBeTruthy();
+      expect(card!.title, `${path}: card out of date, run bun scripts/og-images.ts`).toBe(
+        topic(
+          title!
+            .replace(/&amp;/g, '&')
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"'),
+        ),
+      );
+      expect(attr(html, /<meta property="og:image" content="([^"]*)"/), path).toBe(
+        `https://oxframe.dev${card!.image}`,
+      );
+      const png = await request.get(card!.image);
+      expect(png.headers()['content-type'], card!.image).toBe('image/png');
+    }
     expect(html, path).toContain('<meta name="twitter:card" content="summary_large_image"');
     expect(html.match(/<h1[\s>]/g)?.length, `${path} h1 count`).toBe(1);
     expect(html, path).not.toContain('name="robots" content="noindex"');

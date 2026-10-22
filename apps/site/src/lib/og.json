@@ -1,0 +1,302 @@
+{
+  "/playground": {
+    "title": "Rust animation playground",
+    "section": "Playground",
+    "image": "/og/playground.png"
+  },
+  "/gallery": {
+    "title": "Gallery of code-based videos",
+    "section": "Gallery",
+    "image": "/og/gallery.png"
+  },
+  "/compare": {
+    "title": "oxframe vs Remotion, Manim, Motion Canvas, fframes",
+    "section": "Compare",
+    "image": "/og/compare.png"
+  },
+  "/use-cases": {
+    "title": "What people make with oxframe",
+    "section": "Use cases",
+    "image": "/og/use-cases.png"
+  },
+  "/showcase": {
+    "title": "Showcase and the made-with badge",
+    "section": "Showcase",
+    "image": "/og/showcase.png"
+  },
+  "/remotion-alternative": {
+    "title": "A Remotion alternative in Rust",
+    "section": "Compare",
+    "image": "/og/remotion-alternative.png"
+  },
+  "/manim-alternative": {
+    "title": "A Manim alternative in Rust",
+    "section": "Compare",
+    "image": "/og/manim-alternative.png"
+  },
+  "/ai-video-from-code": {
+    "title": "AI video generation from code",
+    "section": "oxframe",
+    "image": "/og/ai-video-from-code.png"
+  },
+  "/programmatic-video-rust": {
+    "title": "Programmatic video in Rust",
+    "section": "oxframe",
+    "image": "/og/programmatic-video-rust.png"
+  },
+  "/agents": {
+    "title": "Video skills and MCP for AI coding agents",
+    "section": "Agents",
+    "image": "/og/agents.png"
+  },
+  "/agents/claude-code": {
+    "title": "oxframe in Claude Code: videos your agent checks",
+    "section": "Agents",
+    "image": "/og/agents-claude-code.png"
+  },
+  "/agents/codex": {
+    "title": "oxframe in OpenAI Codex: video from code",
+    "section": "Agents",
+    "image": "/og/agents-codex.png"
+  },
+  "/agents/cursor": {
+    "title": "oxframe in Cursor: animations your agent can see",
+    "section": "Agents",
+    "image": "/og/agents-cursor.png"
+  },
+  "/agents/copilot": {
+    "title": "oxframe with GitHub Copilot: video from code",
+    "section": "Agents",
+    "image": "/og/agents-copilot.png"
+  },
+  "/agents/skills/oxframe": {
+    "title": "oxframe skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-oxframe.png"
+  },
+  "/agents/skills/chart-video": {
+    "title": "chart-video skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-chart-video.png"
+  },
+  "/agents/skills/code-walkthrough": {
+    "title": "code-walkthrough skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-code-walkthrough.png"
+  },
+  "/agents/skills/manim-to-oxframe": {
+    "title": "manim-to-oxframe skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-manim-to-oxframe.png"
+  },
+  "/agents/skills/math-explainer": {
+    "title": "math-explainer skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-math-explainer.png"
+  },
+  "/agents/skills/motion-canvas-to-oxframe": {
+    "title": "motion-canvas-to-oxframe skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-motion-canvas-to-oxframe.png"
+  },
+  "/agents/skills/oxframe-check": {
+    "title": "oxframe-check skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-oxframe-check.png"
+  },
+  "/agents/skills/pr-to-video": {
+    "title": "pr-to-video skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-pr-to-video.png"
+  },
+  "/agents/skills/release-to-video": {
+    "title": "release-to-video skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-release-to-video.png"
+  },
+  "/agents/skills/remotion-to-oxframe": {
+    "title": "remotion-to-oxframe skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-remotion-to-oxframe.png"
+  },
+  "/agents/skills/slides": {
+    "title": "slides skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-slides.png"
+  },
+  "/agents/skills/voiceover": {
+    "title": "voiceover skill for agents",
+    "section": "Agent skills",
+    "image": "/og/agents-skills-voiceover.png"
+  },
+  "/docs": {
+    "title": "Animation in Rust, step by step",
+    "section": "Docs",
+    "image": "/og/docs.png"
+  },
+  "/docs/getting-started": {
+    "title": "Install and first project",
+    "section": "Docs",
+    "image": "/og/docs-getting-started.png"
+  },
+  "/docs/guide/hello": {
+    "title": "Your first animation",
+    "section": "Guide",
+    "image": "/og/docs-guide-hello.png"
+  },
+  "/docs/guide/together": {
+    "title": "In order, or all at once",
+    "section": "Guide",
+    "image": "/og/docs-guide-together.png"
+  },
+  "/docs/guide/shapes": {
+    "title": "Shapes, colors, transforms",
+    "section": "Guide",
+    "image": "/og/docs-guide-shapes.png"
+  },
+  "/docs/guide/easing": {
+    "title": "Easing",
+    "section": "Guide",
+    "image": "/og/docs-guide-easing.png"
+  },
+  "/docs/guide/text": {
+    "title": "Text",
+    "section": "Guide",
+    "image": "/og/docs-guide-text.png"
+  },
+  "/docs/guide/groups": {
+    "title": "Groups and layout",
+    "section": "Guide",
+    "image": "/og/docs-guide-groups.png"
+  },
+  "/docs/guide/editor": {
+    "title": "Tweak timing in the editor",
+    "section": "Guide",
+    "image": "/og/docs-guide-editor.png"
+  },
+  "/docs/guide/signals": {
+    "title": "Signals",
+    "section": "Guide",
+    "image": "/og/docs-guide-signals.png"
+  },
+  "/docs/guide/drawing": {
+    "title": "Drawing and morphing",
+    "section": "Guide",
+    "image": "/og/docs-guide-drawing.png"
+  },
+  "/docs/guide/random": {
+    "title": "Randomness and background tasks",
+    "section": "Guide",
+    "image": "/og/docs-guide-random.png"
+  },
+  "/docs/guide/scenes": {
+    "title": "Scenes and transitions",
+    "section": "Guide",
+    "image": "/og/docs-guide-scenes.png"
+  },
+  "/docs/guide/sound": {
+    "title": "Sound and voice",
+    "section": "Guide",
+    "image": "/og/docs-guide-sound.png"
+  },
+  "/docs/guide/shaders": {
+    "title": "Shaders and effects",
+    "section": "Guide",
+    "image": "/og/docs-guide-shaders.png"
+  },
+  "/docs/guide/charts": {
+    "title": "Charts and graphs",
+    "section": "Guide",
+    "image": "/og/docs-guide-charts.png"
+  },
+  "/docs/guide/matrices": {
+    "title": "Vectors and matrices",
+    "section": "Guide",
+    "image": "/og/docs-guide-matrices.png"
+  },
+  "/docs/guide/components": {
+    "title": "Components",
+    "section": "Guide",
+    "image": "/og/docs-guide-components.png"
+  },
+  "/docs/nodes": {
+    "title": "All nodes",
+    "section": "Docs",
+    "image": "/og/docs-nodes.png"
+  },
+  "/docs/effects": {
+    "title": "Effects",
+    "section": "Docs",
+    "image": "/og/docs-effects.png"
+  },
+  "/docs/charts": {
+    "title": "Animated charts and plots",
+    "section": "Docs",
+    "image": "/og/docs-charts.png"
+  },
+  "/docs/matrices": {
+    "title": "Matrices, vectors and tables",
+    "section": "Docs",
+    "image": "/og/docs-matrices.png"
+  },
+  "/docs/3d": {
+    "title": "3D scenes in 2D animations",
+    "section": "Docs",
+    "image": "/og/docs-3d.png"
+  },
+  "/docs/presentations": {
+    "title": "Presentations from scenes",
+    "section": "Docs",
+    "image": "/og/docs-presentations.png"
+  },
+  "/docs/custom-nodes": {
+    "title": "Writing your own node",
+    "section": "Docs",
+    "image": "/og/docs-custom-nodes.png"
+  },
+  "/docs/icons": {
+    "title": "Icons: Lucide, Tabler and brand logos",
+    "section": "Docs",
+    "image": "/og/docs-icons.png"
+  },
+  "/docs/camera": {
+    "title": "Camera",
+    "section": "Docs",
+    "image": "/og/docs-camera.png"
+  },
+  "/docs/timing": {
+    "title": "Markers, eases, tunables",
+    "section": "Docs",
+    "image": "/og/docs-timing.png"
+  },
+  "/docs/editor": {
+    "title": "The editor",
+    "section": "Docs",
+    "image": "/og/docs-editor.png"
+  },
+  "/docs/rendering": {
+    "title": "Rendering video",
+    "section": "Docs",
+    "image": "/og/docs-rendering.png"
+  },
+  "/docs/cli": {
+    "title": "CLI reference",
+    "section": "Docs",
+    "image": "/og/docs-cli.png"
+  },
+  "/docs/agents": {
+    "title": "Working with AI agents",
+    "section": "Docs",
+    "image": "/og/docs-agents.png"
+  },
+  "/docs/check-rules": {
+    "title": "Check rules",
+    "section": "Docs",
+    "image": "/og/docs-check-rules.png"
+  },
+  "/docs/how-it-works": {
+    "title": "How oxframe works",
+    "section": "Docs",
+    "image": "/og/docs-how-it-works.png"
+  }
+}

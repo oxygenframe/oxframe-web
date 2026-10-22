@@ -25,7 +25,12 @@ also an SEO change; treat a regression like a failing test.
 - **Structured data**: JSON-LD via `<Seo jsonld>` — SoftwareApplication on
   the home page, TechArticle + BreadcrumbList on docs, WebApplication on the
   playground. Keep facts in it true (versions, URLs).
-- **Social card**: `static/og.png` (1200×630, `bun scripts/og-image.ts`).
+- **Social cards**: every page but the home page has its own 1200×630
+  card, drawn by oxframe (the scene in `apps/site/og/`) from the page's
+  title: after adding a page or changing a title, `bun run build && bun
+  scripts/og-images.ts` in apps/site (needs cargo) and commit
+  `static/og/` and `src/lib/og.json`; e2e fails while a card is missing or
+  stale. The home page keeps `static/og.png` (`bun scripts/og-image.ts`).
 - **Speed is ranking**: keep heavy code (Monaco, the engine) lazy and off
   pages that don't need it.
 - Non-production pages and errors are `noindex`.

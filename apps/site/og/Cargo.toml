@@ -1,0 +1,13 @@
+# The link preview card of each oxframe.dev page, drawn by oxframe
+# (scripts/og-images.ts runs it). Pinned, so cards stay identical until
+# someone bumps it on purpose and renders them all again.
+[package]
+name = "og"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+oxframe = "=0.20.1"
+
+[workspace]

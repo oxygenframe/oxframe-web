@@ -12,3 +12,5 @@ playwright-report
 services/compile-cf/src/examples.gen.ts
 # Written by apps/site/scripts/crate-versions.ts on every build.
 apps/site/src/lib/versions.json
+# The link card scene's cargo build (apps/site/og).
+apps/site/og/target
