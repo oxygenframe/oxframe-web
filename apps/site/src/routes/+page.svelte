@@ -300,7 +300,7 @@
       <h3>Check</h3>
       <img
         src="/storyboard.png"
-        alt="Storyboard grid from oxframe check on oxframe 0.4.0"
+        alt="Storyboard grid from oxframe check: every frame of the video as a thumbnail"
         width="640"
         height="360"
       />
