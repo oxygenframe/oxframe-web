@@ -1,4 +1,12 @@
 {
+  "0.20.2": {
+    "mp4": "/media/releases/0.20.2/release-376d50c9.mp4",
+    "poster": "/media/releases/0.20.2/release-376d50c9.jpg",
+    "seconds": 9.02,
+    "width": 1920,
+    "height": 1080,
+    "bytes": 325035
+  },
   "0.20.1": {
     "mp4": "/media/releases/0.20.1/release-7014682c.mp4",
     "poster": "/media/releases/0.20.1/release-7014682c.jpg",
