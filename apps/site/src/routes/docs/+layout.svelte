@@ -22,7 +22,7 @@
     archived
       ? `${name} — oxframe ${loc.series} docs`
       : doc?.slug === ''
-        ? 'oxframe docs — animation in Rust, step by step'
+        ? 'Animation in Rust, step by step — oxframe docs'
         : `${name} — oxframe docs`,
   );
   // Archived pages point search engines at the current page.

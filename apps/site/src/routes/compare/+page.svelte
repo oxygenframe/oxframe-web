@@ -70,7 +70,7 @@
 </script>
 
 <Seo
-  title="Compare oxframe, fframes, Remotion and Manim — oxframe"
+  title="oxframe vs Remotion, Manim, Motion Canvas, fframes — oxframe"
   description="A neutral comparison of oxframe, fframes, Remotion, Motion Canvas and Manim: language, renderer, scene model, morphing, editor and checks an AI agent can read."
 />
 

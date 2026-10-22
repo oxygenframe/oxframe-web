@@ -62,6 +62,7 @@
     try {
       await navigator.clipboard.writeText('cargo install oxframe-cli');
       copied = true;
+      setTimeout(() => (copied = false), 1500);
     } catch {
       copied = false;
     }
@@ -146,8 +147,29 @@
       >
     </p>
     <div class="install">
-      <pre><code>cargo install oxframe-cli</code></pre>
-      <button class="btn" type="button" onclick={copyInstall}>{copied ? 'Copied' : 'Copy'}</button>
+      <div class="box">
+        <pre><code>cargo install oxframe-cli</code></pre>
+        <button
+          class="copy"
+          class:done={copied}
+          type="button"
+          onclick={copyInstall}
+          aria-label={copied ? 'Copied' : 'Copy the install command'}
+          title={copied ? 'Copied' : 'Copy'}
+        >
+          {#if copied}
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+              ><path d="M20 6 9 17l-5-5" /></svg
+            >
+          {:else}
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+              ><rect x="9" y="9" width="12" height="12" rx="2" /><path
+                d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+              /></svg
+            >
+          {/if}
+        </button>
+      </div>
     </div>
   </div>
   <figure class="reel">
@@ -392,18 +414,64 @@ fn main() {
   .cta,
   .install {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+  }
+  /* As wide as the command, never wider than the column. */
+  .box {
+    position: relative;
+    min-width: 0;
   }
   .install pre {
     margin: 0;
-    padding: 8px 12px;
-    width: max-content;
-    max-width: 100%;
+    padding: 8px 44px 8px 12px;
+  }
+  /* The copy button sits in the box and shows on hover or keyboard focus;
+     touch screens have no hover, so it is always shown there. */
+  .copy {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--muted);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition:
+      opacity 0.15s,
+      color 0.15s;
+  }
+  .install:hover .copy,
+  .copy:focus-visible,
+  .copy.done {
+    opacity: 1;
+  }
+  .copy:hover {
+    color: var(--text);
+  }
+  .copy.done {
+    color: #3fb950;
+  }
+  .copy svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (hover: none) {
+    .copy {
+      opacity: 1;
+    }
   }
   video,
   img {
+    box-sizing: border-box;
     width: 100%;
     height: auto;
     border-radius: 12px;

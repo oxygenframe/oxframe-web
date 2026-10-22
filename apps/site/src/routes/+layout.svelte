@@ -12,6 +12,63 @@
     { href: '/compare', label: 'Compare' },
     { href: '/use-cases', label: 'Use cases' },
   ];
+  // Footer columns; most links are pages of this site, so they also tie it together.
+  const footer = [
+    {
+      title: 'Product',
+      links: [
+        { href: '/playground', label: 'Playground' },
+        { href: '/gallery', label: 'Gallery' },
+        { href: '/use-cases', label: 'Use cases' },
+        { href: '/showcase', label: 'Showcase' },
+        { href: '/compare', label: 'Compare' },
+      ],
+    },
+    {
+      title: 'Docs',
+      links: [
+        { href: '/docs/getting-started', label: 'Getting started' },
+        { href: '/docs/guide/hello', label: 'Guide' },
+        { href: '/docs/cli', label: 'CLI reference' },
+        { href: '/docs/check-rules', label: 'Check rules' },
+        { href: 'https://docs.rs/oxframe', label: 'API on docs.rs' },
+      ],
+    },
+    {
+      title: 'Agents',
+      links: [
+        { href: '/agents', label: 'Agents and skills' },
+        { href: '/agents/claude-code', label: 'Claude Code' },
+        { href: '/agents/cursor', label: 'Cursor' },
+        { href: '/agents/codex', label: 'Codex' },
+        { href: '/llms.txt', label: 'llms.txt' },
+      ],
+    },
+    {
+      title: 'Alternatives',
+      links: [
+        { href: '/remotion-alternative', label: 'Remotion alternative' },
+        { href: '/manim-alternative', label: 'Manim alternative' },
+        { href: '/programmatic-video-rust', label: 'Programmatic video' },
+        { href: '/ai-video-from-code', label: 'AI video from code' },
+      ],
+    },
+    {
+      title: 'Project',
+      links: [
+        { href: 'https://github.com/oxygenframe/oxframe-sdk', label: 'GitHub' },
+        {
+          href: 'https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md',
+          label: 'Changelog',
+        },
+        { href: 'https://crates.io/crates/oxframe', label: 'crates.io' },
+        {
+          href: 'https://github.com/oxygenframe/release-video-action',
+          label: 'Release video Action',
+        },
+      ],
+    },
+  ];
   const playground = $derived(page.url.pathname.startsWith('/playground'));
   // Fetched at build time (scripts/github-stars.ts), not by each visitor.
   const stars: number | null = starsFile.stars;
@@ -70,20 +127,43 @@
   </div>
   {#if !playground}
     <footer class="foot">
-      <a href="https://github.com/oxygenframe/oxframe-sdk" rel="external">
-        GitHub{stars ? ` · ${stars} stars` : ''}
-      </a>
-      <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md" rel="external"
-        >Changelog</a
-      >
-      <a href="https://crates.io/crates/oxframe" rel="external">crates.io</a>
-      <a href="https://docs.rs/oxframe" rel="external">docs.rs</a>
-      <a href="https://github.com/oxygenframe/release-video-action" rel="external"
-        >Release video Action</a
-      >
-      <a href="/showcase">Showcase</a>
-      <a href="/llms.txt">llms.txt</a>
-      <span class="license">MIT or Apache-2.0 · no seats, no per-render fees</span>
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="brand" href="/">
+            <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"
+              ><rect x="3" y="9" width="14" height="14" rx="3" fill="#e13238" /><circle
+                cx="22"
+                cy="16"
+                r="7"
+                fill="#68abdf"
+              /></svg
+            >
+            oxframe
+          </a>
+          <p>Motion graphics in Rust that your AI agent can see and check.</p>
+          <a class="star" href="https://github.com/oxygenframe/oxframe-sdk" rel="external">
+            Star on GitHub{stars ? ` · ${stars}` : ''}
+          </a>
+        </div>
+        {#each footer as col (col.title)}
+          <nav class="foot-col" aria-label={col.title}>
+            <p class="foot-title">{col.title}</p>
+            <ul>
+              {#each col.links as l (l.href)}
+                <li>
+                  <a href={l.href} rel={l.href.startsWith('http') ? 'external' : undefined}
+                    >{l.label}</a
+                  >
+                </li>
+              {/each}
+            </ul>
+          </nav>
+        {/each}
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 oxframe · MIT or Apache-2.0 · no seats, no per-render fees</span>
+        <span>oxframe {SDK_VERSION} · pre-1.0</span>
+      </div>
     </footer>
   {/if}
 </div>
@@ -153,13 +233,84 @@
     }
   }
   .foot {
+    margin-top: auto;
+    padding: 40px 20px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .foot-top {
+    display: grid;
+    grid-template-columns: minmax(200px, 1.6fr) repeat(5, minmax(0, 1fr));
+    gap: 28px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .foot-brand p {
+    margin: 10px 0 14px;
+    max-width: 260px;
+    line-height: 1.5;
+  }
+  .star {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .star:hover {
+    border-color: var(--muted);
+  }
+  /* Not the header's nav row. */
+  .foot-col {
+    display: block;
+  }
+  .foot-title {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .foot-col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .foot-col li {
+    margin: 0 0 7px;
+  }
+  .foot-col a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .foot-col a:hover {
+    color: var(--text);
+  }
+  .foot-bottom {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 18px;
-    margin-top: auto;
-    padding: 18px 20px 28px;
+    justify-content: space-between;
+    gap: 6px 18px;
+    max-width: 1200px;
+    margin: 32px auto 0;
+    padding-top: 16px;
     border-top: 1px solid var(--border);
-    color: var(--muted);
+    font-size: 13px;
+  }
+  @media (max-width: 960px) {
+    .foot-top {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .foot-brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .foot-top {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   .version {
     margin-left: -12px;
@@ -170,9 +321,6 @@
     color: var(--muted);
     text-decoration: none;
     white-space: nowrap;
-  }
-  .license {
-    color: var(--muted);
   }
   .status {
     margin: 0;

@@ -4,7 +4,7 @@
 </script>
 
 <Seo
-  title="oxframe for AI coding agents — oxframe"
+  title="Video skills and MCP for AI coding agents — oxframe"
   description="Make videos with Claude Code, Codex, Cursor or Copilot: oxframe skills, an MCP server, and oxframe check, which shows the agent its own frames."
 />
 

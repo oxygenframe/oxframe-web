@@ -101,6 +101,13 @@ select {
 :not(pre) > code {
   overflow-wrap: anywhere;
 }
+/* A bare URL is one long word. */
+p,
+li,
+td,
+th {
+  overflow-wrap: break-word;
+}
 pre {
   overflow-x: auto;
 }

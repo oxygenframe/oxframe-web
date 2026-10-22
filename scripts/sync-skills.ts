@@ -26,15 +26,22 @@ function inline(text: string): string {
     .map((part) => {
       if (part.startsWith('`') && part.endsWith('`') && part.length > 1)
         return `<code>${escape(part.slice(1, -1))}</code>`;
-      return escape(part)
-        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-        .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label: string, href: string) => {
-          // Links to files next to the skill point at the repository.
-          const url = /^https?:/.test(href)
-            ? href
-            : `https://github.com/oxygenframe/oxframe-sdk/blob/main/skills/oxframe/${href}`;
-          return `<a href="${url}" rel="external">${label}</a>`;
-        });
+      return (
+        escape(part)
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label: string, href: string) => {
+            // Links to files next to the skill point at the repository.
+            const url = /^https?:/.test(href)
+              ? href
+              : `https://github.com/oxygenframe/oxframe-sdk/blob/main/skills/oxframe/${href}`;
+            return `<a href="${url}" rel="external">${label}</a>`;
+          })
+          // Bare URLs become links too; a sentence's closing period is not part of one.
+          .replace(
+            /(?<!["=>])\bhttps?:\/\/[^\s<)]*[^\s<).,;:]/g,
+            (url) => `<a href="${url}" rel="external">${url}</a>`,
+          )
+      );
     })
     .join('');
 }
