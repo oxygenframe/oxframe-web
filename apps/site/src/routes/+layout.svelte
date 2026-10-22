@@ -150,9 +150,10 @@
     </a>
   </header>
 
-  <div class="page">
+  <!-- The main landmark; the playground's editor has its own. -->
+  <svelte:element this={playground ? 'div' : 'main'} class="page">
     {@render children()}
-  </div>
+  </svelte:element>
   {#if !playground}
     <footer class="foot">
       <div class="foot-top">

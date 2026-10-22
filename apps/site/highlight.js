@@ -12,6 +12,21 @@ function highlighter() {
   return ready;
 }
 
+/**
+ * GitHub colors that read below WCAG AA (4.5:1) on the site's code
+ * background (#f3f4f6 light, #1d1f23 dark), each moved to the nearest shade
+ * of the same hue that passes (4.7:1 or more).
+ */
+const ACCESSIBLE = {
+  light: { '#D73A49': '#CE2A39', '#6A737D': '#656E77', '#E36209': '#B44E07', '#22863A': '#1F7C36' },
+  dark: { '#6A737D': '#818A94' },
+};
+const accessible = (html) =>
+  html.replace(/--shiki-(light|dark):(#[0-9A-Fa-f]{6})/g, (m, theme, color) => {
+    const to = ACCESSIBLE[theme][color.toUpperCase()];
+    return to ? `--shiki-${theme}:${to}` : m;
+  });
+
 /** Best guess for a docs snippet: shell commands, TOML, JSON, else Rust. */
 export function guessLang(code) {
   const first = code.trimStart().split('\n')[0] ?? '';
@@ -25,20 +40,22 @@ export function guessLang(code) {
 /** Highlighted `<pre class="shiki">…</pre>` for `code`. */
 export async function highlight(code, lang = guessLang(code)) {
   const h = await highlighter();
-  return h.codeToHtml(code.replace(/\n$/, ''), {
-    lang,
-    themes: THEMES,
-    defaultColor: false,
-    // Shiki makes <pre> focusable for keyboard scrolling; the site's code
-    // blocks are short and Svelte's a11y check rejects tabindex on <pre>.
-    transformers: [
-      {
-        pre(node) {
-          delete node.properties.tabindex;
+  return accessible(
+    h.codeToHtml(code.replace(/\n$/, ''), {
+      lang,
+      themes: THEMES,
+      defaultColor: false,
+      // Shiki makes <pre> focusable for keyboard scrolling; the site's code
+      // blocks are short and Svelte's a11y check rejects tabindex on <pre>.
+      transformers: [
+        {
+          pre(node) {
+            delete node.properties.tabindex;
+          },
         },
-      },
-    ],
-  });
+      ],
+    }),
+  );
 }
 
 const RUST_WORD =
@@ -61,12 +78,14 @@ export function inlineLang(code) {
 export async function highlightInline(code, lang = inlineLang(code)) {
   if (!lang) return null;
   const h = await highlighter();
-  const inner = h.codeToHtml(code, {
-    lang,
-    themes: THEMES,
-    defaultColor: false,
-    structure: 'inline',
-  });
+  const inner = accessible(
+    h.codeToHtml(code, {
+      lang,
+      themes: THEMES,
+      defaultColor: false,
+      structure: 'inline',
+    }),
+  );
   // Svelte trims a space at the edge of a text node outside <pre>, which
   // would glue "cargo" and "build" together. A zero-width space keeps the
   // following space from sitting on that edge.

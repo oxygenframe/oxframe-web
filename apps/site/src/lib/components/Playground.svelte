@@ -234,7 +234,7 @@
     color: var(--muted);
   }
   .status.error {
-    color: #ff7a7a;
+    color: var(--danger);
   }
   .editor {
     flex: 1;

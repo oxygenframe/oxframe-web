@@ -134,7 +134,7 @@ if (import.meta.main) {
     // Docs pages: the article (no menu). Agents pages: the whole page area.
     const main = path.startsWith('/docs')
       ? /<article\b[^>]*>([\s\S]*?)<\/article>/.exec(html)?.[1]
-      : /<div class="page[^"]*">([\s\S]*?)<footer/.exec(html)?.[1];
+      : /<(?:div|main) class="page[^"]*">([\s\S]*?)<footer/.exec(html)?.[1];
     if (!main) continue;
     writeFileSync(file.replace(/\.html$/, '.md'), `<!-- ${SITE}${path} -->\n` + toMarkdown(main));
     written++;

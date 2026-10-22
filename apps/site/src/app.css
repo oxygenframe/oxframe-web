@@ -6,6 +6,8 @@
   --border: #2e3036;
   --accent: #6cb2eb;
   --code: #1d1f23;
+  --danger: #ff7a7a;
+  --success: #3fb950;
   color-scheme: dark;
 }
 /* Light: chosen with the header's switch (data-theme on <html>, set by
@@ -19,6 +21,8 @@
   --border: #dfe1e6;
   --accent: #1d5fd1;
   --code: #f3f4f6;
+  --danger: #c62828;
+  --success: #1a7f37;
   color-scheme: light;
 }
 @media (prefers-color-scheme: light) {
@@ -30,6 +34,8 @@
     --border: #dfe1e6;
     --accent: #1d5fd1;
     --code: #f3f4f6;
+    --danger: #c62828;
+    --success: #1a7f37;
     color-scheme: light;
   }
 }

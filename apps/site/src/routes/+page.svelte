@@ -455,7 +455,7 @@ fn main() {
     color: var(--text);
   }
   .copy.done {
-    color: #3fb950;
+    color: var(--success);
   }
   .copy svg {
     fill: none;
