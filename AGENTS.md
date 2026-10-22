@@ -40,6 +40,16 @@ scripts/og-images.ts` in apps/site (needs cargo) and commit
 `apps/site/e2e/docs.spec.ts` ("every sitemap page has complete, unique SEO
 metadata") enforces most of this; extend it when you add a rule.
 
+## mcp.oxframe.dev
+
+`services/mcp` is a read-only MCP server (Streamable HTTP, stateless, no
+auth) for agents that cannot run the CLI, such as ChatGPT and the Codex
+plugin directory: `docs_search`, `get_page`, `list_components`,
+`get_example`. It reads `https://oxframe.dev/docs-index.json`, which
+`scripts/markdown-pages.ts` writes on every site build, so it follows the
+docs without a redeploy. Deployed by `.github/workflows/deploy-mcp.yml` on
+changes to `services/mcp`.
+
 ## Migration guides
 
 `/docs/migrate/*` show the same scene in another tool and in oxframe. The
@@ -64,9 +74,11 @@ snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
 `/docs/…` (`apps/site/redirects.ts`), so version-pinned links always work.
 
 - The version switcher lists the current docs plus the snapshots
-  (`src/lib/docs-archive/`), labelled with the newest published patch from
-  crates.io (`src/lib/versions.json`, refreshed by `scripts/crate-versions.ts`
-  on every build, kept as is when crates.io is unreachable).
+  (`src/lib/docs-archive/`). The current docs are labelled with `sdk.ts`;
+  snapshots with the newest published patch of their series from crates.io
+  (`src/lib/versions.json`, refreshed by `scripts/crate-versions.ts` on every
+  build, kept as is when crates.io is unreachable). The build fails when
+  `src/lib/changelog.json` has no entry for `sdk.ts` (`scripts/check-changelog.ts`).
 - **Every release keeps the previous docs.** Before bumping `sdk.ts` from
   the published version X (say 0.2.6) to the next one, run
   `bun scripts/archive-docs.ts 0.2.6` (a snapshot at `/docs/0.2.6/…`, links

@@ -1,0 +1,12 @@
+// mcp.oxframe.dev: a stateless Worker that answers MCP over Streamable HTTP.
+// It reads https://oxframe.dev/docs-index.json (written by the site build),
+// so the docs it searches follow the site without a redeploy.
+// Deployed by .github/workflows/deploy-mcp.yml, or `bun run deploy`.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "oxframe-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "routes": [{ "pattern": "mcp.oxframe.dev", "custom_domain": true }],
+  "observability": { "enabled": true },
+}

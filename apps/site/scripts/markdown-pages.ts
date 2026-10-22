@@ -1,7 +1,9 @@
 // A Markdown copy of every docs page and agents page, next to its HTML:
 // /docs/guide/hello → /docs/guide/hello.md. Agents and tools read it without
 // parsing the site's markup. Runs after `vite build`, on the prerendered
-// HTML, so the Markdown is exactly what the page shows.
+// HTML, so the Markdown is exactly what the page shows. The same pages go
+// into /docs-index.json (url, title, markdown), which mcp.oxframe.dev
+// searches (services/mcp).
 //
 //   bun scripts/markdown-pages.ts [build dir]
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
@@ -122,6 +124,7 @@ function htmlFiles(dir: string): string[] {
 if (import.meta.main) {
   const build = process.argv[2] ?? join(import.meta.dir, '../build');
   let written = 0;
+  const index: { url: string; title: string; markdown: string }[] = [];
   for (const file of htmlFiles(build)) {
     const path =
       '/' +
@@ -136,8 +139,16 @@ if (import.meta.main) {
       ? /<article\b[^>]*>([\s\S]*?)<\/article>/.exec(html)?.[1]
       : /<(?:div|main) class="page[^"]*">([\s\S]*?)<footer/.exec(html)?.[1];
     if (!main) continue;
-    writeFileSync(file.replace(/\.html$/, '.md'), `<!-- ${SITE}${path} -->\n` + toMarkdown(main));
+    const markdown = toMarkdown(main);
+    writeFileSync(file.replace(/\.html$/, '.md'), `<!-- ${SITE}${path} -->\n` + markdown);
+    const title = text(/<title>([^<]*)<\/title>/.exec(html)?.[1] ?? path).replace(
+      / — oxframe( docs)?$/,
+      '',
+    );
+    index.push({ url: `${SITE}${path}`, title, markdown });
     written++;
   }
-  console.log(`wrote ${written} Markdown pages`);
+  index.sort((a, b) => a.url.localeCompare(b.url));
+  writeFileSync(join(build, 'docs-index.json'), JSON.stringify(index));
+  console.log(`wrote ${written} Markdown pages and docs-index.json`);
 }
