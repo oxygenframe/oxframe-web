@@ -132,10 +132,11 @@
   </article>
 </div>
 <p class="note">
-  oxframe {a7.version}, {a7.date}. The {a7.prompts - a7.passed} misses are the useful part: the agent
-  did not reach for the <code>Code</code> component on one, forgot the 9:16 aspect on two vertical
-  prompts, and left one <code>check</code> warning on another — each a gap in the skills or docs to close
-  next.
+  oxframe {a7.version}, {a7.date}. The one miss is the useful part: on a code-explanation prompt the
+  agent wrote plain text instead of the <code>Code</code> node, which would have let it highlight the
+  expression a piece at a time — a gap in the skill to close next. (Two 9:16 shorts and one video prompt
+  first failed on bugs in the scorer itself — a vertical pixel size it did not read as 9:16, and an asset
+  a fresh project lacks — both since fixed in the eval.)
 </p>
 <p>
   Script: <a href={a7.scriptUrl}><code>evals/run.py</code></a> in oxframe-cli, with the prompts
