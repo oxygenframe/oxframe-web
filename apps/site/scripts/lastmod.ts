@@ -1,9 +1,9 @@
 // Refreshes src/lib/lastmod.json: the day each page's source last changed in
 // git, for <lastmod> in sitemap.xml. Keys are route directories ("/docs/cli",
 // "/agents/[agent]") and the data files some pages are built from
-// ("lib/agents.ts"). Runs before every site build. Without the full history
-// (a shallow clone, no git) every file would look changed today, so the saved
-// dates are kept and the build goes on.
+// ("lib/agents.ts"); uncommitted changes count as today. Runs before every
+// site build. A shallow clone (Workers Builds) fetches the rest of the
+// history first; if that fails the saved dates are kept and the build goes on.
 import { spawnSync } from 'node:child_process';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -32,10 +32,17 @@ function pageDirs(dir: string): string[] {
   return out;
 }
 
-/** Day of the last commit that touched any of `paths` (YYYY-MM-DD). */
-const lastChange = (paths: string[]) => git(['log', '-1', '--format=%cs', '--', ...paths]) || null;
+const today = new Date().toISOString().slice(0, 10);
+
+/** Day `paths` last changed (YYYY-MM-DD): today if they have uncommitted edits. */
+function lastChange(paths: string[]): string | null {
+  if (git(['status', '--porcelain', '--', ...paths])) return today;
+  return git(['log', '-1', '--format=%cs', '--', ...paths]) || null;
+}
 
 if (import.meta.main) {
+  if (git(['rev-parse', '--is-shallow-repository']) === 'true')
+    git(['fetch', '--unshallow', '--quiet']);
   if (git(['rev-parse', '--is-shallow-repository']) !== 'false') {
     console.log('lastmod: no full git history, keeping the saved dates');
     process.exit(0);
