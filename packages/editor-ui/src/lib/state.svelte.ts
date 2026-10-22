@@ -149,7 +149,14 @@ export class EditorState {
         if (this.error?.kind === 'Incompatible') this.error = null;
         this.resync();
         break;
-      case 'Reloaded':
+      case 'Reloaded': {
+        // A new build of the project starts paused at frame 0 and sends
+        // that frame and its sound first. Playing on through it would run the
+        // old sound from 0 over a still picture: stop, go back to the frame
+        // we were on, and play again if we were playing, so the picture and
+        // the sound start together from the engine's Playback.
+        const resume = this.playing;
+        this.playing = false;
         this.reloadedAt = Date.now();
         this.building = false;
         this.error = null;
@@ -159,8 +166,11 @@ export class EditorState {
         this.audioGen++;
         this.waveform = null;
         this.clips = [];
+        this.restoredFrame = this.frame;
         this.resync();
+        if (resume) this.play();
         break;
+      }
       case 'Building':
         this.building = true;
         break;

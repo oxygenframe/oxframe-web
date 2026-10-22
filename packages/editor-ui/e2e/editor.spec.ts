@@ -114,6 +114,35 @@ test('error overlay and building status', async ({ page }) => {
   await expect(page.getByTestId('reloaded')).toBeVisible();
 });
 
+test('a rebuild while playing goes on from the same frame, picture and sound together', async ({
+  page,
+}) => {
+  await open(page);
+  await page.keyboard.press(' ');
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  await page.waitForTimeout(400);
+  const before = (await sent(page)).length;
+  // The new build: Reloaded, then its first frame, which is frame 0.
+  const at = await page.evaluate(() => {
+    const b = window.__oxframe!.backend as unknown as { inject(e: unknown): void };
+    const frame = Number(
+      document.querySelector('[data-testid=frame]')!.textContent!.split(' / ')[0],
+    );
+    b.inject({ type: 'Reloaded' });
+    b.inject({ type: 'Frame', index: 0 });
+    return frame;
+  });
+  expect(at).toBeGreaterThan(0);
+  const after = (await sent(page)).slice(before);
+  const seek = after.find((c) => c.type === 'Seek');
+  expect(seek?.frame).toBeGreaterThanOrEqual(at);
+  // Played again only after the seek, so both start at that frame.
+  expect(after.findIndex((c) => c.type === 'Play')).toBeGreaterThan(
+    after.findIndex((c) => c.type === 'Seek'),
+  );
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+});
+
 test('curve editor and tunables send edits', async ({ page }) => {
   await open(page);
   await page.getByTestId('ease-slide').click();
