@@ -334,6 +334,15 @@ cd my-video && oxframe dev</code></pre>
 <p>It needs Rust and an ffmpeg binary on the PATH to write MP4; nothing else is compiled from source. Or skip the install and open the <a href="/playground">playground</a>.</p>
 <p>We have not timed the same scene in both: fframes needs those codec development packages, which the benchmark machine does not have. When it does, the numbers and the script will be on this page, as they are for <a href="/vs/remotion">Remotion</a> and <a href="/vs/manim">Manim</a>.</p>`,
       },
+      {
+        heading: 'Rendering and scale',
+        html: `<p>Both engines skip the browser, so both are fast. fframes draws each frame with Skia on the GPU and links ffmpeg's libav statically; its README reports a 128-second video rendered in 36 seconds. oxframe draws with its own renderer — tiny-skia on the CPU or wgpu on the GPU — and pipes frames to an ffmpeg binary on the PATH.</p>
+<p>Where oxframe leans on scale is the CLI. <code>oxframe render --jobs N</code> splits the video into two-second segments, renders them in parallel processes and joins them without re-encoding, and the output bytes are identical for any N — so a render is reproducible, and the same scene gives the same file on a laptop and in CI. The <a href="/">home page</a> times a 27.5-second explainer at 8.4 seconds on eight jobs.</p>`,
+      },
+      {
+        heading: 'Writing the video with an agent',
+        html: `<p>Both projects expect a coding agent to write the scene, and both let it look at the result without playing the whole video — fframes with <code>inspect</code>, <code>strip</code> and <code>frame</code>, oxframe with <code>oxframe check</code>. The difference is what the agent gets back. <code>check</code> renders a storyboard and writes a JSON report that applies 15 rules — text out of its box, low contrast, a caption outside the safe area, a motion too fast to read — and points each problem at the node and the time, with a <a href="/docs/check-rules">link to the rule and its fix</a>. oxframe also ships <a href="/agents">12 skills, a Claude Code plugin and an MCP server</a>, so the agent has the API and the components in front of it. With layout, themes and those components, the agent writes "a bullet list next to the chart" rather than coordinates, which is less code for it to get wrong.</p>`,
+      },
     ],
     pickThem: [
       'You think of a frame as a pure function and want SVG as the drawing model.',
@@ -362,6 +371,14 @@ cd my-video && oxframe dev</code></pre>
       {
         q: 'Do both work with coding agents?',
         a: 'Yes. fframes ships a skill and an inspection CLI. oxframe ships 12 skills, a Claude Code plugin, an MCP server and oxframe check, whose report links every problem to its fix.',
+      },
+      {
+        q: 'Can I preview a scene without rendering the whole video?',
+        a: 'Both can. fframes has a GPU preview window and a WebAssembly editor; oxframe has oxframe dev with a timeline and markers, and a browser playground with nothing to install. Any single frame is cheap to reach in both.',
+      },
+      {
+        q: 'Does oxframe render in parallel like fframes is fast?',
+        a: 'Both render without a browser. oxframe adds oxframe render --jobs N, which renders two-second segments in parallel processes and joins them without re-encoding; the bytes are identical for any N, so the result is reproducible in CI.',
       },
       {
         q: 'Which license?',
@@ -615,6 +632,10 @@ cd my-video && oxframe dev</code></pre>
         q: 'Do I have to learn Rust?',
         a: 'Some. Scenes read like the TypeScript you know, and the playground runs them in the browser. An agent with the oxframe skill writes most of the Rust for you.',
       },
+      {
+        q: 'Can I keep my Motion Canvas project and still use oxframe?',
+        a: 'Yes. They are separate tools: port scenes one at a time with the motion-canvas-to-oxframe skill and render the ported ones from the CLI, while the rest stay in the Motion Canvas editor until you move them.',
+      },
     ],
     sources: [
       { label: 'Motion Canvas on GitHub', url: 'https://github.com/motion-canvas/motion-canvas' },
@@ -727,6 +748,10 @@ cd my-video && oxframe dev</code></pre>
       {
         q: 'How hard is it to move from Revideo?',
         a: 'Revideo scenes are Motion Canvas scenes, which map almost line by line: generators become async functions and yield* becomes .await. The migration guide shows one.',
+      },
+      {
+        q: 'Are oxframe renders reproducible for a templated batch?',
+        a: 'Yes. oxframe render --jobs N renders segments in parallel and joins them without re-encoding, and the output bytes are identical for any N and on any machine. One video per input re-renders to the same file, which is easy to cache and to diff in CI.',
       },
     ],
     sources: [
@@ -900,6 +925,11 @@ cd my-video && oxframe dev</code></pre>
         heading: 'Code instead of JSON',
         html: `<p>A cloud API describes a video as JSON: clips on tracks, with text and images and their times. It is simple to send and hard to compute: a chart from data, a list that grows with its input or a layout that adapts to a long title has to be built before the JSON, in your own code. With oxframe the video is the code. A scene reads the row, lays out its text, draws the chart and checks that nothing overflows, and <code>oxframe check</code> catches the long title before anyone watches it.</p>`,
       },
+      {
+        heading: 'Rendering at scale, yourself',
+        html: `<p>The reason teams reach for a cloud API is scale: thousands of videos without a machine to babysit. oxframe meets that with parallel rendering and CI rather than a bill. <code>oxframe render --jobs N</code> renders two-second segments in parallel and joins them without re-encoding, and because the output bytes do not depend on the number of jobs or the machine, a render is reproducible — the same scene gives the same file on a laptop and on a build runner. Rows of a batch are independent, so a CI matrix or <code>xargs -P</code> spreads them across runners. On a free GitHub runner, <a href="/use-cases/release-videos">release-video-action</a> renders a release video in under a minute and a half, the SDK build included.</p>
+<p>The trade is real. Nobody hosts the files or scales the fleet for you, and there is no template editor a non-developer can open in a browser — that is what the vendors sell, and it is why the table above ends with "when nobody should install or run anything." oxframe's bet is that an agent writes and runs the render, so the install and the compute stop being the hard part.</p>`,
+      },
     ],
     example: {
       heading: 'A video per row of a CSV',
@@ -936,6 +966,10 @@ cd my-video && oxframe dev</code></pre>
       {
         q: 'When is a cloud API the better choice?',
         a: 'When nobody should install or run anything, when non-developers edit templates, or when you want someone else to host and scale rendering.',
+      },
+      {
+        q: 'Does my data leave my machine with oxframe?',
+        a: 'No. oxframe renders locally or in your own CI, so the text, images and data in a video never go to a third party. A cloud API, by design, receives whatever you put in the video. The one exception is the browser playground, which sends the code you type to compile.oxframe.dev to build it; rendering from the CLI sends nothing.',
       },
       {
         q: 'Can oxframe use my brand colors?',
