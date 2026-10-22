@@ -179,7 +179,13 @@ export async function callTool(
           text: `No docs page at ${JSON.stringify(str('url'))}. docs_search gives page URLs; https://oxframe.dev/llms.txt lists them all.`,
           isError: true,
         };
-      return { text: `# ${page.title}\n${page.url}\n\n${page.markdown}` };
+      // The Markdown starts with the page's own heading; the URL goes under it.
+      const [first, ...rest] = page.markdown.split('\n');
+      return {
+        text: first?.startsWith('# ')
+          ? `${first}\n${page.url}\n${rest.join('\n')}`
+          : `# ${page.title}\n${page.url}\n\n${page.markdown}`,
+      };
     }
     case 'list_components':
       return { text: COMPONENTS };
