@@ -1,7 +1,6 @@
 // /sitemap.xml, prerendered from the docs list so new pages appear in it.
 import { agents, skills } from '$lib/agents';
 import { href, pages } from '$lib/docs';
-import { exampleByName } from '$lib/examples';
 import { galleryItems } from '$lib/gallery';
 import { mediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
@@ -51,9 +50,7 @@ const videos: Record<string, string[]> = {
       'Scenes from the oxframe examples, rendered by oxframe on the CPU: functions on axes, a lit 3D cube, a shear of the plane and a shader sea.',
     ),
   ],
-  '/gallery': galleryItems.map((item) =>
-    video(item.name, exampleByName(item.name)?.title ?? item.name, item.prompt),
-  ),
+  '/gallery': galleryItems.map((item) => video(item.name, item.title, item.prompt)),
 };
 
 export const prerender = true;

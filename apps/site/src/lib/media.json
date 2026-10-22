@@ -1,5 +1,5 @@
 {
-  "sdk": "0.20.0",
+  "sdk": "0.20.1",
   "date": "2026-10-22",
   "items": {
     "release": {
@@ -250,6 +250,30 @@
       "width": 1280,
       "height": 720,
       "bytes": 2212540
+    },
+    "shapes": {
+      "mp4": "/media/0.20.1/gallery/shapes.mp4",
+      "poster": "/media/0.20.1/gallery/shapes.jpg",
+      "seconds": 6.82,
+      "width": 1280,
+      "height": 720,
+      "bytes": 165368
+    },
+    "showcase": {
+      "mp4": "/media/0.20.1/gallery/showcase.mp4",
+      "poster": "/media/0.20.1/gallery/showcase.jpg",
+      "seconds": 5.52,
+      "width": 1280,
+      "height": 720,
+      "bytes": 136376
+    },
+    "intro": {
+      "mp4": "/media/0.20.1/gallery/intro.mp4",
+      "poster": "/media/0.20.1/gallery/intro.jpg",
+      "seconds": 1.02,
+      "width": 1280,
+      "height": 720,
+      "bytes": 15133
     }
   }
 }

@@ -47,7 +47,7 @@
   "/showcase": "2026-10-21",
   "/use-cases": "2026-10-22",
   "lib/agents.ts": "2026-10-22",
-  "lib/gallery.ts": "2026-10-21",
+  "lib/gallery.ts": "2026-10-22",
   "lib/media.json": "2026-10-22",
   "lib/skills.json": "2026-10-22"
 }

@@ -7,9 +7,7 @@
 
   // The videos as an item list, so search can show them as video results.
   const videos = galleryItems
-    .map((item) =>
-      videoObject(item.name, exampleByName(item.name)?.title ?? item.name, item.prompt),
-    )
+    .map((item) => videoObject(item.name, item.title, item.prompt))
     .filter((v): v is object => v !== null);
   const jsonld = videos.length
     ? [
@@ -42,7 +40,7 @@
     {@const example = exampleByName(item.name)}
     <li>
       <p class="tags">{item.tags.join(' · ')}</p>
-      <h2>{example?.title ?? item.name}</h2>
+      <h2>{item.title}</h2>
       {#if mediaFor(item.name)}
         {@const m = mediaFor(item.name)!}
         {#if m.captions}
@@ -54,7 +52,7 @@
             controls
             playsinline
             preload="none"
-            aria-label="{example?.title ?? item.name}, rendered by oxframe"
+            aria-label="{item.title}, rendered by oxframe"
           >
             <track kind="captions" src={m.captions} srclang="en" label="English" />
           </video>
@@ -69,7 +67,7 @@
             muted
             playsinline
             preload="none"
-            aria-label="{example?.title ?? item.name}, rendered by oxframe"
+            aria-label="{item.title}, rendered by oxframe"
           ></video>
         {/if}
       {/if}
