@@ -5,10 +5,10 @@
     "release": {
       "mp4": "/media/0.20.3/gallery/release.mp4",
       "poster": "/media/0.20.3/gallery/release.jpg",
-      "seconds": 20.72,
+      "seconds": 19.82,
       "width": 1280,
       "height": 720,
-      "bytes": 313281
+      "bytes": 319178
     },
     "cube_3d": {
       "mp4": "/media/0.20.1/gallery/cube_3d.mp4",
