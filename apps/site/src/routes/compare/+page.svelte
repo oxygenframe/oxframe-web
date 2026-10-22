@@ -1,6 +1,7 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
   import { rows } from '$lib/compare';
+  import { vsPages } from '$lib/vs';
 </script>
 
 <Seo
@@ -57,6 +58,17 @@
   </li>
 </ul>
 <p>oxframe is early. The API is not stable; the banner at the top of this site says so.</p>
+
+<h2>One tool at a time</h2>
+<p>
+  Each page compares oxframe with one tool, with dated facts, one scene in both and its render time.
+</p>
+<ul>
+  {#each vsPages as p (p.slug)}
+    <li><a href="/vs/{p.slug}">oxframe vs {p.name}</a></li>
+  {/each}
+  <li><a href="/alternatives/remotion">Remotion alternatives in 2026</a></li>
+</ul>
 
 <style>
   .lead {

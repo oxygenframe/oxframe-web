@@ -33,6 +33,8 @@ export const REDIRECTS: [string, string, number][] = [series, SDK_VERSION, ...pa
 
 // Pages that moved.
 REDIRECTS.push(['/programmatic-video-rust', '/rust', 301]);
+REDIRECTS.push(['/remotion-alternative', '/alternatives/remotion', 301]);
+REDIRECTS.push(['/manim-alternative', '/vs/manim', 301]);
 
 /** `0.7.0` < `0.8.0` < `0.12.1`, part by part as numbers. */
 function compare(a: string, b: string): number {

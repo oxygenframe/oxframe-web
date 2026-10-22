@@ -183,6 +183,8 @@ test('docs are versioned: switcher, API reference, versioned URLs', async ({ pag
     ['/docs/0.7.0/camera', '/docs/0.8.0/camera'],
     // A page that moved.
     ['/programmatic-video-rust', '/rust'],
+    ['/remotion-alternative', '/alternatives/remotion'],
+    ['/manim-alternative', '/vs/manim'],
   ]) {
     const r = await request.get(from, { maxRedirects: 0 });
     expect(r.status(), from).toBe(301);

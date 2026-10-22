@@ -14,3 +14,5 @@ services/compile-cf/src/examples.gen.ts
 apps/site/src/lib/versions.json
 # The link card scene's cargo build (apps/site/og).
 apps/site/og/target
+# Other tools' code, copied from apps/site/src/lib/migrate by measure.sh.
+bench

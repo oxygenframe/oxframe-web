@@ -49,8 +49,10 @@
     {
       title: 'Alternatives',
       links: [
-        { href: '/remotion-alternative', label: 'Remotion alternative' },
-        { href: '/manim-alternative', label: 'Manim alternative' },
+        { href: '/alternatives/remotion', label: 'Remotion alternatives' },
+        { href: '/vs/manim', label: 'oxframe vs Manim' },
+        { href: '/vs/motion-canvas', label: 'oxframe vs Motion Canvas' },
+        { href: '/alternatives', label: 'All comparisons' },
         { href: '/rust', label: 'Animation in Rust' },
         { href: '/ai-video-from-code', label: 'AI video from code' },
       ],

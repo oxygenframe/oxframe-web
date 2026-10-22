@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-22",
+  "machine": "Intel(R) Core(TM) Ultra 7 255H, 16 threads, Linux",
+  "script": "bench/vs/measure.sh",
+  "note": "Wall time of the render command, median of 3 after a warm-up. 1920x1080, H.264. oxframe renders on the GPU by default; --cpu forces the CPU renderer.",
+  "remotion": {
+    "version": "4.0.537",
+    "command": "npx remotion render Hello",
+    "videoSeconds": 4.0,
+    "seconds": 3.21,
+    "oxframe": { "version": "0.20.4", "seconds": 1.46, "cpuSeconds": 0.53 }
+  },
+  "hyperframes": {
+    "version": "0.8.185",
+    "command": "npx hyperframes render --fps 30 (the Remotion scene as HTML)",
+    "videoSeconds": 4.0,
+    "seconds": 4.0,
+    "oxframe": { "version": "0.20.4", "seconds": 1.46, "cpuSeconds": 0.53 }
+  },
+  "revideo": {
+    "version": "0.11.0",
+    "command": "npx tsx render.ts (renderVideo)",
+    "videoSeconds": 2.02,
+    "seconds": 2.09,
+    "oxframe": { "version": "0.20.4", "seconds": 2.15, "cpuSeconds": 0.69 }
+  },
+  "csv": {
+    "rows": 3,
+    "videoSeconds": 2.42,
+    "seconds": 14.65
+  },
+  "manim": {
+    "version": "0.22.0",
+    "command": "manim render -r 1920,1080 --fps 60 -a scene.py (both scenes)",
+    "videoSeconds": 7.13,
+    "seconds": 4.3,
+    "oxframe": { "version": "0.20.4", "seconds": 3.42, "cpuSeconds": 1.3 }
+  }
+}

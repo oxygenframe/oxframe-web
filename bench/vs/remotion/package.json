@@ -1,0 +1,11 @@
+{
+  "name": "vs-remotion",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@remotion/cli": "latest",
+    "react": "^19",
+    "react-dom": "^19",
+    "remotion": "latest"
+  }
+}

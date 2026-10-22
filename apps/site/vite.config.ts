@@ -6,7 +6,7 @@ import { highlight } from './highlight.js';
 
 /** `import html from './x.rs?highlight'`: the file as highlighted HTML,
  *  rendered at build time (see highlight.js). Other languages are named by
- *  the extension before `.txt` (`x.tsx.txt`, `x.py.txt`), which keeps the
+ *  the extension before `.txt` (`x.tsx.txt`, `x.py.txt`, `x.html.txt`), which keeps the
  *  site's own tools from reading them as source. */
 function highlightedSources(): Plugin {
   const suffix = '?highlight';
@@ -19,7 +19,16 @@ function highlightedSources(): Plugin {
       const path = id.slice(0, -suffix.length);
       const source = await readFile(path, 'utf8');
       const ext = /\.(\w+)(?:\.txt)?$/.exec(path)?.[1];
-      const lang = ext === 'tsx' ? 'tsx' : ext === 'py' ? 'python' : 'rust';
+      const lang =
+        ext === 'tsx'
+          ? 'tsx'
+          : ext === 'py'
+            ? 'python'
+            : ext === 'html'
+              ? 'html'
+              : ext === 'sh'
+                ? 'shellscript'
+                : 'rust';
       return `export default ${JSON.stringify(await highlight(source, lang))};`;
     },
   };

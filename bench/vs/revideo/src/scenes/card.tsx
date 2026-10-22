@@ -1,0 +1,11 @@
+import {Txt, makeScene2D} from '@revideo/2d';
+import {createRef, useScene, waitFor} from '@revideo/core';
+
+export default makeScene2D('card', function* (view) {
+  const name = useScene().variables.get('name', 'Ada');
+  const title = createRef<Txt>();
+  view.add(<Txt ref={title} text={`Welcome, ${name()}`} fontSize={96} fill={'white'} opacity={0} />);
+  yield* title().opacity(1, 0.5);
+  yield* waitFor(1.5);
+});
+

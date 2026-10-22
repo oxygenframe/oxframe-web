@@ -14,6 +14,7 @@ export default ts.config(
       '.tools',
       '**/.data',
       '**/.wrangler',
+      'bench',
       'apps/site/og/target',
       '**/*.gen.ts',
       '**/test-results',

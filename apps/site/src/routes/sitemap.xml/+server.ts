@@ -5,6 +5,7 @@ import { galleryItems, slugOf } from '$lib/gallery';
 import { mediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
 import { useCases } from '$lib/use-cases';
+import { vsPages } from '$lib/vs';
 import lastmodFile from '$lib/lastmod.json';
 
 const lastmods: Record<string, string> = lastmodFile;
@@ -15,20 +16,22 @@ function lastmod(path: string): string | undefined {
     ? ['/agents/skills/[skill]', 'lib/skills.json']
     : /^\/agents\/[^/]+$/.test(path)
       ? ['/agents/[agent]', 'lib/agents.ts']
-      : path.startsWith('/use-cases/')
-        ? ['/use-cases/[slug]', 'lib/use-cases.ts', 'lib/media.json']
-        : path.startsWith('/gallery/')
-          ? [
-              '/gallery/[slug]',
-              'lib/gallery.ts',
-              'lib/media.json',
-              `lib/examples/${path.slice(9).replace(/-/g, '_')}.rs`,
-            ]
-          : path === '/gallery'
-            ? [path, 'lib/gallery.ts', 'lib/media.json']
-            : path === '/'
-              ? [path, 'lib/media.json']
-              : [path];
+      : path.startsWith('/vs/')
+        ? ['/vs/[slug]', 'lib/vs.ts', 'lib/vs-measurements.json']
+        : path.startsWith('/use-cases/')
+          ? ['/use-cases/[slug]', 'lib/use-cases.ts', 'lib/media.json']
+          : path.startsWith('/gallery/')
+            ? [
+                '/gallery/[slug]',
+                'lib/gallery.ts',
+                'lib/media.json',
+                `lib/examples/${path.slice(9).replace(/-/g, '_')}.rs`,
+              ]
+            : path === '/gallery'
+              ? [path, 'lib/gallery.ts', 'lib/media.json']
+              : path === '/'
+                ? [path, 'lib/media.json']
+                : [path];
   const days = keys.map((k) => lastmods[k]).filter((d): d is string => !!d);
   return days.length ? days.sort().at(-1) : undefined;
 }
@@ -81,8 +84,9 @@ export function GET(): Response {
     '/use-cases',
     ...useCases.map((u) => `/use-cases/${u.slug}`),
     '/showcase',
-    '/remotion-alternative',
-    '/manim-alternative',
+    '/alternatives',
+    '/alternatives/remotion',
+    ...vsPages.map((p) => `/vs/${p.slug}`),
     '/ai-video-from-code',
     '/rust',
     '/license',

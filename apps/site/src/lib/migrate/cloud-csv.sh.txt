@@ -1,0 +1,7 @@
+# people.csv:  name,prs
+#              Ada,42
+#              Grace,17
+cargo build --release
+tail -n +2 people.csv | while IFS=, read -r name prs; do
+  NAME="$name" PRS="$prs" target/release/thanks render --out "out/$name.mp4"
+done

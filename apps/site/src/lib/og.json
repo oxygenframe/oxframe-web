@@ -59,15 +59,50 @@
     "section": "Showcase",
     "image": "/og/showcase.png"
   },
-  "/remotion-alternative": {
-    "title": "A Remotion alternative in Rust",
+  "/alternatives": {
+    "title": "oxframe alternatives and comparisons",
     "section": "Compare",
-    "image": "/og/remotion-alternative.png"
+    "image": "/og/alternatives.png"
   },
-  "/manim-alternative": {
-    "title": "A Manim alternative in Rust",
+  "/alternatives/remotion": {
+    "title": "Best Remotion alternatives in 2026, compared",
     "section": "Compare",
-    "image": "/og/manim-alternative.png"
+    "image": "/og/alternatives-remotion.png"
+  },
+  "/vs/remotion": {
+    "title": "oxframe vs Remotion: no Chrome, no seats, no telemetry",
+    "section": "Compare",
+    "image": "/og/vs-remotion.png"
+  },
+  "/vs/hyperframes": {
+    "title": "oxframe vs HyperFrames: HTML video or a native timeline",
+    "section": "Compare",
+    "image": "/og/vs-hyperframes.png"
+  },
+  "/vs/fframes": {
+    "title": "oxframe vs fframes: two Rust video engines compared",
+    "section": "Compare",
+    "image": "/og/vs-fframes.png"
+  },
+  "/vs/manim": {
+    "title": "oxframe vs Manim: math animation with a live editor",
+    "section": "Compare",
+    "image": "/og/vs-manim.png"
+  },
+  "/vs/motion-canvas": {
+    "title": "oxframe vs Motion Canvas: same model, renders anywhere",
+    "section": "Compare",
+    "image": "/og/vs-motion-canvas.png"
+  },
+  "/vs/revideo": {
+    "title": "oxframe vs Revideo: rendering video from code, compared",
+    "section": "Compare",
+    "image": "/og/vs-revideo.png"
+  },
+  "/vs/cloud-video-apis": {
+    "title": "oxframe vs Shotstack, Creatomate and JSON2Video",
+    "section": "Compare",
+    "image": "/og/vs-cloud-video-apis.png"
   },
   "/ai-video-from-code": {
     "title": "AI video generation from code",

@@ -1,0 +1,14 @@
+{
+  "name": "vs-revideo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@revideo/2d": "latest",
+    "@revideo/core": "latest",
+    "@revideo/ffmpeg": "^0.11.0",
+    "@revideo/renderer": "latest",
+    "@revideo/ui": "^0.11.0",
+    "@revideo/vite-plugin": "latest",
+    "tsx": "^4"
+  }
+}
