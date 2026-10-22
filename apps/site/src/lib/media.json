@@ -1,14 +1,14 @@
 {
-  "sdk": "0.20.1",
+  "sdk": "0.20.3",
   "date": "2026-10-22",
   "items": {
     "release": {
-      "mp4": "/media/0.20.1/gallery/release.mp4",
-      "poster": "/media/0.20.1/gallery/release.jpg",
-      "seconds": 7.95,
+      "mp4": "/media/0.20.3/gallery/release.mp4",
+      "poster": "/media/0.20.3/gallery/release.jpg",
+      "seconds": 20.72,
       "width": 1280,
       "height": 720,
-      "bytes": 58742
+      "bytes": 313281
     },
     "cube_3d": {
       "mp4": "/media/0.20.1/gallery/cube_3d.mp4",

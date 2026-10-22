@@ -13,7 +13,7 @@ export const galleryItems: GalleryItem[] = [
     title: 'Release notes as a video',
     tags: ['release'],
     prompt:
-      'Turn release notes into a video: a title with the version, the changes as a list, then an end card that says made with oxframe.',
+      'Turn release notes into a video: the version, each section in its color with the changes written on word by word and a halo over each, then an end card.',
   },
   {
     name: 'cube_3d',

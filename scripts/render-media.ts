@@ -22,6 +22,8 @@ const args = process.argv.slice(2);
 const upload = !args.includes('--no-upload');
 const only = args.filter((a) => !a.startsWith('--'));
 const SIZE = [1280, 720] as const;
+/** Poster times (seconds) for videos whose 60 % mark falls between beats. */
+const POSTER_AT: Record<string, number> = { release: 9.3 };
 
 function run(cmd: string[], cwd?: string): string {
   const r = spawnSync(cmd[0]!, cmd.slice(1), { cwd, encoding: 'utf8', maxBuffer: 1 << 26 });
@@ -102,14 +104,15 @@ for (const item of names.map((name) => ({ name }))) {
       mp4,
     ]).trim(),
   );
-  // The poster is a frame from the second half, where the scene is built up.
+  // The poster is a frame from the second half, where the scene is built up,
+  // unless the example names a better moment.
   run([
     'ffmpeg',
     '-v',
     'error',
     '-y',
     '-ss',
-    (seconds * 0.6).toFixed(2),
+    (POSTER_AT[item.name] ?? seconds * 0.6).toFixed(2),
     '-i',
     mp4,
     '-frames:v',
