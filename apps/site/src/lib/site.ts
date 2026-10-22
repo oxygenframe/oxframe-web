@@ -12,6 +12,10 @@ export const LOGO = `${SITE}/logo-512.png`;
  * and the docs carry it whole, so a search engine reads the name, the logo
  * and the profiles that say this oxframe is the Rust library.
  */
+/** The project's account on X. */
+export const X_HANDLE = 'oxframe';
+export const X_URL = `https://x.com/${X_HANDLE}`;
+
 export const ORGANIZATION = {
   '@type': 'Organization',
   '@id': `${SITE}/#organization`,
@@ -22,6 +26,7 @@ export const ORGANIZATION = {
   description: 'Open-source motion graphics library in Rust, built for AI coding agents.',
   sameAs: [
     'https://github.com/oxygenframe',
+    X_URL,
     'https://crates.io/crates/oxframe',
     'https://docs.rs/oxframe',
   ],

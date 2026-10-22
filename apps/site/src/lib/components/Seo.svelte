@@ -3,7 +3,7 @@
   // description, canonical URL, Open Graph / Twitter cards and optional
   // JSON-LD. Pages render exactly one of these.
   import { page } from '$app/state';
-  import { canonical, OG_IMAGE, SITE } from '$lib/site';
+  import { canonical, OG_IMAGE, SITE, X_HANDLE } from '$lib/site';
   import cards from '$lib/og.json';
 
   interface Props {
@@ -72,6 +72,7 @@
     <meta property="og:video:height" content={String(video.height)} />
   {/if}
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@{X_HANDLE}" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={image} />

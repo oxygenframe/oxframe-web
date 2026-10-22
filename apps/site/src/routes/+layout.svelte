@@ -4,6 +4,7 @@
   import { SDK_VERSION } from '$lib/sdk';
   import starsFile from '$lib/stars.json';
   import { currentTheme, setTheme } from '$lib/theme';
+  import { X_URL } from '$lib/site';
   let { children } = $props();
   const links = [
     { href: '/docs', label: 'Docs' },
@@ -58,6 +59,7 @@
       title: 'Project',
       links: [
         { href: 'https://github.com/oxygenframe/oxframe-sdk', label: 'GitHub' },
+        { href: X_URL, label: 'X (Twitter)' },
         { href: '/changelog', label: 'Changelog' },
         { href: 'https://crates.io/crates/oxframe', label: 'crates.io' },
         { href: '/license', label: 'License' },

@@ -95,6 +95,7 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
       expect(png.headers()['content-type'], card!.image).toBe('image/png');
     }
     expect(html, path).toContain('<meta name="twitter:card" content="summary_large_image"');
+    expect(html, path).toContain('<meta name="twitter:site" content="@oxframe"');
     expect(html.match(/<h1[\s>]/g)?.length, `${path} h1 count`).toBe(1);
     expect(html, path).not.toContain('name="robots" content="noindex"');
     expect(titles.get(title!), `duplicate title on ${path}`).toBeUndefined();
