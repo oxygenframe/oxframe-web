@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.20.2",
+    "date": "2026-10-22",
+    "html": "<h3>Fixed</h3>\n<ul><li><code>TitleCard</code> and <code>EndCard</code> wrap a long title or second line inside the card, and the card grows to hold it. A long line used to run past the card's edges, which release videos with long notes showed.</li><li>Centered and end-aligned text with a <code>max_width</code> was drawn beside its own box when it was narrower than <code>max_width</code> (a single short line, say). It now sits inside the box, so placing it and <code>oxframe check</code> see where it really is.</li></ul>"
+  },
+  {
     "version": "0.20.1",
     "date": "2026-10-22",
     "html": "<h3>Added</h3>\n<ul><li>Every issue in <code>report.json</code> has <code>docs</code>: the link to its rule on <a href=\"https://oxframe.dev/docs/check-rules\" rel=\"external\">https://oxframe.dev/docs/check-rules</a>, with what the rule reports and how to fix it (<code>Issue::docs</code>).</li><li>The <code>showreel</code> example: scenes from other examples between a title and an end card, the reel on oxframe.dev.</li></ul>\n<h3>Fixed</h3>\n<ul><li><code>check</code> reported <code>too_fast</code> at a cut between two scenes when the first node of each had the same id: node ids start again in every scene, and a move is now only a node added at the same place.</li></ul>"
