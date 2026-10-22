@@ -4,8 +4,6 @@ oxframe is procedural animation in Rust. Scenes are async functions; awaiting an
 
 Full text: https://oxframe.dev/docs/0.13.0/llms-full.txt
 
-Every page also has a Markdown version: add .md to its URL.
-
 ## Start here
 
 - [Welcome](https://oxframe.dev/docs/0.13.0): Learn oxframe: make animations and motion graphics by writing Rust code, with a live editor to scrub through them and fine-tune the timing.

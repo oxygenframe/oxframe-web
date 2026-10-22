@@ -15,7 +15,12 @@ import { archives } from '../src/lib/docs-archive';
 
 const site = join(import.meta.dir, '..');
 
-export function llmsIndex(base: string, fullHref: string, list: DocSection[]): string {
+export function llmsIndex(
+  base: string,
+  fullHref: string,
+  list: DocSection[],
+  markdown = false,
+): string {
   const lines = [
     '# oxframe',
     '',
@@ -23,8 +28,8 @@ export function llmsIndex(base: string, fullHref: string, list: DocSection[]): s
     '',
     `Full text: ${fullHref}`,
     '',
-    'Every page also has a Markdown version: add .md to its URL.',
-    '',
+    // Only the current docs have Markdown copies (scripts/markdown-pages.ts).
+    ...(markdown ? ['Every page also has a Markdown version: add .md to its URL.', ''] : []),
   ];
   for (const section of list) {
     lines.push(`## ${section.title}`, '');
@@ -86,6 +91,7 @@ export function writeLlms(): string[] {
     'https://oxframe.dev/docs',
     'https://oxframe.dev/llms-full.txt',
     sections,
+    true,
   );
   const indexPath = join(site, 'static/llms.txt');
   writeFileSync(indexPath, index);
