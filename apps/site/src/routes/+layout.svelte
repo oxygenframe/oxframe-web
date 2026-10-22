@@ -185,7 +185,9 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    padding: 10px 20px;
+    /* As wide as the page's content (940 px), so the logo and the star line
+       up with its edges; the playground's editor fills the screen instead. */
+    padding: 10px max(20px, calc((100% - 940px) / 2));
     border-bottom: 1px solid var(--border);
     background: var(--panel);
   }
@@ -246,6 +248,9 @@
   .shell.full {
     height: 100vh;
   }
+  .shell.full .nav {
+    padding-inline: 20px;
+  }
   .shell.full .page {
     flex: 1 1 0;
     min-height: 0;
@@ -289,7 +294,7 @@
     display: grid;
     grid-template-columns: minmax(200px, 1.6fr) repeat(5, minmax(0, 1fr));
     gap: 28px 24px;
-    max-width: 1200px;
+    max-width: 940px;
     margin: 0 auto;
   }
   .foot-brand p {
@@ -338,7 +343,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 6px 18px;
-    max-width: 1200px;
+    max-width: 940px;
     margin: 32px auto 0;
     padding-top: 16px;
     border-top: 1px solid var(--border);
