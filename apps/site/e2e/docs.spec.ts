@@ -283,3 +283,17 @@ test('no page is wider than a phone screen', async ({ browser, request }) => {
   }
   expect(wide).toEqual([]);
 });
+
+// The header's light/dark switch: the choice lasts across pages and reloads.
+test('the theme switch changes the theme and remembers it', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/', { waitUntil: 'networkidle' });
+  const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  const dark = await bg();
+  await page.getByRole('button', { name: 'Switch between light and dark theme' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  expect(await bg()).not.toBe(dark);
+  await page.goto('/docs', { waitUntil: 'networkidle' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  expect(await bg()).not.toBe(dark);
+});

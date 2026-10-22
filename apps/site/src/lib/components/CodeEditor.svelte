@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import type { CompileError } from '../compile';
+  import { currentTheme, THEME_EVENT } from '../theme';
 
   interface Props {
     value: string;
@@ -28,11 +29,10 @@
         getWorker: () => new worker.default(),
       };
       monaco = m as unknown as typeof import('monaco-editor');
-      const dark = !matchMedia('(prefers-color-scheme: light)').matches;
       editor = monaco!.editor.create(host!, {
         value,
         language: 'rust',
-        theme: dark ? 'vs-dark' : 'vs',
+        theme: currentTheme() === 'dark' ? 'vs-dark' : 'vs',
         automaticLayout: true,
         minimap: { enabled: false },
         fontSize: 13,
@@ -74,7 +74,14 @@
     );
   });
 
-  onDestroy(() => editor?.dispose());
+  // The header's light/dark switch.
+  const retheme = (e: Event) =>
+    monaco?.editor.setTheme((e as CustomEvent).detail === 'dark' ? 'vs-dark' : 'vs');
+  onMount(() => window.addEventListener(THEME_EVENT, retheme));
+  onDestroy(() => {
+    window.removeEventListener(THEME_EVENT, retheme);
+    editor?.dispose();
+  });
 </script>
 
 {#if fallback}

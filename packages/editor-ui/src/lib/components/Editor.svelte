@@ -42,6 +42,8 @@
   }
 
   let theme = $state<'dark' | 'light'>(untrack(() => initialTheme) ?? preferredTheme());
+  // A page around the editor (oxframe.dev) may switch themes too: both keep
+  // the choice under `oxframe-theme` and announce it with this event.
   function toggleTheme() {
     theme = theme === 'dark' ? 'light' : 'dark';
     try {
@@ -49,12 +51,20 @@
     } catch {
       // ignore
     }
+    document.documentElement.dataset.theme = theme;
+    window.dispatchEvent(new CustomEvent('oxframe-theme', { detail: theme }));
   }
+  const follow = (e: Event) => {
+    const t = (e as CustomEvent).detail;
+    if (t === 'dark' || t === 'light') theme = t;
+  };
 
   onMount(() => {
+    window.addEventListener('oxframe-theme', follow);
     if (autostart) editor.start();
   });
   onDestroy(() => {
+    if (typeof window !== 'undefined') window.removeEventListener('oxframe-theme', follow);
     if (autostart) editor.stop();
   });
 

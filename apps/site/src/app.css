@@ -8,8 +8,21 @@
   --code: #1d1f23;
   color-scheme: dark;
 }
+/* Light: chosen with the header's switch (data-theme on <html>, set by
+   /theme.js before the first paint), or the system's setting when nothing
+   is chosen. */
+:root[data-theme='light'] {
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --text: #16181d;
+  --muted: #50545e;
+  --border: #dfe1e6;
+  --accent: #1d5fd1;
+  --code: #f3f4f6;
+  color-scheme: light;
+}
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme='dark']) {
     --bg: #fafafa;
     --panel: #ffffff;
     --text: #16181d;
@@ -80,8 +93,11 @@ h3 {
   border-color: var(--accent);
   color: #0b1520;
 }
+:root[data-theme='light'] .btn.primary {
+  color: #fff;
+}
 @media (prefers-color-scheme: light) {
-  .btn.primary {
+  :root:not([data-theme='dark']) .btn.primary {
     color: #fff;
   }
 }
@@ -119,14 +135,18 @@ pre {
 }
 
 /* Highlighted code (highlight.js): dark is the default scheme, light follows
-   the system setting, like the rest of the site. */
+   the theme, like the rest of the site. */
 .shiki,
 .shiki span {
   color: var(--shiki-dark);
 }
+:root[data-theme='light'] .shiki,
+:root[data-theme='light'] .shiki span {
+  color: var(--shiki-light);
+}
 @media (prefers-color-scheme: light) {
-  .shiki,
-  .shiki span {
+  :root:not([data-theme='dark']) .shiki,
+  :root:not([data-theme='dark']) .shiki span {
     color: var(--shiki-light);
   }
 }
