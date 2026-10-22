@@ -10,7 +10,7 @@
 // checkout of that version next to this repository. Needs ffmpeg and a
 // logged-in wrangler.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { galleryItems } from '../apps/site/src/lib/gallery';
 import { SDK_VERSION } from '../apps/site/src/lib/sdk';
@@ -64,6 +64,32 @@ for (const item of names.map((name) => ({ name }))) {
     [bin, 'render', '--cpu', '--size', `${SIZE[0]}x${SIZE[1]}`, '--out', mp4, '--subtitles', vtt],
     join(sdk, 'examples'),
   );
+  // oxframe encodes for render speed; these files are encoded once and
+  // watched many times, so a slower preset halves them at the same quality
+  // (SSIM 0.9987 against the render on the showreel).
+  const packed = join(out, `${item.name}.packed.mp4`);
+  run([
+    'ffmpeg',
+    '-v',
+    'error',
+    '-y',
+    '-i',
+    mp4,
+    '-c:v',
+    'libx264',
+    '-preset',
+    'veryslow',
+    '-crf',
+    '24',
+    '-pix_fmt',
+    'yuv420p',
+    '-movflags',
+    '+faststart',
+    '-c:a',
+    'copy',
+    packed,
+  ]);
+  renameSync(packed, mp4);
   const seconds = Number(
     run([
       'ffprobe',
