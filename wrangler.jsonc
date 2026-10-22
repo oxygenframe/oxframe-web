@@ -1,4 +1,5 @@
-// oxframe.dev on Cloudflare Workers (static assets only, no Worker code).
+// oxframe.dev on Cloudflare Workers: static assets, plus a small Worker for
+// /media/* (rendered videos from the R2 bucket, apps/site/worker/index.ts).
 // Only the site is deployed here; the compile service is its own Worker
 // (services/compile-cf, compile.oxframe.dev, deployed by GitHub Actions).
 // www.oxframe.dev → oxframe.dev is a 301 Redirect Rule in the zone (the
@@ -15,12 +16,17 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "oxframe-site",
   "compatibility_date": "2026-10-01",
+  "main": "./apps/site/worker/index.ts",
   "assets": {
     "directory": "./apps/site/build",
+    "binding": "ASSETS",
+    // Only media reaches the Worker; every other path is a static file.
+    "run_worker_first": ["/media/*"],
     // adapter-static writes docs/cli.html; serve it at /docs/cli.
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page",
   },
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "oxframe" }],
   "routes": [
     { "pattern": "oxframe.dev", "custom_domain": true },
     { "pattern": "www.oxframe.dev", "custom_domain": true },

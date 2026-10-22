@@ -8,3 +8,4 @@ playwright-report
 /services/compile/.data
 .tools
 .wrangler
+apps/site/.media/

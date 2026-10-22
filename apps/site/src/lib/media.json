@@ -1,0 +1,255 @@
+{
+  "sdk": "0.20.0",
+  "date": "2026-10-22",
+  "items": {
+    "release": {
+      "mp4": "/media/0.20.0/gallery/release.mp4",
+      "poster": "/media/0.20.0/gallery/release.jpg",
+      "seconds": 7.95,
+      "width": 1280,
+      "height": 720,
+      "bytes": 89203
+    },
+    "cube_3d": {
+      "mp4": "/media/0.20.0/gallery/cube_3d.mp4",
+      "poster": "/media/0.20.0/gallery/cube_3d.jpg",
+      "seconds": 7.12,
+      "width": 1280,
+      "height": 720,
+      "bytes": 208467
+    },
+    "slides": {
+      "mp4": "/media/0.20.0/gallery/slides.mp4",
+      "poster": "/media/0.20.0/gallery/slides.jpg",
+      "seconds": 11.03,
+      "width": 1280,
+      "height": 720,
+      "bytes": 102415
+    },
+    "matrix_multiply": {
+      "mp4": "/media/0.20.0/gallery/matrix_multiply.mp4",
+      "poster": "/media/0.20.0/gallery/matrix_multiply.jpg",
+      "seconds": 7.27,
+      "width": 1280,
+      "height": 720,
+      "bytes": 113382
+    },
+    "linear_map": {
+      "mp4": "/media/0.20.0/gallery/linear_map.mp4",
+      "poster": "/media/0.20.0/gallery/linear_map.jpg",
+      "seconds": 6.32,
+      "width": 1280,
+      "height": 720,
+      "bytes": 1215662
+    },
+    "table_sort": {
+      "mp4": "/media/0.20.0/gallery/table_sort.mp4",
+      "poster": "/media/0.20.0/gallery/table_sort.jpg",
+      "seconds": 4.47,
+      "width": 1280,
+      "height": 720,
+      "bytes": 184005
+    },
+    "architecture": {
+      "mp4": "/media/0.20.0/gallery/architecture.mp4",
+      "poster": "/media/0.20.0/gallery/architecture.jpg",
+      "seconds": 5.17,
+      "width": 1280,
+      "height": 720,
+      "bytes": 79827
+    },
+    "gauge": {
+      "mp4": "/media/0.20.0/gallery/gauge.mp4",
+      "poster": "/media/0.20.0/gallery/gauge.jpg",
+      "seconds": 1.92,
+      "width": 1280,
+      "height": 720,
+      "bytes": 26252
+    },
+    "charts": {
+      "mp4": "/media/0.20.0/gallery/charts.mp4",
+      "poster": "/media/0.20.0/gallery/charts.jpg",
+      "seconds": 8.38,
+      "width": 1280,
+      "height": 720,
+      "bytes": 303412
+    },
+    "ocean": {
+      "mp4": "/media/0.20.0/gallery/ocean.mp4",
+      "poster": "/media/0.20.0/gallery/ocean.jpg",
+      "seconds": 6.37,
+      "width": 1280,
+      "height": 720,
+      "bytes": 344142
+    },
+    "splash": {
+      "mp4": "/media/0.20.0/gallery/splash.mp4",
+      "poster": "/media/0.20.0/gallery/splash.jpg",
+      "seconds": 3.83,
+      "width": 1280,
+      "height": 720,
+      "bytes": 168301
+    },
+    "waves": {
+      "mp4": "/media/0.20.0/gallery/waves.mp4",
+      "poster": "/media/0.20.0/gallery/waves.jpg",
+      "seconds": 1.23,
+      "width": 1280,
+      "height": 720,
+      "bytes": 18973
+    },
+    "voice": {
+      "mp4": "/media/0.20.0/gallery/voice.mp4",
+      "poster": "/media/0.20.0/gallery/voice.jpg",
+      "seconds": 1.22,
+      "width": 1280,
+      "height": 720,
+      "bytes": 11409
+    },
+    "sounds": {
+      "mp4": "/media/0.20.0/gallery/sounds.mp4",
+      "poster": "/media/0.20.0/gallery/sounds.jpg",
+      "seconds": 1.13,
+      "width": 1280,
+      "height": 720,
+      "bytes": 44034,
+      "captions": "/media/0.20.0/gallery/sounds.vtt"
+    },
+    "spray": {
+      "mp4": "/media/0.20.0/gallery/spray.mp4",
+      "poster": "/media/0.20.0/gallery/spray.jpg",
+      "seconds": 1.22,
+      "width": 1280,
+      "height": 720,
+      "bytes": 37247
+    },
+    "transitions": {
+      "mp4": "/media/0.20.0/gallery/transitions.mp4",
+      "poster": "/media/0.20.0/gallery/transitions.jpg",
+      "seconds": 1.78,
+      "width": 1280,
+      "height": 720,
+      "bytes": 29779
+    },
+    "svg": {
+      "mp4": "/media/0.20.0/gallery/svg.mp4",
+      "poster": "/media/0.20.0/gallery/svg.jpg",
+      "seconds": 1.97,
+      "width": 1280,
+      "height": 720,
+      "bytes": 19115
+    },
+    "code_steps": {
+      "mp4": "/media/0.20.0/gallery/code_steps.mp4",
+      "poster": "/media/0.20.0/gallery/code_steps.jpg",
+      "seconds": 3.42,
+      "width": 1280,
+      "height": 720,
+      "bytes": 52404
+    },
+    "quicksort": {
+      "mp4": "/media/0.20.0/gallery/quicksort.mp4",
+      "poster": "/media/0.20.0/gallery/quicksort.jpg",
+      "seconds": 45.65,
+      "width": 1280,
+      "height": 720,
+      "bytes": 1902765
+    },
+    "camera": {
+      "mp4": "/media/0.20.0/gallery/camera.mp4",
+      "poster": "/media/0.20.0/gallery/camera.jpg",
+      "seconds": 10.47,
+      "width": 1280,
+      "height": 720,
+      "bytes": 614992
+    },
+    "components": {
+      "mp4": "/media/0.20.0/gallery/components.mp4",
+      "poster": "/media/0.20.0/gallery/components.jpg",
+      "seconds": 12.37,
+      "width": 1280,
+      "height": 720,
+      "bytes": 119587
+    },
+    "chart": {
+      "mp4": "/media/0.20.0/gallery/chart.mp4",
+      "poster": "/media/0.20.0/gallery/chart.jpg",
+      "seconds": 6.82,
+      "width": 1280,
+      "height": 720,
+      "bytes": 193166
+    },
+    "relative": {
+      "mp4": "/media/0.20.0/gallery/relative.mp4",
+      "poster": "/media/0.20.0/gallery/relative.jpg",
+      "seconds": 1.47,
+      "width": 1280,
+      "height": 720,
+      "bytes": 15958
+    },
+    "theme": {
+      "mp4": "/media/0.20.0/gallery/theme.mp4",
+      "poster": "/media/0.20.0/gallery/theme.jpg",
+      "seconds": 0.47,
+      "width": 1280,
+      "height": 720,
+      "bytes": 12020
+    },
+    "text": {
+      "mp4": "/media/0.20.0/gallery/text.mp4",
+      "poster": "/media/0.20.0/gallery/text.jpg",
+      "seconds": 6.12,
+      "width": 1280,
+      "height": 720,
+      "bytes": 138835
+    },
+    "typography": {
+      "mp4": "/media/0.20.0/gallery/typography.mp4",
+      "poster": "/media/0.20.0/gallery/typography.jpg",
+      "seconds": 8.72,
+      "width": 1280,
+      "height": 720,
+      "bytes": 187820
+    },
+    "effects": {
+      "mp4": "/media/0.20.0/gallery/effects.mp4",
+      "poster": "/media/0.20.0/gallery/effects.jpg",
+      "seconds": 4.82,
+      "width": 1280,
+      "height": 720,
+      "bytes": 189990
+    },
+    "layout": {
+      "mp4": "/media/0.20.0/gallery/layout.mp4",
+      "poster": "/media/0.20.0/gallery/layout.jpg",
+      "seconds": 3.97,
+      "width": 1280,
+      "height": 720,
+      "bytes": 87614
+    },
+    "particles": {
+      "mp4": "/media/0.20.0/gallery/particles.mp4",
+      "poster": "/media/0.20.0/gallery/particles.jpg",
+      "seconds": 3.82,
+      "width": 1280,
+      "height": 720,
+      "bytes": 365320
+    },
+    "morph": {
+      "mp4": "/media/0.20.0/gallery/morph.mp4",
+      "poster": "/media/0.20.0/gallery/morph.jpg",
+      "seconds": 6.22,
+      "width": 1280,
+      "height": 720,
+      "bytes": 117038
+    },
+    "showreel": {
+      "mp4": "/media/0.20.0/gallery/showreel.mp4",
+      "poster": "/media/0.20.0/gallery/showreel.jpg",
+      "seconds": 30.2,
+      "width": 1280,
+      "height": 720,
+      "bytes": 2212540
+    }
+  }
+}

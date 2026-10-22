@@ -3,11 +3,32 @@
   import { galleryItems } from '$lib/gallery';
   import { exampleByName } from '$lib/examples';
   import { track } from '$lib/track';
+  import { mediaFor, videoObject } from '$lib/media';
+
+  // The videos as an item list, so search can show them as video results.
+  const videos = galleryItems
+    .map((item) =>
+      videoObject(item.name, exampleByName(item.name)?.title ?? item.name, item.prompt),
+    )
+    .filter((v): v is object => v !== null);
+  const jsonld = videos.length
+    ? [
+        {
+          '@type': 'ItemList',
+          itemListElement: videos.map((v, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: v,
+          })),
+        },
+      ]
+    : [];
 </script>
 
 <Seo
   title="Gallery of code-based videos — oxframe"
   description="Explainer, code, chart and vertical videos made with oxframe. Each card has the brief, the source and a link into the playground."
+  {jsonld}
 />
 
 <h1>Gallery</h1>
@@ -22,6 +43,36 @@
     <li>
       <p class="tags">{item.tags.join(' · ')}</p>
       <h2>{example?.title ?? item.name}</h2>
+      {#if mediaFor(item.name)}
+        {@const m = mediaFor(item.name)!}
+        {#if m.captions}
+          <video
+            src={m.mp4}
+            poster={m.poster}
+            width={m.width}
+            height={m.height}
+            controls
+            playsinline
+            preload="none"
+            aria-label="{example?.title ?? item.name}, rendered by oxframe"
+          >
+            <track kind="captions" src={m.captions} srclang="en" label="English" />
+          </video>
+        {:else}
+          <!-- No sound track: muted says so, and there is nothing to caption. -->
+          <video
+            src={m.mp4}
+            poster={m.poster}
+            width={m.width}
+            height={m.height}
+            controls
+            muted
+            playsinline
+            preload="none"
+            aria-label="{example?.title ?? item.name}, rendered by oxframe"
+          ></video>
+        {/if}
+      {/if}
       <p>{item.prompt}</p>
       {#if example}
         <details>
@@ -52,6 +103,13 @@
     .cards {
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
+  }
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    background: #111;
   }
   li {
     min-width: 0;

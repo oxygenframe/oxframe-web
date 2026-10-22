@@ -11,6 +11,14 @@ export default {
   kit: {
     // Static site: any host with Bun (serve.ts) or a CDN.
     adapter: adapter({ fallback: '404.html' }),
+    prerender: {
+      // /media/* (rendered videos and posters) comes from R2 through the
+      // site Worker, not from the build; every other missing link fails it.
+      handleHttpError: ({ path, message }) => {
+        if (path.startsWith('/media/')) return;
+        throw new Error(message);
+      },
+    },
     // No 'unsafe-eval' anywhere. wasm is compiled only inside the engine
     // worker, whose own response header (serve.ts) adds 'wasm-unsafe-eval'.
     csp: {
@@ -23,8 +31,7 @@ export default {
         'style-src': ['self', 'unsafe-inline'],
         'img-src': ['self', 'data:', 'blob:'],
         'font-src': ['self', 'data:'],
-        // The star count in the header reads the GitHub API.
-        'connect-src': ['self', compile, 'https://plausible.io', 'https://api.github.com'],
+        'connect-src': ['self', compile, 'https://plausible.io'],
         'worker-src': ['self', 'blob:'],
         'object-src': ['none'],
         'base-uri': ['self'],

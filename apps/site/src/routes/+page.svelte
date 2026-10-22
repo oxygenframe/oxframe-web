@@ -3,6 +3,14 @@
   import { measurements } from '$lib/measurements';
   import { LOGO, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { track } from '$lib/track';
+  import { mediaFor, videoObject } from '$lib/media';
+
+  // The reel (oxframe-sdk/examples/src/showreel.rs), rendered to R2 by
+  // scripts/render-media.ts; the old file in static/ until one exists.
+  const reel = mediaFor('showreel');
+  const REEL_TITLE = 'oxframe showreel: charts, 3D, a linear map and a shader sea';
+  const REEL_TEXT =
+    'Scenes from the oxframe examples, rendered by oxframe on the CPU: functions on axes, a lit 3D cube with labels, a shear of the plane, and waves from a shader.';
 
   const features = [
     [
@@ -62,7 +70,7 @@
 
   function loadHero(node: HTMLVideoElement) {
     if (node.getAttribute('src')) return;
-    node.src = '/hero.mp4';
+    node.src = reel?.mp4 ?? '/hero.mp4';
     const start = () => node.play().catch(() => {});
     if (node.readyState >= 2) start();
     else node.addEventListener('loadeddata', start, { once: true });
@@ -117,6 +125,7 @@
     },
     ORGANIZATION,
     WEBSITE,
+    ...[videoObject('showreel', REEL_TITLE, REEL_TEXT)].filter((v) => v !== null),
   ]}
 />
 
@@ -141,19 +150,28 @@
       <button class="btn" type="button" onclick={copyInstall}>{copied ? 'Copied' : 'Copy'}</button>
     </div>
   </div>
-  <video
-    bind:this={video}
-    poster="/hero-poster.png"
-    width="1280"
-    height="720"
-    muted
-    loop
-    playsinline
-    preload="none"
-    controls
-    aria-label="A prompt, a storyboard, a lint report, a fix, and the rendered film"
-    onplay={() => track('Hero video')}
-  ></video>
+  <figure class="reel">
+    <video
+      bind:this={video}
+      poster={reel?.poster ?? '/hero-poster.png'}
+      width="1280"
+      height="720"
+      muted
+      loop
+      playsinline
+      preload="none"
+      controls
+      aria-label={REEL_TEXT}
+      onplay={() => track('Hero video')}
+    ></video>
+    <figcaption>
+      Every frame drawn by oxframe.
+      <a
+        href="https://github.com/oxygenframe/oxframe-sdk/blob/main/examples/src/showreel.rs"
+        rel="external">View the code of this video</a
+      >
+    </figcaption>
+  </figure>
 </section>
 
 <section>
@@ -197,8 +215,8 @@
     <article>
       <h3>Render</h3>
       <img
-        src="/hero-poster.png"
-        alt="The finished title card from the homepage film"
+        src={reel?.poster ?? '/hero-poster.png'}
+        alt="A frame of the rendered showreel: a sheared grid with vectors i, j and v, and its matrix"
         width="640"
         height="360"
       />
@@ -342,6 +360,15 @@ fn main() {
 </section>
 
 <style>
+  .reel {
+    margin: 0;
+    min-width: 0;
+  }
+  .reel figcaption {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--muted);
+  }
   .hero {
     display: grid;
     gap: 28px;
