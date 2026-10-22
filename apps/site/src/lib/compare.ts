@@ -1,0 +1,71 @@
+// The comparison on /compare, one row per criterion. Columns: oxframe,
+// fframes, Remotion, Motion Canvas, Manim. The home page shows a few rows.
+export const tools = ['oxframe', 'fframes', 'Remotion', 'Motion Canvas', 'Manim'];
+
+export const rows: string[][] = [
+  ['Language', 'Rust', 'Rust', 'React', 'TypeScript', 'Python'],
+  [
+    'Where it renders',
+    'Native CPU and GPU',
+    'GPU (Skia) or CPU, from SVG',
+    'Headless browser',
+    'Browser canvas',
+    'Its own renderer',
+  ],
+  [
+    'How a frame is made',
+    'Objects that stay linked: signals, layout, bind',
+    'A function of that frame: timelines and formulas',
+    'A React render of that frame',
+    'Tweens on nodes in a coroutine',
+    'Animations applied to mobjects',
+  ],
+  [
+    'Morphing',
+    'Built in for text and shapes',
+    'You draw the in-between',
+    'You interpolate it',
+    'You tween the values',
+    'Transform between mobjects',
+  ],
+  [
+    'An arbitrary frame',
+    'Seek the scene and read its state',
+    'The same function, for any index',
+    'Render that composition frame',
+    'Seek the project',
+    'Render that animation frame',
+  ],
+  [
+    'Same frames every time',
+    'Yes, seeded',
+    'Yes, if render_frame stays pure',
+    'If the scene avoids entropy',
+    'If the scene avoids entropy',
+    'Yes, for a fixed seed',
+  ],
+  [
+    'Live editor',
+    'Timeline, markers, tunables',
+    'Preview of any frame',
+    'Preview studio',
+    'Editor',
+    'No timeline editor',
+  ],
+  [
+    'An agent can see the picture',
+    'oxframe check and MCP',
+    'A skill, plus frame snapshots',
+    'You wire that yourself',
+    'You wire that yourself',
+    'You wire that yourself',
+  ],
+  [
+    'Frame shapes',
+    '16:9, 9:16, 1:1 in one scene',
+    'One size on the video',
+    'Whatever the composition is',
+    'The project size',
+    'The scene size',
+  ],
+];

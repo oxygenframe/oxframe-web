@@ -4,6 +4,9 @@
   import { LOGO, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { track } from '$lib/track';
   import { mediaFor, videoObject } from '$lib/media';
+  import { INSTALL_SKILLS } from '$lib/agents';
+  import { rows as compareRows, tools } from '$lib/compare';
+  import { useCases } from '$lib/use-cases';
 
   // The reel (oxframe-sdk/examples/src/showreel.rs), rendered to R2 by
   // scripts/render-media.ts; the old file in static/ until one exists.
@@ -55,12 +58,52 @@
     ],
   ];
 
+  // Three ways in, the agent first.
+  const entries = [
+    {
+      id: 'agent',
+      label: 'Tell your agent',
+      command: INSTALL_SKILLS,
+      note: 'Installs the oxframe skills into Claude Code, Codex, Cursor, Copilot and others. Then ask it for a video.',
+      link: { href: '/agents', text: 'Agents and skills' },
+    },
+    {
+      id: 'rust',
+      label: 'Write it yourself',
+      command: 'cargo install oxframe-cli',
+      note: 'The oxframe command: new projects, the live editor, check and render.',
+      link: { href: '/docs/getting-started', text: 'Getting started' },
+    },
+    {
+      id: 'browser',
+      label: 'Try in the browser',
+      command: '',
+      note: 'The playground compiles your Rust and plays it right here. Nothing to install.',
+      link: { href: '/playground', text: 'Open the playground' },
+    },
+  ];
+  let entry = $state('agent');
+  const current = $derived(entries.find((e) => e.id === entry)!);
+  function tabKey(e: KeyboardEvent) {
+    const i = entries.findIndex((x) => x.id === entry);
+    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    entry = entries[(i + step + entries.length) % entries.length]!.id;
+    document.getElementById(`tab-${entry}`)?.focus();
+  }
+
+  // A few rows of /compare, without fframes.
+  const COMPARE = ['Language', 'Where it renders', 'Live editor', 'An agent can see the picture'];
+  const compareColumns = [0, 2, 3, 4];
+  const compare = compareRows.filter((r) => COMPARE.includes(r[0]!));
+
   let video: HTMLVideoElement | undefined = $state();
   let copied = $state(false);
 
   async function copyInstall() {
     try {
-      await navigator.clipboard.writeText('cargo install oxframe-cli');
+      await navigator.clipboard.writeText(current.command);
       copied = true;
       setTimeout(() => (copied = false), 1500);
     } catch {
@@ -134,42 +177,61 @@
   <div>
     <h1>Motion graphics your AI agent can see</h1>
     <p class="lead">
-      Code-based animation in Rust with a live editor and visual checks, so AI agents fix their own
-      mistakes before you ever hit render.
+      Explainers, code walkthroughs, charts and release videos from code. Live editor, visual
+      checks, byte-identical renders. MIT/Apache — no seats, no per-render fees.
     </p>
-    <p class="cta">
-      <a class="btn primary" href="/playground" onclick={() => track('Open playground')}
-        >Open the playground</a
-      >
-      <a class="btn" href="/docs/getting-started">Get started</a>
-      <a class="btn" href="/docs/agents" onclick={() => track('Use with Claude Code')}
-        >Use with Claude Code</a
-      >
-    </p>
-    <div class="install">
-      <div class="box">
-        <pre><code>cargo install oxframe-cli</code></pre>
+    <div class="tabs" role="tablist" aria-label="Ways to start">
+      {#each entries as e (e.id)}
         <button
-          class="copy"
-          class:done={copied}
+          id="tab-{e.id}"
           type="button"
-          onclick={copyInstall}
-          aria-label={copied ? 'Copied' : 'Copy the install command'}
-          title={copied ? 'Copied' : 'Copy'}
+          role="tab"
+          aria-selected={entry === e.id}
+          aria-controls="entry"
+          tabindex={entry === e.id ? 0 : -1}
+          onclick={() => (entry = e.id)}
+          onkeydown={tabKey}>{e.label}</button
         >
-          {#if copied}
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
-              ><path d="M20 6 9 17l-5-5" /></svg
+      {/each}
+    </div>
+    <div id="entry" class="entry" role="tabpanel" aria-labelledby="tab-{entry}">
+      {#if current.command}
+        <div class="install">
+          <div class="box">
+            <pre><code>{current.command}</code></pre>
+            <button
+              class="copy"
+              class:done={copied}
+              type="button"
+              onclick={copyInstall}
+              aria-label={copied ? 'Copied' : 'Copy the install command'}
+              title={copied ? 'Copied' : 'Copy'}
             >
-          {:else}
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
-              ><rect x="9" y="9" width="12" height="12" rx="2" /><path
-                d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
-              /></svg
-            >
-          {/if}
-        </button>
-      </div>
+              {#if copied}
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+                  ><path d="M20 6 9 17l-5-5" /></svg
+                >
+              {:else}
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+                  ><rect x="9" y="9" width="12" height="12" rx="2" /><path
+                    d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+                  /></svg
+                >
+              {/if}
+            </button>
+          </div>
+        </div>
+      {:else}
+        <p>
+          <a class="btn primary" href="/playground" onclick={() => track('Open playground')}
+            >Open the playground</a
+          >
+        </p>
+      {/if}
+      <p class="note">
+        {current.note}
+        {#if current.command}<a href={current.link.href}>{current.link.text}</a>{/if}
+      </p>
     </div>
   </div>
   <figure class="reel">
@@ -194,6 +256,24 @@
       >
     </figcaption>
   </figure>
+</section>
+
+<section>
+  <h2>What you can make</h2>
+  <ul class="makes">
+    {#each useCases.slice(0, 6) as u (u.slug)}
+      {@const m = mediaFor(u.examples[0]!)}
+      <li>
+        <a href="/use-cases/{u.slug}">
+          {#if m}<img src={m.poster} width={m.width} height={m.height} loading="lazy" alt="" />{/if}
+          <span>{u.name}</span>
+        </a>
+      </li>
+    {/each}
+  </ul>
+  <p>
+    <a href="/use-cases">All use cases</a> · <a href="/gallery">every example in the gallery</a>
+  </p>
 </section>
 
 <section>
@@ -275,6 +355,14 @@
         with one), no GPU. Both files are byte for byte the same.
       </p>
     </article>
+    <article>
+      <p class="figure">$0</p>
+      <h3>License</h3>
+      <p>
+        MIT or Apache-2.0: no seats and no per-render fees, for any team.
+        <a href="/license">What it covers</a>
+      </p>
+    </article>
   </div>
   <p>
     An agent pass rate and an average iteration count have not been measured. The prompt set and the
@@ -330,6 +418,34 @@ fn main() {
   <p>
     Inspired by Motion Canvas: scenes are coroutines, and an <code>await</code> is a point on the timeline.
     oxframe runs that model in Rust, with a native renderer and a check an agent can read.
+  </p>
+</section>
+
+<section>
+  <h2>How it compares</h2>
+  <div class="table-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th></th>
+          {#each compareColumns as c (c)}<th>{tools[c]}</th>{/each}
+        </tr>
+      </thead>
+      <tbody>
+        {#each compare as row (row[0])}
+          <tr>
+            <th scope="row">{row[0]}</th>
+            {#each compareColumns as c (c)}<td>{row[c + 1]}</td>{/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <a href="/compare">The full comparison</a>, with fframes, and guides for
+    <a href="/docs/migrate/remotion">moving from Remotion</a>,
+    <a href="/docs/migrate/motion-canvas">Motion Canvas</a> and
+    <a href="/docs/migrate/manim">Manim</a>.
   </p>
 </section>
 
@@ -397,6 +513,10 @@ fn main() {
     padding: 28px 0 8px;
     min-width: 0;
   }
+  /* Grid items shrink to the screen; a long command scrolls in its box. */
+  .hero > * {
+    min-width: 0;
+  }
   @media (min-width: 860px) {
     .hero {
       grid-template-columns: 1.1fr 1fr;
@@ -411,9 +531,84 @@ fn main() {
     color: var(--muted);
     max-width: 62ch;
   }
-  .cta,
   .install {
     display: flex;
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 20px 0 10px;
+  }
+  .tabs button {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .tabs button[aria-selected='true'] {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .entry p {
+    margin: 0;
+  }
+  .entry .note {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 52ch;
+  }
+  .makes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 0;
+    list-style: none;
+  }
+  .makes a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .makes img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .makes span {
+    display: block;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .compare th,
+  .compare td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .compare thead th:nth-child(2),
+  .compare td:nth-child(2) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .compare td {
+    color: var(--muted);
   }
   /* As wide as the command, never wider than the column. */
   .box {
@@ -421,6 +616,7 @@ fn main() {
     min-width: 0;
   }
   .install pre {
+    overflow-x: auto;
     margin: 0;
     padding: 8px 44px 8px 12px;
   }
@@ -488,8 +684,9 @@ fn main() {
   }
   @media (min-width: 800px) {
     .steps,
+    /* Five figures: one row on a desktop column. */
     .numbers {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     }
     .grid {
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
