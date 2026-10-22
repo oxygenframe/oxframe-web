@@ -31,8 +31,9 @@
 
 <h1>Check rules</h1>
 <p class="lead">
-  What each rule in an <code>oxframe check</code> report means and how to fix it. The
-  <code>rule</code> field of an issue in <code>report.json</code> is the name of its section here.
+  What each rule in an <code>oxframe check</code> report means and how to fix it. Every issue in
+  <code>report.json</code> links to its section here in its <code>docs</code> field (Rust code gets
+  the same link from <code>Issue::docs</code>).
 </p>
 <p>
   <code>oxframe check</code> plays every scene, samples frames and reports what a viewer would see
