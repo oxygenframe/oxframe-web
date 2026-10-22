@@ -36,7 +36,22 @@ export function parseHash(hash: string): Partial<ViewState> {
   return out;
 }
 
-export function formatHash(v: ViewState): string {
+/** Keys of the hash that belong to the editor's view state. */
+const OWN = new Set(['f', 'z', 'px', 'py', 's']);
+
+/**
+ * The parts of `hash` the editor does not own, as they are: the page may
+ * keep its own state there (the playground's share link, `code=…`).
+ * Re-encoding them would change them (`+` becomes a space).
+ */
+export function foreignHash(hash: string): string[] {
+  return hash
+    .replace(/^#/, '')
+    .split('&')
+    .filter((part) => part !== '' && !OWN.has(part.split('=')[0]!));
+}
+
+export function formatHash(v: ViewState, keep: string[] = []): string {
   const p = new URLSearchParams();
   p.set('f', String(v.frame));
   if (v.zoom !== 1) p.set('z', v.zoom.toFixed(3));
@@ -45,7 +60,7 @@ export function formatHash(v: ViewState): string {
     p.set('py', v.panY.toFixed(1));
   }
   if (v.selected !== null) p.set('s', String(v.selected));
-  return `#${p.toString()}`;
+  return `#${[...keep, p.toString()].join('&')}`;
 }
 
 export function load(): Partial<ViewState> {
@@ -68,7 +83,7 @@ export function save(v: ViewState): void {
     history.replaceState(
       history.state,
       '',
-      `${location.pathname}${location.search}${formatHash(v)}`,
+      `${location.pathname}${location.search}${formatHash(v, foreignHash(location.hash))}`,
     );
   }
 }

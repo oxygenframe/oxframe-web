@@ -23,6 +23,8 @@ export function llmsIndex(base: string, fullHref: string, list: DocSection[]): s
     '',
     `Full text: ${fullHref}`,
     '',
+    'Every page also has a Markdown version: add .md to its URL.',
+    '',
   ];
   for (const section of list) {
     lines.push(`## ${section.title}`, '');
