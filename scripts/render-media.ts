@@ -42,6 +42,18 @@ export interface MediaItem {
   bytes: number;
   /** Captions (spoken lines) for a video with sound; absent for a silent one. */
   captions?: string;
+  /** The spoken lines as plain text, for VideoObject.transcript. */
+  transcript?: string;
+}
+
+/** The text of a WebVTT file: its cues, without times or numbers. */
+export function vttText(vtt: string): string {
+  return vtt
+    .split(/\r?\n/)
+    .filter((l) => l.trim() && l !== 'WEBVTT' && !l.includes('-->') && !/^\d+$/.test(l.trim()))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 mkdirSync(out, { recursive: true });
@@ -123,6 +135,7 @@ for (const item of names.map((name) => ({ name }))) {
   ]);
   const streams = ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=codec_type'];
   const audio = run(['ffprobe', ...streams, '-of', 'csv=p=0', mp4]).trim() !== '';
+  const transcript = audio ? vttText(readFileSync(vtt, 'utf8')) : '';
   items[item.name] = {
     mp4: `${base}/${item.name}.mp4`,
     poster: `${base}/${item.name}.jpg`,
@@ -131,6 +144,7 @@ for (const item of names.map((name) => ({ name }))) {
     height: SIZE[1],
     bytes: statSync(mp4).size,
     ...(audio ? { captions: `${base}/${item.name}.vtt` } : {}),
+    ...(transcript ? { transcript } : {}),
   };
   console.log(
     `${item.name}: ${seconds.toFixed(1)} s, ${(statSync(mp4).size / 1e6).toFixed(2)} MB, ${((Date.now() - t0) / 1000).toFixed(1)} s`,

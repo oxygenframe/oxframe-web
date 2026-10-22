@@ -6,14 +6,33 @@
   import changelog from '$lib/changelog.json';
   import videos from '$lib/release-media.json';
   import type { MediaItem } from '$lib/media';
+  import { SITE } from '$lib/site';
 
   const media = videos as Record<string, MediaItem>;
   const anchor = (version: string) => `v${version.replace(/\./g, '-')}`;
+  // One VideoObject per release video, dated with its release.
+  const jsonld = changelog
+    .filter((r) => media[r.version])
+    .map((r) => {
+      const m = media[r.version]!;
+      return {
+        '@type': 'VideoObject',
+        name: `oxframe ${r.version} release notes`,
+        description: `What changed in oxframe ${r.version}, made from the release notes by release-video-action.`,
+        thumbnailUrl: `${SITE}${m.poster}`,
+        contentUrl: `${SITE}${m.mp4}`,
+        uploadDate: r.date,
+        duration: `PT${m.seconds.toFixed(1)}S`,
+        width: m.width,
+        height: m.height,
+      };
+    });
 </script>
 
 <Seo
   title="Changelog: every oxframe release — oxframe"
   description="What changed in each oxframe release, newest first: new APIs, fixes and breaking changes with before and after code, and a video of the newer releases."
+  {jsonld}
 />
 
 <article>

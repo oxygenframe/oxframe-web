@@ -12,6 +12,8 @@ export interface MediaItem {
   bytes: number;
   /** Captions of a video with sound; a silent video has none. */
   captions?: string;
+  /** The spoken lines as plain text (VideoObject.transcript). */
+  transcript?: string;
 }
 
 const items = data.items as Record<string, MediaItem>;
@@ -33,5 +35,6 @@ export function videoObject(name: string, title: string, description: string): o
     duration: `PT${m.seconds.toFixed(1)}S`,
     width: m.width,
     height: m.height,
+    ...(m.transcript ? { transcript: m.transcript } : {}),
   };
 }

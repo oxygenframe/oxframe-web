@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { SDK_VERSION } from '$lib/sdk';
   import Seo from '$lib/components/Seo.svelte';
   import { measurements } from '$lib/measurements';
   import { LOGO, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
@@ -160,7 +161,8 @@
       applicationCategory: 'MultimediaApplication',
       applicationSubCategory: 'Animation software',
       operatingSystem: 'Linux, macOS, Windows',
-      softwareVersion: measurements.version,
+      softwareVersion: SDK_VERSION,
+      license: 'https://github.com/oxygenframe/oxframe-sdk#license',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       downloadUrl: 'https://crates.io/crates/oxframe-cli',
       image: LOGO,
