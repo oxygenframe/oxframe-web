@@ -218,6 +218,24 @@ test('the playground says which oxframe it runs and warns about other versions',
   await expect(page.getByTestId('version-warning')).toContainText('oxframe 0.0 docs');
 });
 
+// Docs search: Pagefind in a worker, which the CSP lets compile wasm.
+test('docs search finds a page and opens it', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (m) => {
+    if (m.type() === 'error' && /Content Security Policy|pagefind/i.test(m.text()))
+      errors.push(m.text());
+  });
+  await page.goto('/docs/getting-started', { waitUntil: 'networkidle' });
+  await page.keyboard.press('/');
+  await expect(page.getByTestId('docs-search')).toBeFocused();
+  await page.keyboard.type('apply_matrix');
+  const first = page.getByTestId('search-results').locator('a').first();
+  await expect(first).toContainText('Vectors and matrices');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/docs\/guide\/matrices/);
+  expect(errors).toEqual([]);
+});
+
 // <lastmod> is the day the page's source last changed (scripts/lastmod.ts).
 test('every sitemap page has a lastmod date', async ({ request }) => {
   const sitemap = await (await request.get('/sitemap.xml')).text();

@@ -1,6 +1,7 @@
 // Static server for the built site with security headers. CSP: no
-// 'unsafe-eval' anywhere; 'wasm-unsafe-eval' and the compile origin are
-// added only for the engine worker script, the one place wasm compiles.
+// 'unsafe-eval' anywhere; 'wasm-unsafe-eval' is added only for the two
+// worker scripts that compile wasm: the engine (with the compile origin) and
+// the docs search.
 import { existsSync, statSync } from 'node:fs';
 import { join, normalize } from 'node:path';
 import { compileUrl } from './compile-url.js';
@@ -15,6 +16,8 @@ const port = Number(process.env.PORT ?? 3000);
 // for its inline scripts); the header adds only what meta cannot express.
 const pageCsp = `frame-ancestors 'self'; object-src 'none'; base-uri 'self'`;
 const workerCsp = `default-src 'self'; connect-src 'self' ${compile}; script-src 'self' ${compile} 'wasm-unsafe-eval'`;
+// The docs search worker runs Pagefind, which is wasm too.
+const searchCsp = `default-src 'self'; script-src 'self' 'wasm-unsafe-eval'`;
 
 Bun.serve({
   port,
@@ -31,11 +34,14 @@ Bun.serve({
       file = join(root, '404.html');
       path = '/404';
     }
-    const isWorker = /engine-worker/.test(path);
     const headers: Record<string, string> = {
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Content-Security-Policy': isWorker ? workerCsp : pageCsp,
+      'Content-Security-Policy': /engine-worker/.test(path)
+        ? workerCsp
+        : /search-worker/.test(path)
+          ? searchCsp
+          : pageCsp,
     };
     if (path.includes('/_app/immutable/'))
       headers['Cache-Control'] = 'public, max-age=31536000, immutable';

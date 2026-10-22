@@ -2,7 +2,8 @@
 // headers and redirects serve.ts applies.
 // Pages carry their CSP in a <meta> tag (SvelteKit hashes); the header adds
 // only what meta cannot express. The engine worker is the one script allowed
-// to compile wasm, so it gets its own CSP with 'wasm-unsafe-eval'.
+// to compile wasm, so it gets its own CSP with 'wasm-unsafe-eval'; so does the
+// docs search worker (Pagefind).
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { compileUrl } from '../compile-url.js';
@@ -18,9 +19,15 @@ const engine = existsSync(workers)
   : [];
 if (engine.length !== 1)
   throw new Error(`expected one engine worker in ${workers}, found ${engine.length}`);
+const search = existsSync(workers)
+  ? readdirSync(workers).filter((f) => /^search-worker-.*\.js$/.test(f))
+  : [];
+if (search.length !== 1)
+  throw new Error(`expected one search worker in ${workers}, found ${search.length}`);
 
 const pageCsp = `frame-ancestors 'self'; object-src 'none'; base-uri 'self'`;
 const workerCsp = `default-src 'self'; connect-src 'self' ${compile}; script-src 'self' ${compile} 'wasm-unsafe-eval'`;
+const searchCsp = `default-src 'self'; script-src 'self' 'wasm-unsafe-eval'`;
 
 const headers = `/*
   X-Content-Type-Options: nosniff
@@ -33,6 +40,10 @@ const headers = `/*
 /_app/immutable/workers/${engine[0]}
   ! Content-Security-Policy
   Content-Security-Policy: ${workerCsp}
+
+/_app/immutable/workers/${search[0]}
+  ! Content-Security-Policy
+  Content-Security-Policy: ${searchCsp}
 `;
 writeFileSync(join(build, '_headers'), headers);
 writeFileSync(join(build, '_redirects'), REDIRECTS.map((r) => r.join(' ')).join('\n') + '\n');

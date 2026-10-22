@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import Seo from '$lib/components/Seo.svelte';
+  import DocsSearch from '$lib/search/DocsSearch.svelte';
   import { href, neighbors, sections, sectionsOf } from '$lib/docs';
   import { canonical, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { CURRENT, DOCS_VERSIONS, docsRs, latestPatch, locate } from '$lib/versions';
@@ -92,6 +93,8 @@
         >API reference ↗</a
       >
     </div>
+    <!-- The index holds the current docs only. -->
+    {#if !archived}<DocsSearch />{/if}
     {#each list as s (s.title)}
       <p class="section">{s.title}</p>
       {#each s.pages as p (p.slug)}
@@ -101,7 +104,8 @@
       {/each}
     {/each}
   </nav>
-  <article>
+  <!-- Pagefind indexes the current docs' articles (scripts: pagefind after build). -->
+  <article data-pagefind-body={archived ? undefined : ''}>
     {#if archived}
       <p class="old" role="note" data-testid="old-version">
         This is the documentation for oxframe {latestPatch(loc.series)}. The latest version is
@@ -110,7 +114,7 @@
       </p>
     {/if}
     {@render children()}
-    <footer class="pager">
+    <footer class="pager" data-pagefind-ignore>
       {#if around.prev}
         <a class="prev" href={href(around.prev.slug, loc.series)}
           ><span>Previous</span>{around.prev.title}</a

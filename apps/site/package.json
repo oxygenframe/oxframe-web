@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "bun scripts/crate-versions.ts && bun scripts/github-stars.ts && bun scripts/lastmod.ts && bun scripts/llms.ts && vite build && bun scripts/markdown-pages.ts && bun scripts/cf-headers.ts",
+    "build": "bun scripts/crate-versions.ts && bun scripts/github-stars.ts && bun scripts/lastmod.ts && bun scripts/llms.ts && vite build && bun scripts/markdown-pages.ts && pagefind --site build --silent && bun scripts/cf-headers.ts",
     "preview": "bun serve.ts",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "e2e": "playwright test"
@@ -22,6 +22,7 @@
     "@sveltejs/adapter-static": "3.0.10",
     "@sveltejs/kit": "2.70.3",
     "@sveltejs/vite-plugin-svelte": "6.2.4",
+    "pagefind": "1.5.2",
     "shiki": "4.5.0",
     "svelte": "5.57.2",
     "svelte-check": "4.7.7",

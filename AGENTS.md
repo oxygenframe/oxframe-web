@@ -28,7 +28,7 @@ also an SEO change; treat a regression like a failing test.
 - **Social cards**: every page but the home page has its own 1200×630
   card, drawn by oxframe (the scene in `apps/site/og/`) from the page's
   title: after adding a page or changing a title, `bun run build && bun
-  scripts/og-images.ts` in apps/site (needs cargo) and commit
+scripts/og-images.ts` in apps/site (needs cargo) and commit
   `static/og/` and `src/lib/og.json`; e2e fails while a card is missing or
   stale. The home page keeps `static/og.png` (`bun scripts/og-image.ts`).
 - **Speed is ranking**: keep heavy code (Monaco, the engine) lazy and off

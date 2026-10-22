@@ -51,12 +51,15 @@
   {:else if failed}
     <p class="off">Live preview unavailable right now. The code:</p>
   {:else if building}
-    <p class="off">Building the live preview (takes up to a minute after an update)…</p>
+    <p class="off" data-pagefind-ignore>
+      Building the live preview (takes up to a minute after an update)…
+    </p>
   {:else}
-    <p class="off">Loading live preview…</p>
+    <p class="off" data-pagefind-ignore>Loading live preview…</p>
   {/if}
   {#if local}
-    <details {open}>
+    <!-- The whole example's source: searched through the page text, not here. -->
+    <details {open} data-pagefind-ignore="all">
       <summary
         >Source of <code>{name}</code> —
         <a href={playground}>edit in the playground</a></summary
