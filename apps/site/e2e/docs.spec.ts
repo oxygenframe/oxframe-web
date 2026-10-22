@@ -190,6 +190,19 @@ test('the playground says which oxframe it runs and warns about other versions',
   await expect(page.getByTestId('version-warning')).toContainText('oxframe 0.0 docs');
 });
 
+// <lastmod> is the day the page's source last changed (scripts/lastmod.ts).
+test('every sitemap page has a lastmod date', async ({ request }) => {
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  const entries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]!);
+  const today = new Date().toISOString().slice(0, 10);
+  for (const entry of entries) {
+    const loc = /<loc>([^<]+)<\/loc>/.exec(entry)?.[1];
+    const day = /<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/.exec(entry)?.[1];
+    expect(day, loc).toBeTruthy();
+    expect(day! <= today, `${loc} lastmod ${day}`).toBe(true);
+  }
+});
+
 // Mobile-friendliness (a ranking signal): no page scrolls sideways on a phone.
 test('no page is wider than a phone screen', async ({ browser, request }) => {
   const sitemap = await (await request.get('/sitemap.xml')).text();

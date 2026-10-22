@@ -5,6 +5,24 @@ import { exampleByName } from '$lib/examples';
 import { galleryItems } from '$lib/gallery';
 import { mediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
+import lastmodFile from '$lib/lastmod.json';
+
+const lastmods: Record<string, string> = lastmodFile;
+
+/** The day a page's source (or the data it is built from) last changed. */
+function lastmod(path: string): string | undefined {
+  const keys = path.startsWith('/agents/skills/')
+    ? ['/agents/skills/[skill]', 'lib/skills.json']
+    : /^\/agents\/[^/]+$/.test(path)
+      ? ['/agents/[agent]', 'lib/agents.ts']
+      : path === '/gallery'
+        ? [path, 'lib/gallery.ts', 'lib/media.json']
+        : path === '/'
+          ? [path, 'lib/media.json']
+          : [path];
+  const days = keys.map((k) => lastmods[k]).filter((d): d is string => !!d);
+  return days.length ? days.sort().at(-1) : undefined;
+}
 
 const xml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -60,9 +78,9 @@ export function GET(): Response {
   const urls = paths
     .map((p) => {
       const v = (videos[p] ?? []).filter(Boolean);
-      return v.length
-        ? `  <url>\n    <loc>${SITE}${p}</loc>\n${v.join('\n')}\n  </url>`
-        : `  <url><loc>${SITE}${p}</loc></url>`;
+      const day = lastmod(p);
+      const head = `<loc>${SITE}${p}</loc>${day ? `<lastmod>${day}</lastmod>` : ''}`;
+      return v.length ? `  <url>\n    ${head}\n${v.join('\n')}\n  </url>` : `  <url>${head}</url>`;
     })
     .join('\n');
   return new Response(
