@@ -1,4 +1,20 @@
 {
+  "0.20.5": {
+    "mp4": "/media/releases/0.20.5/release-dd777c83.mp4",
+    "poster": "/media/releases/0.20.5/release-dd777c83.jpg",
+    "seconds": 13.13,
+    "width": 1920,
+    "height": 1080,
+    "bytes": 633519
+  },
+  "0.20.4": {
+    "mp4": "/media/releases/0.20.4/release-3bbcfd68.mp4",
+    "poster": "/media/releases/0.20.4/release-3bbcfd68.jpg",
+    "seconds": 13.13,
+    "width": 1920,
+    "height": 1080,
+    "bytes": 605814
+  },
   "0.20.3": {
     "mp4": "/media/releases/0.20.3/release-3e8a293c.mp4",
     "poster": "/media/releases/0.20.3/release-3e8a293c.jpg",
