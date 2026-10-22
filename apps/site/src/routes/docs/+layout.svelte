@@ -175,7 +175,13 @@
     top: 16px;
     align-self: start;
     max-height: calc(100vh - 32px);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* The menu is taller than most windows. Overlay scrollbars (Linux, macOS)
+       are drawn over the content, so keep room for one beside the fields. */
+    padding-right: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
   .section {
     margin: 14px 0 4px;
@@ -255,6 +261,7 @@
     nav {
       position: static;
       max-height: none;
+      padding-right: 0;
     }
   }
 </style>
