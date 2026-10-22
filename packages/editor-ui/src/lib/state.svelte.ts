@@ -166,7 +166,8 @@ export class EditorState {
         this.audioGen++;
         this.waveform = null;
         this.clips = [];
-        this.restoredFrame = this.frame;
+        // Unless a restart already asked the new engine for frame 0.
+        this.restoredFrame ??= this.frame;
         this.resync();
         if (resume) this.play();
         break;
