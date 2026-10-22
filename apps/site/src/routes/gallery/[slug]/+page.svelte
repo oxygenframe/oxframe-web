@@ -1,6 +1,7 @@
 <script lang="ts">
   // One gallery example: the video, the brief, the parts of oxframe it uses
-  // (with their docs), the source and the way into the playground.
+  // (with their docs), the source and, unless it is code only, the way into
+  // the playground.
   import Seo from '$lib/components/Seo.svelte';
   import ExampleVideo from '$lib/components/ExampleVideo.svelte';
   import { galleryItem, galleryItems, slugOf } from '$lib/gallery';
@@ -34,6 +35,7 @@
       ? `${item.prompt} Watch it, read the Rust source and open it in the playground.`
       : item.prompt,
   );
+  const playground = $derived(item.playground !== false);
   const jsonld = $derived(
     [
       videoObject(item.name, item.title, item.prompt),
@@ -83,10 +85,14 @@
 
 <p class="brief"><strong>The brief.</strong> {item.prompt}</p>
 <p class="actions">
-  <a class="btn primary" href="/playground?ex={item.name}" onclick={() => track('Open playground')}
-    >Open in the playground</a
-  >
-  <a class="btn" href={github} rel="external">Source on GitHub</a>
+  {#if playground}
+    <a
+      class="btn primary"
+      href="/playground?ex={item.name}"
+      onclick={() => track('Open playground')}>Open in the playground</a
+    >
+  {/if}
+  <a class={playground ? 'btn' : 'btn primary'} href={github} rel="external">Source on GitHub</a>
 </p>
 
 {#if data.uses.length}
@@ -100,8 +106,13 @@
 
 <h2>The code</h2>
 <p>
-  <code>examples/src/{item.name}.rs</code> in oxframe-sdk, for oxframe {SDK_VERSION}. In the
-  playground it compiles in the browser and you can change it.
+  <code>examples/src/{item.name}.rs</code> in oxframe-sdk, for oxframe {SDK_VERSION}.
+  {#if playground}
+    In the playground it compiles in the browser and you can change it.
+  {:else}
+    It renders with <code>cargo run -p oxframe-examples --bin {item.name} -- render</code> in a clone
+    of the SDK; its voice and assets live there, so it does not open in the playground.
+  {/if}
 </p>
 <!-- eslint-disable-next-line svelte/no-at-html-tags -- highlighted at build time from the example file -->
 {@html data.code}

@@ -1,5 +1,15 @@
 [
   {
+    "version": "0.20.5",
+    "date": "2026-10-22",
+    "html": "<h3>Added</h3>\n<ul><li>The one_shot example: the oxframe promo video, one scene and one camera with no cuts, with its voice committed so it renders without a key. Its source is the code behind the video on oxframe.dev and X.</li></ul>"
+  },
+  {
+    "version": "0.20.4",
+    "date": "2026-10-22",
+    "html": "<h3>Fixed</h3>\n<ul><li><code>oxframe dev</code>: after a rebuild while the video plays, the picture and the sound go on together from the frame they were on. The editor used to start the sound from the beginning over a still picture.</li></ul>"
+  },
+  {
     "version": "0.20.3",
     "date": "2026-10-22",
     "html": "<h3>Fixed</h3>\n<ul><li><code>oxframe check</code> reported <code>text_overflow</code> for text in a row of a <code>Layout</code> nested in another one: a row that draws nothing itself was placed as if there were no layout. <code>oxframe inspect</code> now gives every node the box it is drawn in.</li><li><code>oxframe check</code> reported <code>dead_time</code> while text was written on word by word, while a glow changed and while a sea from <code>shaders::waves()</code> moved. They count as change now; <code>oxframe inspect</code> lists how much of a node is drawn and its glow among its params.</li></ul>\n<h3>Changed</h3>\n<ul><li>The <code>release</code> example: each section's heading in its color, the changes written on word by word with a short halo, and a calm sea along the bottom. release-video-action 1.3 makes its videos the same way.</li></ul>"

@@ -1,4 +1,6 @@
 // Example sources bundled with the site (synced from oxframe-sdk/examples).
+import { galleryItems } from './gallery';
+
 const files = import.meta.glob('./examples/*.rs', {
   query: '?raw',
   import: 'default',
@@ -21,8 +23,15 @@ export const localExamples: LocalExample[] = Object.entries(files)
     a.name === 'intro' ? -1 : b.name === 'intro' ? 1 : a.name.localeCompare(b.name),
   );
 
-/** Showcase examples (gallery); the `learn_*` guide lessons are excluded. */
-export const showcaseExamples = localExamples.filter((e) => !e.name.startsWith('learn_'));
+/** Gallery examples that only show their code, not open in the playground. */
+export const codeOnly = new Set(
+  galleryItems.filter((i) => i.playground === false).map((i) => i.name),
+);
+
+/** Showcase examples for the playground; the `learn_*` guide lessons are excluded. */
+export const showcaseExamples = localExamples.filter(
+  (e) => !e.name.startsWith('learn_') && !codeOnly.has(e.name),
+);
 
 /** Guide lessons, in order. */
 export const lessonExamples = localExamples.filter((e) => e.name.startsWith('learn_'));

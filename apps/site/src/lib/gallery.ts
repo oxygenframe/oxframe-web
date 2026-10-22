@@ -5,9 +5,20 @@ export interface GalleryItem {
   title: string;
   tags: string[];
   prompt: string;
+  /** False for a video made as one, with a voice and assets the browser
+   * sandbox does not have: the page shows the code and links to GitHub. */
+  playground?: false;
 }
 
 export const galleryItems: GalleryItem[] = [
+  {
+    name: 'one_shot',
+    title: 'One scene, one camera, no cuts',
+    tags: ['explainer', 'code'],
+    prompt:
+      'The oxframe promo in one take: the camera pulls back from a semicolon through code, a diagram, a dashboard and a sea. The edit at 5 s shapes the sea at 28 s.',
+    playground: false,
+  },
   {
     name: 'release',
     title: 'Release notes as a video',

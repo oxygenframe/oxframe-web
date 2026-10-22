@@ -9,11 +9,14 @@ import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { SDK_VERSION as SITE_SDK_VERSION } from '../../../apps/site/src/lib/sdk';
+import { galleryItems } from '../../../apps/site/src/lib/gallery';
 
 const root = join(import.meta.dir, '../../..');
 const exDir = join(root, 'apps/site/src/lib/examples');
+// Gallery examples that only show their code are never compiled here.
+const codeOnly = new Set(galleryItems.filter((i) => i.playground === false).map((i) => i.name));
 const examples = readdirSync(exDir)
-  .filter((f) => f.endsWith('.rs'))
+  .filter((f) => f.endsWith('.rs') && !codeOnly.has(f.replace(/\.rs$/, '')))
   .sort()
   .map((f) => {
     const source = readFileSync(join(exDir, f), 'utf8');

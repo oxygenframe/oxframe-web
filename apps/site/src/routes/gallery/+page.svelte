@@ -49,9 +49,11 @@
           <pre><code>{example.source}</code></pre>
         </details>
       {/if}
-      <a class="btn" href="/playground?ex={item.name}" onclick={() => track('Open playground')}
-        >Open in playground</a
-      >
+      {#if item.playground !== false}
+        <a class="btn" href="/playground?ex={item.name}" onclick={() => track('Open playground')}
+          >Open in playground</a
+        >
+      {/if}
     </li>
   {/each}
 </ul>

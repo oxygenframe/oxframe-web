@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "bun scripts/crate-versions.ts && bun scripts/github-stars.ts && bun scripts/lastmod.ts && bun scripts/llms.ts && vite build && bun scripts/markdown-pages.ts && pagefind --site build --silent && bun scripts/cf-headers.ts",
+    "build": "bun scripts/check-changelog.ts && bun scripts/crate-versions.ts && bun scripts/github-stars.ts && bun scripts/lastmod.ts && bun scripts/llms.ts && vite build && bun scripts/markdown-pages.ts && pagefind --site build --silent && bun scripts/cf-headers.ts",
     "preview": "bun serve.ts",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "e2e": "playwright test"

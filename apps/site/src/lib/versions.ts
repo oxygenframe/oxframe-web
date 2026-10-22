@@ -15,10 +15,13 @@ export const CURRENT = seriesOf(SDK_VERSION);
 /** Published versions of the crate, newest first (refreshed at build time). */
 export const RELEASES: readonly string[] = data.versions;
 
-/** The version a docs key stands for: itself if exact (`0.2.1`), else the
- *  newest published version of the series (`0.1` → `0.1.0`). */
+/** The version a docs key stands for: itself if exact (`0.2.1`), the SDK the
+ *  site is built on for the current docs (a newer patch on crates.io is not
+ *  described until sdk.ts moves to it), else the newest published version
+ *  of the series (`0.1` → `0.1.0`). */
 export function latestPatch(series: string): string {
   if (/^\d+\.\d+\.\d+$/.test(series)) return series;
+  if (series === CURRENT) return SDK_VERSION;
   return (
     RELEASES.find((v) => seriesOf(v) === series) ??
     (series === CURRENT ? SDK_VERSION : `${series}.0`)

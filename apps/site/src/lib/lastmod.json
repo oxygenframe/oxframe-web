@@ -86,6 +86,7 @@
   "lib/examples/matrix_multiply.rs": "2026-10-21",
   "lib/examples/morph.rs": "2026-10-19",
   "lib/examples/ocean.rs": "2026-10-21",
+  "lib/examples/one_shot.rs": "2026-10-22",
   "lib/examples/particles.rs": "2026-10-19",
   "lib/examples/quicksort.rs": "2026-10-20",
   "lib/examples/relative.rs": "2026-10-20",

@@ -1,5 +1,5 @@
 {
-  "sdk": "0.20.3",
+  "sdk": "0.20.5",
   "date": "2026-10-22",
   "items": {
     "release": {
@@ -274,6 +274,15 @@
       "width": 1280,
       "height": 720,
       "bytes": 1126532
+    },
+    "one_shot": {
+      "mp4": "/media/0.20.5/gallery/one_shot.mp4",
+      "poster": "/media/0.20.5/gallery/one_shot.jpg",
+      "seconds": 48.68,
+      "width": 1280,
+      "height": 720,
+      "bytes": 3255855,
+      "captions": "/media/0.20.5/gallery/one_shot.vtt"
     }
   }
 }
