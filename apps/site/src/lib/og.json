@@ -99,6 +99,11 @@
     "section": "Compare",
     "image": "/og/vs-revideo.png"
   },
+  "/vs/shotstack": {
+    "title": "An open-source Shotstack alternative: video from code",
+    "section": "Compare",
+    "image": "/og/vs-shotstack.png"
+  },
   "/vs/cloud-video-apis": {
     "title": "oxframe vs Shotstack, Creatomate and JSON2Video",
     "section": "Compare",

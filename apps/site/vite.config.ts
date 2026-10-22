@@ -28,7 +28,9 @@ function highlightedSources(): Plugin {
               ? 'html'
               : ext === 'sh'
                 ? 'shellscript'
-                : 'rust';
+                : ext === 'json'
+                  ? 'json'
+                  : 'rust';
       return `export default ${JSON.stringify(await highlight(source, lang))};`;
     },
   };

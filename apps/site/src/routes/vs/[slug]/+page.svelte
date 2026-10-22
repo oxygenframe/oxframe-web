@@ -148,7 +148,7 @@
       <div>{@html code(file)}</div>
     {/each}
   </div>
-  {#if p.slug === 'cloud-video-apis'}
+  {#if p.example.files.includes('cloud-csv.rs')}
     <p>
       On the benchmark machine the loop renders {measurements.csv.rows} cards of
       {measurements.csv.videoSeconds} s each, 1080p at 60 fps, in {s(measurements.csv.seconds)} on the

@@ -45,6 +45,25 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
   directly.
 </p>
 
+<h2>Plugins</h2>
+<p>
+  A plugin brings the skills and the MCP server together. In Claude Code:
+  <code>/plugin marketplace add oxygenframe/oxframe-sdk</code>, then
+  <code>/plugin install oxframe@oxframe</code>. In Codex:
+  <code>codex plugin marketplace add oxygenframe/oxframe-sdk</code>, then
+  <code>codex plugin add oxframe@oxframe</code>. The same plugin works in Cursor; until it is in the
+  Cursor Marketplace, copy <code>plugins/oxframe</code> from the repository to
+  <code>~/.cursor/plugins/local/oxframe</code>.
+</p>
+
+<h2>The docs over MCP, without the CLI</h2>
+<p>
+  Agents that cannot run commands on your machine, such as ChatGPT or a web IDE, can still read the
+  docs: add <code>https://mcp.oxframe.dev/mcp</code> as a remote MCP server (Streamable HTTP, no
+  sign-in). Its tools search the docs, read a page, list the components and fetch an example's
+  source. Checking and rendering need the local <code>oxframe mcp</code>.
+</p>
+
 <h2>Skills</h2>
 <p>One command installs all of them; each is a page of its own.</p>
 <ul class="skills">

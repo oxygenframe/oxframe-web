@@ -700,6 +700,134 @@ cd my-video && oxframe dev</code></pre>
     ],
   },
   {
+    slug: 'shotstack',
+    name: 'Shotstack',
+    title: 'An open-source Shotstack alternative: video from code',
+    description:
+      'oxframe vs Shotstack, checked October 2026: a JSON edit sent to a cloud API vs a Rust scene rendered on your machine, with prices and a CSV batch example.',
+    lead: 'Pick oxframe when you want the video as code in your repository, rendered on your own machine or CI with no per-minute bill. Pick Shotstack when you want a hosted render API, a template editor for non-developers and no install at all.',
+    rows: [
+      ['How a video is described', 'A Rust scene', 'A JSON edit: a timeline of tracks and clips'],
+      ['Where it renders', 'Your machine or your CI', 'Shotstack’s cloud, through a render queue'],
+      [
+        'Getting the file',
+        'It is written to disk',
+        'Poll the render by id, then download; output URLs last 24 hours',
+      ],
+      [
+        'Price',
+        '$0; your own compute',
+        'From $10 for 50 minutes; plans from $39 a month for 250 minutes',
+      ],
+      [
+        'Development',
+        'The same renderer everywhere',
+        'A <code>stage</code> sandbox; <code>v1</code> renders without watermarks',
+      ],
+      [
+        'Data from outside',
+        'Any Rust value: a CSV row, JSON, an API',
+        'Templates with merge fields',
+      ],
+      ['Layout', 'Rows, columns, wrapping text, themes', 'Positions and alignment per clip'],
+      [
+        'Charts, code, math',
+        'Built in: axes, plots, code with diffs, matrices',
+        'Images and video you render elsewhere',
+      ],
+      [
+        'An agent sees the frames',
+        '<code>oxframe check</code> with a JSON report',
+        'Render, download, look',
+      ],
+      ['Account and key', 'None', 'An API key in the <code>x-api-key</code> header'],
+      ['License', 'MIT or Apache-2.0', 'Proprietary service'],
+    ],
+    scene: {
+      theirs: 'shotstack.json.txt',
+      ours: 'shotstack.rs',
+      intro:
+        'The edit from Shotstack’s Hello World guide: “HELLO WORLD” fading in and out over five seconds, with a music track, at 1024 × 576. The Shotstack side is the JSON you POST to <code>/edit/stage/render</code>; the oxframe side is the scene you render with <code>oxframe render</code>. We did not time the Shotstack render: it needs an account, and its time includes the queue.',
+    },
+    sections: [
+      {
+        heading: 'What a thousand videos cost',
+        html: `<p>Take a thousand 30-second videos a month: 500 minutes of video.</p>
+<ul>
+<li><strong>Shotstack</strong>, from <a href="https://shotstack.io/pricing/">its pricing page</a> on ${CHECKED}: the Pro plan, $99 a month for 750 minutes, or $100 pay as you go at 20¢ a minute. The Starter plan’s 250 minutes are not enough.</li>
+<li><strong>oxframe</strong>: no fee. On a laptop, a 27.5-second explainer renders in 8.4 seconds on 8 jobs (the measurement on <a href="/">the home page</a>), so 500 minutes of similar video take about two and a half hours of one machine. On GitHub Actions that is runner time, free for public repositories.</li>
+</ul>
+<p>The trade is time and hardware against a bill and a dependency. A hosted API wins when you render rarely or cannot run anything yourself; code wins when you render often, need logic in the video or want the data to stay with you.</p>`,
+      },
+      {
+        heading: 'Moving an edit over',
+        html: `<p>A Shotstack edit maps onto a scene almost clip by clip:</p>
+<table>
+<thead><tr><th>Shotstack</th><th>oxframe</th></tr></thead>
+<tbody>
+<tr><td>a clip with <code>start</code> and <code>length</code></td><td>a node, with <code>.await</code> and <code>wait_for</code> for time</td></tr>
+<tr><td><code>transition: { in: "fade", out: "fade" }</code></td><td><code>fade_in()</code>, <code>fade_out()</code>; scenes change with <code>transition(…)</code></td></tr>
+<tr><td><code>rich-text</code> and <code>title</code> assets</td><td><code>Txt</code>, or components such as <code>TitleCard</code> and <code>LowerThird</code></td></tr>
+<tr><td><code>image</code> and <code>video</code> assets</td><td><code>Img</code>, <code>Video</code> (feature <code>video</code>)</td></tr>
+<tr><td>an <code>audio</code> track</td><td><code>Audio::track(…)</code> with fades and ducking under a voice</td></tr>
+<tr><td>merge fields <code>{{NAME}}</code></td><td>a Rust value, read from the environment, a file or <code>main</code></td></tr>
+<tr><td><code>output.size</code></td><td><code>Project::size(w, h)</code>, or <code>.aspects(…)</code> for several shapes at once</td></tr>
+</tbody>
+</table>`,
+      },
+    ],
+    example: {
+      heading: 'A video per row of a CSV',
+      intro:
+        'Where Shotstack fills a template’s merge fields for each request, oxframe reads the row in the scene, and a shell loop renders one video per row.',
+      files: ['cloud-csv.rs', 'cloud-csv.sh.txt'],
+      outro:
+        'Rows are independent, so a CI matrix or <code>xargs -P</code> renders them in parallel. <code>NAME=… oxframe check</code> on the longest name catches a title that does not fit its card before the batch runs.',
+    },
+    pickThem: [
+      'Nobody on the team should install or run a renderer.',
+      'Non-developers edit templates in a web editor.',
+      'You render a few videos a month and a bill is simpler than a machine.',
+    ],
+    pickOxframe: [
+      'You render many videos and do not want a per-minute bill.',
+      'The video needs logic: charts from data, layout that adapts, code walkthroughs.',
+      'Data and output should stay on your machine or in your CI.',
+      'An agent writes the scene and should check its frames.',
+    ],
+    faq: [
+      {
+        q: 'Is oxframe an open-source Shotstack alternative?',
+        a: 'For the rendering part, yes: oxframe is MIT or Apache-2.0 and renders on your machine. It is a library and a CLI, not a hosted API, so there is no endpoint to call; you run the render where you want it.',
+      },
+      {
+        q: 'Can I keep my Shotstack JSON?',
+        a: 'Not as is. oxframe does not read Shotstack edits; each clip becomes a line or two of a scene, as in the table above. An agent with the oxframe skill can port an edit for you.',
+      },
+      {
+        q: 'How do I render one video per row of data?',
+        a: 'Read the row in the scene (from the environment, a file or main) and render once per row from a loop or a CI matrix. The example above renders a thank-you card per contributor.',
+      },
+      {
+        q: 'How fast is oxframe compared to Shotstack?',
+        a: 'We have not timed Shotstack: it needs an account, and a cloud render includes the queue. oxframe renders a 27.5-second explainer in 8.4 seconds on a laptop with 8 jobs.',
+      },
+      {
+        q: 'Do I need an account or an API key?',
+        a: 'No. oxframe sends nothing anywhere; the only network use is the optional playground on oxframe.dev.',
+      },
+    ],
+    sources: [
+      { label: 'Shotstack pricing', url: 'https://shotstack.io/pricing/' },
+      {
+        label: 'Shotstack Hello World guide',
+        url: 'https://shotstack.io/docs/guide/getting-started/hello-world-using-curl/',
+      },
+      { label: 'Shotstack API reference', url: 'https://shotstack.io/docs/api/' },
+      ...OXFRAME_SOURCES,
+    ],
+  },
+  {
     slug: 'cloud-video-apis',
     name: 'cloud video APIs',
     title: 'oxframe vs Shotstack, Creatomate and JSON2Video',
