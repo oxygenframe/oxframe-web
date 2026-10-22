@@ -230,6 +230,35 @@ export const sections: DocSection[] = [
     ],
   },
   {
+    title: 'Migrating',
+    pages: [
+      {
+        slug: 'migrate/remotion',
+        title: 'Migrating from Remotion',
+        description:
+          'Move a Remotion video to oxframe: useCurrentFrame, interpolate, Sequence and spring mapped to Rust scenes, one composition ported, and what changes.',
+      },
+      {
+        slug: 'migrate/motion-canvas',
+        title: 'Migrating from Motion Canvas',
+        description:
+          'Port Motion Canvas scenes to oxframe: generators become async Rust, refs become handles, with a table of every concept and one scene in both.',
+      },
+      {
+        slug: 'migrate/manim',
+        title: 'Migrating from Manim',
+        description:
+          'Port Manim scenes to oxframe: self.play, Create, Transform, ValueTracker and Axes mapped to Rust, two scenes ported, and what LaTeX users should know.',
+      },
+      {
+        slug: 'migrate/revideo',
+        title: 'Migrating from Revideo',
+        description:
+          'Move Revideo projects to oxframe: scenes port like Motion Canvas, variables become environment or files, and renderVideo becomes oxframe render.',
+      },
+    ],
+  },
+  {
     title: 'Under the hood',
     pages: [
       {

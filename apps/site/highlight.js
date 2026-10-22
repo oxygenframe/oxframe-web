@@ -4,7 +4,7 @@
 import { createHighlighter } from 'shiki';
 
 const THEMES = { light: 'github-light', dark: 'github-dark' };
-const LANGS = ['rust', 'shellscript', 'toml', 'json'];
+const LANGS = ['rust', 'shellscript', 'toml', 'json', 'tsx', 'python'];
 
 let ready;
 function highlighter() {

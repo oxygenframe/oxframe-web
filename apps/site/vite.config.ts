@@ -5,15 +5,22 @@ import { compileUrl } from './compile-url.js';
 import { highlight } from './highlight.js';
 
 /** `import html from './x.rs?highlight'`: the file as highlighted HTML,
- *  rendered at build time (see highlight.js). */
+ *  rendered at build time (see highlight.js). Other languages are named by
+ *  the extension before `.txt` (`x.tsx.txt`, `x.py.txt`), which keeps the
+ *  site's own tools from reading them as source. */
 function highlightedSources(): Plugin {
   const suffix = '?highlight';
   return {
     name: 'highlighted-sources',
+    // Before Vite's asset loader, which would turn a .txt file into a URL.
+    enforce: 'pre',
     async load(id) {
       if (!id.endsWith(suffix)) return;
-      const source = await readFile(id.slice(0, -suffix.length), 'utf8');
-      return `export default ${JSON.stringify(await highlight(source, 'rust'))};`;
+      const path = id.slice(0, -suffix.length);
+      const source = await readFile(path, 'utf8');
+      const ext = /\.(\w+)(?:\.txt)?$/.exec(path)?.[1];
+      const lang = ext === 'tsx' ? 'tsx' : ext === 'py' ? 'python' : 'rust';
+      return `export default ${JSON.stringify(await highlight(source, lang))};`;
     },
   };
 }

@@ -294,6 +294,26 @@
     "section": "Docs",
     "image": "/og/docs-check-rules.png"
   },
+  "/docs/migrate/remotion": {
+    "title": "Migrating from Remotion",
+    "section": "Docs",
+    "image": "/og/docs-migrate-remotion.png"
+  },
+  "/docs/migrate/motion-canvas": {
+    "title": "Migrating from Motion Canvas",
+    "section": "Docs",
+    "image": "/og/docs-migrate-motion-canvas.png"
+  },
+  "/docs/migrate/manim": {
+    "title": "Migrating from Manim",
+    "section": "Docs",
+    "image": "/og/docs-migrate-manim.png"
+  },
+  "/docs/migrate/revideo": {
+    "title": "Migrating from Revideo",
+    "section": "Docs",
+    "image": "/og/docs-migrate-revideo.png"
+  },
   "/docs/how-it-works": {
     "title": "How oxframe works",
     "section": "Docs",

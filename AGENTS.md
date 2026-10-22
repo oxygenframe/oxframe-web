@@ -40,6 +40,15 @@ scripts/og-images.ts` in apps/site (needs cargo) and commit
 `apps/site/e2e/docs.spec.ts` ("every sitemap page has complete, unique SEO
 metadata") enforces most of this; extend it when you add a rule.
 
+## Migration guides
+
+`/docs/migrate/*` show the same scene in another tool and in oxframe. The
+code lives in `apps/site/src/lib/migrate/` (`x.tsx.txt`, `x.py.txt` and the
+port `x.rs`, in the playground's `pub fn project()` form). After changing a
+port or bumping the oxframe version in `apps/site/og/Cargo.toml`, run `bun
+scripts/check-migrate.ts` in apps/site: it compiles every port and fails
+unless `oxframe check` reports no issue.
+
 ## Versioned docs
 
 **Docs never get ahead of crates.io.** The site deploys on every push to

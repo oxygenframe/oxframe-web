@@ -14,4 +14,9 @@
   team already writes React, Remotion is the closer fit. The
   <a href="/compare">comparison</a> lists the differences without a ranking.
 </p>
+<p>
+  Moving a project over? <a href="/docs/migrate/remotion">Migrating from Remotion</a> maps
+  <code>useCurrentFrame</code>, <code>Sequence</code> and <code>spring</code> to oxframe and ports one
+  composition line by line.
+</p>
 <p><a class="btn primary" href="/docs/getting-started">Get started with oxframe</a></p>

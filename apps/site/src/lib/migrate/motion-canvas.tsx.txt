@@ -1,0 +1,18 @@
+import {Circle, Txt, makeScene2D} from '@motion-canvas/2d';
+import {all, createRef, createSignal, waitFor} from '@motion-canvas/core';
+
+export default makeScene2D(function* (view) {
+  const circle = createRef<Circle>();
+  const count = createSignal(0);
+  view.add(
+    <>
+      <Circle ref={circle} size={320} fill={'#e13238'} x={-300} />
+      <Txt text={() => count().toFixed(0)} fontSize={80} y={300} fill={'white'} />
+    </>,
+  );
+
+  yield* circle().x(300, 1);
+  yield* all(circle().fill('#68abdf', 1), circle().scale(1.5, 1));
+  yield* count(100, 2);
+  yield* waitFor(0.5);
+});

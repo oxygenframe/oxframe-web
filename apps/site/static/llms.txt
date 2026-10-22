@@ -48,6 +48,13 @@ Every page also has a Markdown version: add .md to its URL.
 - [Working with AI agents](https://oxframe.dev/docs/agents): Use Claude Code, Codex or Cursor to write oxframe animations: every project ships agent instructions and a way for agents to see what they made.
 - [Check rules](https://oxframe.dev/docs/check-rules): Every rule in an oxframe check report, out_of_frame to too_fast and low_contrast, with before and after frames and how to fix each one.
 
+## Migrating
+
+- [Migrating from Remotion](https://oxframe.dev/docs/migrate/remotion): Move a Remotion video to oxframe: useCurrentFrame, interpolate, Sequence and spring mapped to Rust scenes, one composition ported, and what changes.
+- [Migrating from Motion Canvas](https://oxframe.dev/docs/migrate/motion-canvas): Port Motion Canvas scenes to oxframe: generators become async Rust, refs become handles, with a table of every concept and one scene in both.
+- [Migrating from Manim](https://oxframe.dev/docs/migrate/manim): Port Manim scenes to oxframe: self.play, Create, Transform, ValueTracker and Axes mapped to Rust, two scenes ported, and what LaTeX users should know.
+- [Migrating from Revideo](https://oxframe.dev/docs/migrate/revideo): Move Revideo projects to oxframe: scenes port like Motion Canvas, variables become environment or files, and renderVideo becomes oxframe render.
+
 ## Under the hood
 
 - [How oxframe works](https://oxframe.dev/docs/how-it-works): How oxframe works inside: scenes as Rust coroutines, deterministic rendering, instant scrubbing, and compiling Rust to WebAssembly for the browser.

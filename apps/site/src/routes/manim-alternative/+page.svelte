@@ -14,4 +14,9 @@
   function plot in the gallery is the closest example. Use Manim when the surrounding Python tools
   are the reason you are there. See the <a href="/compare">comparison</a>.
 </p>
+<p>
+  Moving scenes over? <a href="/docs/migrate/manim">Migrating from Manim</a> maps
+  <code>self.play</code>, <code>Transform</code>, <code>ValueTracker</code> and <code>Axes</code> to oxframe
+  and ports two scenes.
+</p>
 <p><a class="btn" href="/playground?ex=chart">Open the chart example</a></p>

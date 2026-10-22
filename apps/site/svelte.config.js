@@ -18,6 +18,12 @@ export default {
         if (path.startsWith('/media/')) return;
         throw new Error(message);
       },
+      // Playground share links carry the code in the hash (#code=…); it is
+      // data for the page, not an element id.
+      handleMissingId: ({ id, message }) => {
+        if (id.startsWith('code=')) return;
+        throw new Error(message);
+      },
     },
     // No 'unsafe-eval' anywhere. wasm is compiled only inside the engine
     // worker, whose own response header (serve.ts) adds 'wasm-unsafe-eval'.
