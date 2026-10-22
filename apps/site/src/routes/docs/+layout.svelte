@@ -3,6 +3,7 @@
   import { page } from '$app/state';
   import Seo from '$lib/components/Seo.svelte';
   import DocsSearch from '$lib/search/DocsSearch.svelte';
+  import { examplesUsing } from '$lib/uses';
   import { href, neighbors, sections, sectionsOf } from '$lib/docs';
   import { canonical, ORGANIZATION, SITE, WEBSITE } from '$lib/site';
   import { CURRENT, DOCS_VERSIONS, docsRs, latestPatch, locate } from '$lib/versions';
@@ -114,6 +115,16 @@
       </p>
     {/if}
     {@render children()}
+    {#if !archived && examplesUsing(loc.slug).length}
+      <aside class="examples" data-pagefind-ignore aria-label="Examples">
+        <p>Examples that use this</p>
+        <ul>
+          {#each examplesUsing(loc.slug) as e (e.href)}
+            <li><a href={e.href}>{e.title}</a></li>
+          {/each}
+        </ul>
+      </aside>
+    {/if}
     {#if !archived}
       <p class="edit" data-pagefind-ignore>
         <a
@@ -206,8 +217,27 @@
     min-width: 0;
     max-width: 760px;
   }
-  .edit {
+  .examples {
     margin: 40px 0 0;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+  }
+  .examples p {
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .examples ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .edit {
+    margin: 24px 0 0;
     font-size: 14px;
   }
   .edit a {

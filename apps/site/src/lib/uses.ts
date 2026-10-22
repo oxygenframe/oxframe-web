@@ -1,6 +1,8 @@
 // Which parts of oxframe an example uses, each with the docs page about it.
 // The gallery pages list them, so an example leads to the docs it shows off.
 import { href } from './docs';
+import { exampleByName } from './examples';
+import { galleryItems, slugOf } from './gallery';
 
 interface Use {
   label: string;
@@ -64,4 +66,16 @@ export function usesOf(source: string): { label: string; href: string }[] {
   return USES.filter((u) => u.test.test(source))
     .filter((u) => !seen.has(u.label) && seen.add(u.label))
     .map((u) => ({ label: u.label, href: href(u.slug) }));
+}
+
+/** Up to six gallery examples that use what the docs page `slug` is about. */
+export function examplesUsing(slug: string): { title: string; href: string }[] {
+  const page = href(slug);
+  return galleryItems
+    .filter((item) => {
+      const source = exampleByName(item.name)?.source;
+      return source !== undefined && usesOf(source).some((u) => u.href === page);
+    })
+    .slice(0, 6)
+    .map((item) => ({ title: item.title, href: `/gallery/${slugOf(item.name)}` }));
 }
