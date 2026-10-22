@@ -10,6 +10,9 @@
   let active = $state(0);
   let failed = $state(false);
   let input: HTMLInputElement | undefined = $state();
+  // The docs menu scrolls, so it would clip the results: they are placed
+  // against the window, under the box.
+  let at = $state({ top: 0, left: 0 });
   let worker: Worker | undefined;
   let last = 0;
 
@@ -25,9 +28,15 @@
     };
   }
 
+  function place() {
+    const r = input!.getBoundingClientRect();
+    at = { top: r.bottom + 4, left: r.left };
+  }
+
   function search() {
     start();
     open = true;
+    place();
     if (!q.trim()) {
       hits = [];
       return;
@@ -66,7 +75,11 @@
   }
 </script>
 
-<svelte:window onkeydown={slash} />
+<svelte:window
+  onkeydown={slash}
+  onscroll={() => open && place()}
+  onresize={() => open && place()}
+/>
 
 <div class="search" role="search">
   <input
@@ -90,7 +103,14 @@
   />
   <kbd aria-hidden="true">/</kbd>
   {#if open && q.trim()}
-    <ul id="search-results" class="results" role="listbox" data-testid="search-results">
+    <ul
+      id="search-results"
+      class="results"
+      role="listbox"
+      data-testid="search-results"
+      style:top="{at.top}px"
+      style:left="{at.left}px"
+    >
       {#each hits as h, i (h.url)}
         <li id="search-hit-{i}" role="option" aria-selected={i === active}>
           <a
@@ -154,10 +174,8 @@
     display: none;
   }
   .results {
-    position: absolute;
+    position: fixed;
     z-index: 20;
-    top: calc(100% + 4px);
-    left: 0;
     width: min(440px, calc(100vw - 32px));
     max-height: 70vh;
     overflow-y: auto;
