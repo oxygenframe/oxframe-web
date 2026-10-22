@@ -234,3 +234,10 @@ export const galleryItems: GalleryItem[] = [
 export function galleryItem(name: string): GalleryItem | undefined {
   return galleryItems.find((item) => item.name === name);
 }
+
+/** URL slug of an example: /gallery/cube-3d for `cube_3d`. */
+export const slugOf = (name: string) => name.replace(/_/g, '-');
+
+/** The gallery item at /gallery/<slug>. */
+export const itemBySlug = (slug: string): GalleryItem | undefined =>
+  galleryItems.find((i) => slugOf(i.name) === slug);

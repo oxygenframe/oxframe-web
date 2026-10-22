@@ -48,7 +48,8 @@ if (import.meta.main) {
   const sitemap = readFileSync(join(build, 'sitemap.xml'), 'utf8');
   const paths = [...sitemap.matchAll(/<loc>https:\/\/oxframe\.dev([^<]*)<\/loc>/g)]
     .map((m) => m[1]!)
-    .filter((p) => p !== '/');
+    // The home page keeps og.png; a gallery page shows its video's poster.
+    .filter((p) => p !== '/' && !p.startsWith('/gallery/'));
   const saved: Record<string, Card> = existsSync(manifest)
     ? JSON.parse(readFileSync(manifest, 'utf8'))
     : {};

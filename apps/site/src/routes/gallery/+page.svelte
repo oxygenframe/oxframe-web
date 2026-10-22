@@ -1,26 +1,24 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { galleryItems } from '$lib/gallery';
+  import ExampleVideo from '$lib/components/ExampleVideo.svelte';
+  import { galleryItems, slugOf } from '$lib/gallery';
   import { exampleByName } from '$lib/examples';
   import { track } from '$lib/track';
-  import { mediaFor, videoObject } from '$lib/media';
+  import { mediaFor } from '$lib/media';
+  import { SITE } from '$lib/site';
 
-  // The videos as an item list, so search can show them as video results.
-  const videos = galleryItems
-    .map((item) => videoObject(item.name, item.title, item.prompt))
-    .filter((v): v is object => v !== null);
-  const jsonld = videos.length
-    ? [
-        {
-          '@type': 'ItemList',
-          itemListElement: videos.map((v, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            item: v,
-          })),
-        },
-      ]
-    : [];
+  // The examples as a list of their pages, where each video is marked up.
+  const jsonld = [
+    {
+      '@type': 'ItemList',
+      itemListElement: galleryItems.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE}/gallery/${slugOf(item.name)}`,
+        name: item.title,
+      })),
+    },
+  ];
 </script>
 
 <Seo
@@ -40,36 +38,9 @@
     {@const example = exampleByName(item.name)}
     <li>
       <p class="tags">{item.tags.join(' · ')}</p>
-      <h2>{item.title}</h2>
+      <h2><a href="/gallery/{slugOf(item.name)}">{item.title}</a></h2>
       {#if mediaFor(item.name)}
-        {@const m = mediaFor(item.name)!}
-        {#if m.captions}
-          <video
-            src={m.mp4}
-            poster={m.poster}
-            width={m.width}
-            height={m.height}
-            controls
-            playsinline
-            preload="none"
-            aria-label="{item.title}, rendered by oxframe"
-          >
-            <track kind="captions" src={m.captions} srclang="en" label="English" />
-          </video>
-        {:else}
-          <!-- No sound track: muted says so, and there is nothing to caption. -->
-          <video
-            src={m.mp4}
-            poster={m.poster}
-            width={m.width}
-            height={m.height}
-            controls
-            muted
-            playsinline
-            preload="none"
-            aria-label="{item.title}, rendered by oxframe"
-          ></video>
-        {/if}
+        <ExampleVideo media={mediaFor(item.name)!} title={item.title} />
       {/if}
       <p>{item.prompt}</p>
       {#if example}
@@ -102,12 +73,12 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
   }
-  video {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    background: #111;
+  h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  h2 a:hover {
+    text-decoration: underline;
   }
   li {
     min-width: 0;

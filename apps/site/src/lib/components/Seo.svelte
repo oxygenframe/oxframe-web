@@ -14,6 +14,10 @@
     /** Canonical URL when it is another page (e.g. an archived doc). */
     canonical?: string;
     jsonld?: object[];
+    /** A picture of the page's own (a video poster) instead of its card. */
+    image?: { url: string; width: number; height: number; alt: string };
+    /** A video the link preview can play (X, Slack, Discord). */
+    video?: { url: string; width: number; height: number };
   }
   let {
     title,
@@ -22,6 +26,8 @@
     noindex = false,
     canonical: canonicalUrl,
     jsonld = [],
+    image: picture,
+    video,
   }: Props = $props();
 
   const url = $derived(canonicalUrl ?? canonical(page.url.pathname));
@@ -30,9 +36,10 @@
   const card = $derived(
     (cards as Record<string, { title: string; image: string }>)[url.slice(SITE.length) || '/'],
   );
-  const image = $derived(card ? SITE + card.image : OG_IMAGE);
+  const image = $derived(picture?.url ?? (card ? SITE + card.image : OG_IMAGE));
   const imageAlt = $derived(
-    card ? `${card.title} — oxframe` : 'oxframe — motion graphics your AI agent can see',
+    picture?.alt ??
+      (card ? `${card.title} — oxframe` : 'oxframe — motion graphics your AI agent can see'),
   );
   // `<` is escaped so the JSON cannot close the script element.
   const ld = $derived(
@@ -55,9 +62,15 @@
   <meta property="og:description" content={description} />
   <meta property="og:url" content={url} />
   <meta property="og:image" content={image} />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+  <meta property="og:image:width" content={String(picture?.width ?? 1200)} />
+  <meta property="og:image:height" content={String(picture?.height ?? 630)} />
   <meta property="og:image:alt" content={imageAlt} />
+  {#if video}
+    <meta property="og:video" content={video.url} />
+    <meta property="og:video:type" content="video/mp4" />
+    <meta property="og:video:width" content={String(video.width)} />
+    <meta property="og:video:height" content={String(video.height)} />
+  {/if}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />

@@ -55,7 +55,11 @@ if (import.meta.main) {
     const day = lastChange(pages);
     if (day) dates['/' + relative(routes, dir)] = day;
   }
-  for (const data of DATA) {
+  // The examples the gallery pages show.
+  const examples = readdirSync(join(src, 'lib/examples'))
+    .filter((f) => f.endsWith('.rs'))
+    .map((f) => `lib/examples/${f}`);
+  for (const data of [...DATA, ...examples]) {
     const day = lastChange([join(src, data)]);
     if (day) dates[data] = day;
   }

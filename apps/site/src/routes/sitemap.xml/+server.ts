@@ -1,7 +1,7 @@
 // /sitemap.xml, prerendered from the docs list so new pages appear in it.
 import { agents, skills } from '$lib/agents';
 import { href, pages } from '$lib/docs';
-import { galleryItems } from '$lib/gallery';
+import { galleryItems, slugOf } from '$lib/gallery';
 import { mediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
 import lastmodFile from '$lib/lastmod.json';
@@ -14,11 +14,18 @@ function lastmod(path: string): string | undefined {
     ? ['/agents/skills/[skill]', 'lib/skills.json']
     : /^\/agents\/[^/]+$/.test(path)
       ? ['/agents/[agent]', 'lib/agents.ts']
-      : path === '/gallery'
-        ? [path, 'lib/gallery.ts', 'lib/media.json']
-        : path === '/'
-          ? [path, 'lib/media.json']
-          : [path];
+      : path.startsWith('/gallery/')
+        ? [
+            '/gallery/[slug]',
+            'lib/gallery.ts',
+            'lib/media.json',
+            `lib/examples/${path.slice(9).replace(/-/g, '_')}.rs`,
+          ]
+        : path === '/gallery'
+          ? [path, 'lib/gallery.ts', 'lib/media.json']
+          : path === '/'
+            ? [path, 'lib/media.json']
+            : [path];
   const days = keys.map((k) => lastmods[k]).filter((d): d is string => !!d);
   return days.length ? days.sort().at(-1) : undefined;
 }
@@ -50,7 +57,13 @@ const videos: Record<string, string[]> = {
       'Scenes from the oxframe examples, rendered by oxframe on the CPU: functions on axes, a lit 3D cube, a shear of the plane and a shader sea.',
     ),
   ],
-  '/gallery': galleryItems.map((item) => video(item.name, item.title, item.prompt)),
+  // Each video on its own page; /gallery lists those pages.
+  ...Object.fromEntries(
+    galleryItems.map((item) => [
+      `/gallery/${slugOf(item.name)}`,
+      [video(item.name, item.title, item.prompt)],
+    ]),
+  ),
 };
 
 export const prerender = true;
@@ -60,6 +73,7 @@ export function GET(): Response {
     '/',
     '/playground',
     '/gallery',
+    ...galleryItems.map((i) => `/gallery/${slugOf(i.name)}`),
     '/compare',
     '/use-cases',
     '/showcase',

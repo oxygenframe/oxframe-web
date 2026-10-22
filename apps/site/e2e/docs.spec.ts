@@ -72,6 +72,12 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
       expect(html, path).toContain(
         '<meta property="og:image" content="https://oxframe.dev/og.png"',
       );
+    } else if (path.startsWith('/gallery/')) {
+      // An example's page shows a frame of its video and offers the video.
+      expect(attr(html, /<meta property="og:image" content="([^"]*)"/), path).toMatch(
+        /^https:\/\/oxframe\.dev\/media\/[\d.]+\/gallery\/\w+\.jpg$/,
+      );
+      expect(attr(html, /<meta property="og:video" content="([^"]*)"/), path).toMatch(/\.mp4$/);
     } else {
       expect(card, `${path}: no card, run bun scripts/og-images.ts`).toBeTruthy();
       expect(card!.title, `${path}: card out of date, run bun scripts/og-images.ts`).toBe(
