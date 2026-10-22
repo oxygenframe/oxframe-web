@@ -35,8 +35,9 @@
 </ul>
 
 <p>
-  The <a href="/compare">comparison table</a> puts five tools side by side, and the
-  <a href="/docs/migrate/remotion">migration guides</a> port a scene from each.
+  The <a href="/compare">comparison table</a> puts five tools side by side, the
+  <a href="/benchmarks">benchmarks</a> time one scene in each and score an agent on the reference
+  prompts, and the <a href="/docs/migrate/remotion">migration guides</a> port a scene from each.
 </p>
 
 <style>

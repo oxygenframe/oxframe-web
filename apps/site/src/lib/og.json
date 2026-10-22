@@ -14,6 +14,11 @@
     "section": "Compare",
     "image": "/og/compare.png"
   },
+  "/benchmarks": {
+    "title": "Open benchmarks: render speed and agent success",
+    "section": "oxframe",
+    "image": "/og/benchmarks.png"
+  },
   "/use-cases": {
     "title": "What people make with oxframe",
     "section": "Use cases",

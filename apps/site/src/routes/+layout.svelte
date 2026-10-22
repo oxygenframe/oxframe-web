@@ -53,6 +53,7 @@
         { href: '/vs/manim', label: 'oxframe vs Manim' },
         { href: '/vs/motion-canvas', label: 'oxframe vs Motion Canvas' },
         { href: '/alternatives', label: 'All comparisons' },
+        { href: '/benchmarks', label: 'Benchmarks' },
         { href: '/rust', label: 'Animation in Rust' },
         { href: '/ai-video-from-code', label: 'AI video from code' },
       ],

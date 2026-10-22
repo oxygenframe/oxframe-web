@@ -81,6 +81,7 @@ export function GET(): Response {
     '/gallery',
     ...galleryItems.map((i) => `/gallery/${slugOf(i.name)}`),
     '/compare',
+    '/benchmarks',
     '/use-cases',
     ...useCases.map((u) => `/use-cases/${u.slug}`),
     '/showcase',

@@ -360,6 +360,17 @@
       </p>
     </article>
     <article>
+      <p class="figure">{Math.round(measurements.a7.passRate * 100)}%</p>
+      <h3>Agent success</h3>
+      <p>
+        {measurements.a7.agent} passed {measurements.a7.passed} of {measurements.a7.prompts}
+        <a href={measurements.a7.scriptUrl}>reference prompts</a>: the scene built,
+        <code>oxframe check</code>
+        was clean and it did what was asked (oxframe {measurements.a7.version}, {measurements.a7
+          .date}).
+      </p>
+    </article>
+    <article>
       <p class="figure">$0</p>
       <h3>License</h3>
       <p>
