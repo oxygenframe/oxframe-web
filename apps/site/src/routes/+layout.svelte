@@ -49,7 +49,7 @@
       links: [
         { href: '/remotion-alternative', label: 'Remotion alternative' },
         { href: '/manim-alternative', label: 'Manim alternative' },
-        { href: '/programmatic-video-rust', label: 'Programmatic video' },
+        { href: '/rust', label: 'Animation in Rust' },
         { href: '/ai-video-from-code', label: 'AI video from code' },
       ],
     },
@@ -57,11 +57,9 @@
       title: 'Project',
       links: [
         { href: 'https://github.com/oxygenframe/oxframe-sdk', label: 'GitHub' },
-        {
-          href: 'https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md',
-          label: 'Changelog',
-        },
+        { href: '/changelog', label: 'Changelog' },
         { href: 'https://crates.io/crates/oxframe', label: 'crates.io' },
+        { href: '/license', label: 'License' },
         {
           href: 'https://github.com/oxygenframe/release-video-action',
           label: 'Release video Action',
@@ -85,9 +83,7 @@
     <p class="status" role="note" data-testid="dev-status">
       <strong>Pre-1.0:</strong> the API is not stable yet and may change from version to version.
       Pin the exact version in your Cargo.toml and check the
-      <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md" rel="external"
-        >changelog</a
-      > before upgrading.
+      <a href="/changelog">changelog</a> before upgrading.
     </p>
   {/if}
   <header class="nav">
@@ -105,8 +101,7 @@
     {#if !docs}
       <a
         class="version"
-        href="https://github.com/oxygenframe/oxframe-sdk/blob/main/CHANGELOG.md"
-        rel="external"
+        href="/changelog"
         data-testid="dev-status"
         title="Pre-1.0: the API is not stable yet and may change from version to version. Pin the exact version."
         >v{series} · pre-1.0</a
@@ -161,7 +156,9 @@
         {/each}
       </div>
       <div class="foot-bottom">
-        <span>© 2026 oxframe · MIT or Apache-2.0 · no seats, no per-render fees</span>
+        <span
+          >© 2026 oxframe · <a href="/license">MIT or Apache-2.0</a> · no seats, no per-render fees</span
+        >
         <span>oxframe {SDK_VERSION} · pre-1.0</span>
       </div>
     </footer>
@@ -298,6 +295,9 @@
     padding-top: 16px;
     border-top: 1px solid var(--border);
     font-size: 13px;
+  }
+  .foot-bottom a {
+    color: var(--muted);
   }
   @media (max-width: 960px) {
     .foot-top {

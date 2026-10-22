@@ -55,20 +55,29 @@ const LANGS: Record<string, string> = {
   text: 'text',
 };
 
-/** The Markdown the skills use: headings, paragraphs, lists, tables, code. */
-export async function markdown(src: string): Promise<string> {
+/**
+ * The Markdown the skills and the changelog use: headings, paragraphs,
+ * lists, tables, code (also indented under a list item). Headings go
+ * `shift` levels down, so `#` is an h2 under the page's own h1.
+ */
+export async function markdown(src: string, shift = 1): Promise<string> {
   const lines = src.replace(/<!--.*?-->\n?/g, '').split('\n');
   const html: string[] = [];
   let i = 0;
   while (i < lines.length) {
     const line = lines[i]!;
-    const fence = line.match(/^```(\w*)/);
+    const fence = line.match(/^(\s*)```(\w*)/);
     if (fence) {
+      const indent = fence[1]!.length;
       const body: string[] = [];
       i++;
-      while (i < lines.length && !lines[i]!.startsWith('```')) body.push(lines[i++]!);
+      while (i < lines.length && !/^\s*```/.test(lines[i]!)) {
+        // Drop the fence's own indent, never more than a line has.
+        const l = lines[i++]!;
+        body.push(l.slice(Math.min(indent, l.search(/\S|$/))));
+      }
       i++;
-      const lang = LANGS[fence[1] ?? ''] ?? 'text';
+      const lang = LANGS[fence[2] ?? ''] ?? 'text';
       html.push(
         lang === 'text' || lang === 'yaml'
           ? `<pre><code>${escape(body.join('\n'))}</code></pre>`
@@ -79,7 +88,7 @@ export async function markdown(src: string): Promise<string> {
     const heading = line.match(/^(#{1,4}) (.*)/);
     if (heading) {
       // The page has its own h1; skill headings start at h2.
-      const level = Math.min(heading[1]!.length + 1, 4);
+      const level = Math.min(heading[1]!.length + shift, 4);
       html.push(`<h${level}>${inline(heading[2]!)}</h${level}>`);
       i++;
       continue;
@@ -123,7 +132,11 @@ export async function markdown(src: string): Promise<string> {
       continue;
     }
     const para: string[] = [];
-    while (i < lines.length && lines[i]!.trim() !== '' && !/^(```|#|\||- |\d+\. )/.test(lines[i]!))
+    while (
+      i < lines.length &&
+      lines[i]!.trim() !== '' &&
+      !/^(\s*```|#|\||- |\d+\. )/.test(lines[i]!)
+    )
       para.push(lines[i++]!.trim());
     html.push(`<p>${inline(para.join(' '))}</p>`);
   }

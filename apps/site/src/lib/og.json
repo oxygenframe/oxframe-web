@@ -39,10 +39,20 @@
     "section": "oxframe",
     "image": "/og/ai-video-from-code.png"
   },
-  "/programmatic-video-rust": {
-    "title": "Programmatic video in Rust",
+  "/rust": {
+    "title": "Animation and video in Rust: the oxframe library",
     "section": "oxframe",
-    "image": "/og/programmatic-video-rust.png"
+    "image": "/og/rust.png"
+  },
+  "/license": {
+    "title": "License: MIT or Apache-2.0, no seats or render fees",
+    "section": "oxframe",
+    "image": "/og/license.png"
+  },
+  "/changelog": {
+    "title": "Changelog: every oxframe release",
+    "section": "oxframe",
+    "image": "/og/changelog.png"
   },
   "/agents": {
     "title": "Video skills and MCP for AI coding agents",

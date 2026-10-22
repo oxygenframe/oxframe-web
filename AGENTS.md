@@ -75,6 +75,10 @@ snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
   Bumping `sdk.ts` redeploys both the site and compile.oxframe.dev (new
   container image, ~30–40 min); in between the playground says it is being
   upgraded.
+- `bun run sync-examples` also copies the SDK's CHANGELOG.md to
+  `/changelog`. Once the release's video is attached on GitHub (the SDK's
+  `release video` workflow), `bun scripts/release-media.ts` copies it to R2
+  for that page.
 - Archived pages are canonicalized to the current page and stay out of the
   sitemap; "API reference" links to docs.rs for the selected version.
 - `scripts/llms.ts` writes `/llms.txt` for the current docs and
