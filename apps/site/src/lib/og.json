@@ -19,6 +19,41 @@
     "section": "Use cases",
     "image": "/og/use-cases.png"
   },
+  "/use-cases/release-videos": {
+    "title": "Release notes to video with a GitHub Action",
+    "section": "Use cases",
+    "image": "/og/use-cases-release-videos.png"
+  },
+  "/use-cases/code-walkthroughs": {
+    "title": "Code walkthrough videos from your source",
+    "section": "Use cases",
+    "image": "/og/use-cases-code-walkthroughs.png"
+  },
+  "/use-cases/math": {
+    "title": "Math animations in Rust: plots, vectors, matrices",
+    "section": "Use cases",
+    "image": "/og/use-cases-math.png"
+  },
+  "/use-cases/charts": {
+    "title": "Animated charts and data videos in Rust",
+    "section": "Use cases",
+    "image": "/og/use-cases-charts.png"
+  },
+  "/use-cases/product-demos": {
+    "title": "Product and architecture explainer videos",
+    "section": "Use cases",
+    "image": "/og/use-cases-product-demos.png"
+  },
+  "/use-cases/presentations": {
+    "title": "Presentations from code: slides that animate",
+    "section": "Use cases",
+    "image": "/og/use-cases-presentations.png"
+  },
+  "/use-cases/voiceover": {
+    "title": "Videos with voiceover and sound in sync",
+    "section": "Use cases",
+    "image": "/og/use-cases-voiceover.png"
+  },
   "/showcase": {
     "title": "Showcase and the made-with badge",
     "section": "Showcase",

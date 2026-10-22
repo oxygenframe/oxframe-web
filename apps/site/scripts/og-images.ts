@@ -24,6 +24,7 @@ export function sectionOf(path: string): string {
   if (path.startsWith('/agents/skills/')) return 'Agent skills';
   if (path.startsWith('/agents')) return 'Agents';
   if (path === '/compare' || path.endsWith('-alternative')) return 'Compare';
+  if (path.startsWith('/use-cases')) return 'Use cases';
   const names: Record<string, string> = {
     '/playground': 'Playground',
     '/gallery': 'Gallery',

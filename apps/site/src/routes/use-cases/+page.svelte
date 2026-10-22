@@ -1,111 +1,85 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { galleryItem } from '$lib/gallery';
+  import { mediaFor } from '$lib/media';
+  import { SITE } from '$lib/site';
+  import { useCases } from '$lib/use-cases';
 
-  const cases = [
+  const jsonld = [
     {
-      title: 'Release videos',
-      example: 'components',
-      text: 'A version note: a title, three changes, an end card. The components already know the theme.',
-    },
-    {
-      title: 'Algorithm explainers',
-      example: 'quicksort',
-      text: 'The code and the data move together. The focus in the listing matches the bars.',
-    },
-    {
-      title: 'Code tutorials',
-      example: 'typography',
-      text: 'A listing with a moving focus, and words that morph into the next term.',
-    },
-    {
-      title: 'Product updates',
-      example: 'camera',
-      text: 'A diagram of the system, a zoom onto one step, a title that stays on screen.',
-    },
-    {
-      title: 'Vertical videos',
-      example: 'relative',
-      text: 'The same scene in 16:9, 9:16 and 1:1, placed against the safe area instead of pixel guesses.',
+      '@type': 'ItemList',
+      itemListElement: useCases.map((u, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE}/use-cases/${u.slug}`,
+        name: u.name,
+      })),
     },
   ];
 </script>
 
 <Seo
   title="What people make with oxframe — oxframe"
-  description="A GitHub release's notes become a video on that release. Gallery scenes cover explainers, tutorials, product updates and vertical videos."
+  description="Release videos, code walkthroughs, math animations, animated charts, product explainers, presentations and voiceovers, each with examples and a prompt."
+  {jsonld}
 />
 
 <h1>Use cases</h1>
 <p class="lead">
-  A GitHub release can grow its video from the notes alone. The scenes below are already in the
-  gallery: the brief is the request, and the playground has the code.
+  What oxframe is used for, each with a video, how it is built, a first prompt for your agent and
+  the examples to start from.
 </p>
 
-<article>
-  <h2>A video on every release</h2>
-  <p>
-    Publish a release and the notes become the MP4 attached to it. Headings and lists turn into
-    title cards and bullet lists. Text that does not fit is split across cards, and the end card
-    says "made with oxframe".
-  </p>
-  <pre><code
-      >on:
-  release:
-    types: [published]
-jobs:
-  video:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: oxygenframe/release-video-action@v1.2.0
-        with:
-          portrait: true</code
-    ></pre>
-  <p>
-    A release made by a workflow with <code>GITHUB_TOKEN</code> does not start
-    <code>on: release</code>; pass <code>tag: $&#123;&#123; github.ref_name &#125;&#125;</code> in the
-    job that creates it. The SDK build is cached between runs, so only the first video after a new oxframe
-    release compiles it. Every oxframe release gets its video this way.
-  </p>
-  <p>
-    <a class="btn" href="/playground?ex=release">Open release in the playground</a>
-    <a class="btn" href="https://github.com/oxygenframe/release-video-action"
-      >oxygenframe/release-video-action</a
-    >
-  </p>
-</article>
-
-{#each cases as item (item.example)}
-  {@const card = galleryItem(item.example)}
-  <article>
-    <h2>{item.title}</h2>
-    <p>{item.text}</p>
-    {#if card}
-      <p><strong>Brief.</strong> {card.prompt}</p>
-    {/if}
-    <p>
-      <a class="btn" href="/playground?ex={item.example}">Open {item.example} in the playground</a>
-    </p>
-  </article>
-{/each}
+<ul class="cases">
+  {#each useCases as u (u.slug)}
+    {@const m = mediaFor(u.examples[0]!)}
+    <li>
+      <a href="/use-cases/{u.slug}">
+        {#if m}<img src={m.poster} width={m.width} height={m.height} loading="lazy" alt="" />{/if}
+        <h2>{u.name}</h2>
+        <p>{u.description}</p>
+      </a>
+    </li>
+  {/each}
+</ul>
 
 <style>
   .lead {
     color: var(--muted);
+    max-width: 68ch;
   }
-  article {
-    margin-top: 20px;
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+  }
+  .cases a {
+    display: block;
+    height: 100%;
+    padding: 12px;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 4px 16px 16px;
+    border-radius: 12px;
     background: var(--panel);
+    color: var(--text);
+    text-decoration: none;
   }
-  article p {
+  .cases a:hover {
+    border-color: var(--muted);
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  h2 {
+    margin: 12px 0 4px;
+    font-size: 18px;
+  }
+  p {
+    margin: 0;
     color: var(--muted);
-  }
-  article .btn + .btn {
-    margin-left: 8px;
+    font-size: 14px;
   }
 </style>

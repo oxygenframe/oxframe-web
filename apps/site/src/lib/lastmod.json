@@ -53,6 +53,7 @@
   "/rust": "2026-10-22",
   "/showcase": "2026-10-21",
   "/use-cases": "2026-10-22",
+  "/use-cases/[slug]": "2026-10-22",
   "lib/agents.ts": "2026-10-22",
   "lib/examples/architecture.rs": "2026-10-21",
   "lib/examples/camera.rs": "2026-10-20",
@@ -104,5 +105,6 @@
   "lib/examples/waves.rs": "2026-10-21",
   "lib/gallery.ts": "2026-10-22",
   "lib/media.json": "2026-10-22",
-  "lib/skills.json": "2026-10-22"
+  "lib/skills.json": "2026-10-22",
+  "lib/use-cases.ts": "2026-10-22"
 }

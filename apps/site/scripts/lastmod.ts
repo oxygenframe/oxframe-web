@@ -13,7 +13,13 @@ const routes = join(src, 'routes');
 const file = join(src, 'lib/lastmod.json');
 
 /** Data files that pages are generated from (see routes/sitemap.xml). */
-export const DATA = ['lib/agents.ts', 'lib/skills.json', 'lib/gallery.ts', 'lib/media.json'];
+export const DATA = [
+  'lib/agents.ts',
+  'lib/skills.json',
+  'lib/gallery.ts',
+  'lib/media.json',
+  'lib/use-cases.ts',
+];
 
 function git(args: string[]): string | null {
   const r = spawnSync('git', args, { cwd: src, encoding: 'utf8' });

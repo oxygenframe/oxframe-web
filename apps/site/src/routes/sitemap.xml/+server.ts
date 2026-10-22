@@ -4,6 +4,7 @@ import { href, pages } from '$lib/docs';
 import { galleryItems, slugOf } from '$lib/gallery';
 import { mediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
+import { useCases } from '$lib/use-cases';
 import lastmodFile from '$lib/lastmod.json';
 
 const lastmods: Record<string, string> = lastmodFile;
@@ -14,18 +15,20 @@ function lastmod(path: string): string | undefined {
     ? ['/agents/skills/[skill]', 'lib/skills.json']
     : /^\/agents\/[^/]+$/.test(path)
       ? ['/agents/[agent]', 'lib/agents.ts']
-      : path.startsWith('/gallery/')
-        ? [
-            '/gallery/[slug]',
-            'lib/gallery.ts',
-            'lib/media.json',
-            `lib/examples/${path.slice(9).replace(/-/g, '_')}.rs`,
-          ]
-        : path === '/gallery'
-          ? [path, 'lib/gallery.ts', 'lib/media.json']
-          : path === '/'
-            ? [path, 'lib/media.json']
-            : [path];
+      : path.startsWith('/use-cases/')
+        ? ['/use-cases/[slug]', 'lib/use-cases.ts', 'lib/media.json']
+        : path.startsWith('/gallery/')
+          ? [
+              '/gallery/[slug]',
+              'lib/gallery.ts',
+              'lib/media.json',
+              `lib/examples/${path.slice(9).replace(/-/g, '_')}.rs`,
+            ]
+          : path === '/gallery'
+            ? [path, 'lib/gallery.ts', 'lib/media.json']
+            : path === '/'
+              ? [path, 'lib/media.json']
+              : [path];
   const days = keys.map((k) => lastmods[k]).filter((d): d is string => !!d);
   return days.length ? days.sort().at(-1) : undefined;
 }
@@ -76,6 +79,7 @@ export function GET(): Response {
     ...galleryItems.map((i) => `/gallery/${slugOf(i.name)}`),
     '/compare',
     '/use-cases',
+    ...useCases.map((u) => `/use-cases/${u.slug}`),
     '/showcase',
     '/remotion-alternative',
     '/manim-alternative',
