@@ -114,6 +114,16 @@
       </p>
     {/if}
     {@render children()}
+    {#if !archived}
+      <p class="edit" data-pagefind-ignore>
+        <a
+          href="https://github.com/oxygenframe/oxframe-web/edit/main/apps/site/src/routes/docs/{loc.slug
+            ? `${loc.slug}/`
+            : ''}+page.svelte"
+          rel="external">Edit this page on GitHub</a
+        >
+      </p>
+    {/if}
     <footer class="pager" data-pagefind-ignore>
       {#if around.prev}
         <a class="prev" href={href(around.prev.slug, loc.series)}
@@ -189,6 +199,13 @@
   article {
     min-width: 0;
     max-width: 760px;
+  }
+  .edit {
+    margin: 40px 0 0;
+    font-size: 14px;
+  }
+  .edit a {
+    color: var(--muted);
   }
   .pager {
     display: flex;

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { href, pages } from '../src/lib/docs';
 import { topic } from '../scripts/og-images';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const cards = JSON.parse(
   readFileSync(new URL('../src/lib/og.json', import.meta.url), 'utf8'),
@@ -216,6 +216,19 @@ test('the playground says which oxframe it runs and warns about other versions',
   await expect(page.getByTestId('version-warning')).toHaveCount(0);
   await page.goto('/playground?v=0.0&ex=intro');
   await expect(page.getByTestId('version-warning')).toContainText('oxframe 0.0 docs');
+});
+
+// "Edit this page on GitHub" opens the page's own source file.
+test('every docs page links to its source on GitHub', async ({ request }) => {
+  for (const p of pages) {
+    const html = await (await request.get(href(p.slug))).text();
+    const link =
+      /href="https:\/\/github\.com\/oxygenframe\/oxframe-web\/edit\/main\/apps\/site\/([^"]+)"/.exec(
+        html,
+      )?.[1];
+    expect(link, `${p.slug}: no edit link`).toBeTruthy();
+    expect(existsSync(new URL(`../${link}`, import.meta.url)), `${p.slug}: ${link}`).toBe(true);
+  }
 });
 
 // Docs search: Pagefind in a worker, which the CSP lets compile wasm.
