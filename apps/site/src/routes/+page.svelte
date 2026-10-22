@@ -71,9 +71,9 @@
   function loadHero(node: HTMLVideoElement) {
     if (node.getAttribute('src')) return;
     node.src = reel?.mp4 ?? '/hero.mp4';
-    const start = () => node.play().catch(() => {});
-    if (node.readyState >= 2) start();
-    else node.addEventListener('loadeddata', start, { once: true });
+    // preload="none" keeps the page light until the reel is in view, so no
+    // data arrives on its own; play() starts the download (muted autoplay).
+    node.play().catch(() => {});
   }
 
   function heroInView(node: HTMLVideoElement) {
