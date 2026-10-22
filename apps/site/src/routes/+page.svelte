@@ -109,7 +109,7 @@
     } catch {
       copied = false;
     }
-    track('Copy install');
+    track('Copy install', { command: entry });
   }
 
   function loadHero(node: HTMLVideoElement) {
@@ -189,7 +189,10 @@
           aria-selected={entry === e.id}
           aria-controls="entry"
           tabindex={entry === e.id ? 0 : -1}
-          onclick={() => (entry = e.id)}
+          onclick={() => {
+            entry = e.id;
+            track('Start tab', { tab: e.id });
+          }}
           onkeydown={tabKey}>{e.label}</button
         >
       {/each}
@@ -246,7 +249,6 @@
       preload="none"
       controls
       aria-label={REEL_TEXT}
-      onplay={() => track('Hero video')}
     ></video>
     <figcaption>
       Every frame drawn by oxframe.

@@ -1,7 +1,7 @@
 <script lang="ts">
   // The playground app. Browser-only (Monaco, the engine Worker, location.hash):
   // routes/playground mounts it on the client.
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { page } from '$app/state';
   import type { Meta } from '@oxframe/protocol';
   import CodeEditor from '$lib/components/CodeEditor.svelte';
@@ -11,6 +11,7 @@
   import { CURRENT } from '$lib/versions';
   import { exampleByName, lessonExamples, localExamples, showcaseExamples } from '$lib/examples';
   import { decodeShare, encodeShare } from '$lib/share';
+  import { track, trackOnce } from '$lib/track';
 
   const initialName = page.url.searchParams.get('ex') ?? 'intro';
   // Examples linked from archived docs carry their version (`?v=0.1`); the
@@ -21,6 +22,8 @@
     decodeShare(location.hash) ?? exampleByName(initialName)?.source ?? localExamples[0]!.source,
   );
   let example = $state(decodeShare(location.hash) ? '' : initialName);
+  // The code as loaded (an example or a shared link): changing it is an edit.
+  let loaded = untrack(() => source);
   let errors = $state<CompileError[]>([]);
   let log = $state('');
   let status = $state<'idle' | 'compiling' | 'ok' | 'error'>('idle');
@@ -45,6 +48,7 @@
       const blob = await player.exportMp4((done, total) => (exportState = { done, total }));
       if (download) URL.revokeObjectURL(download.url);
       download = { url: URL.createObjectURL(blob), name: `${example || 'scene'}.mp4` };
+      track('Export MP4', { example: example || 'shared' });
     } catch (e) {
       message = (e as Error).message;
       status = 'error';
@@ -73,6 +77,7 @@
       if (r.status === 'done' && r.wasm_url && r.js_url) {
         status = 'ok';
         artifact = { wasm: r.wasm_url, js: r.js_url };
+        trackOnce('Playground compiled', { example: example || 'shared' });
       } else {
         status = 'error';
       }
@@ -87,6 +92,7 @@
 
   function onchange(v: string) {
     source = v;
+    if (v !== loaded) trackOnce('Playground edited', { example: example || 'shared' });
     clearTimeout(timer);
     // Compile 500 ms after typing stops; Ctrl+Enter compiles at once.
     timer = setTimeout(run, 500);
@@ -97,6 +103,7 @@
     if (!ex) return;
     example = name;
     source = ex.source;
+    loaded = ex.source;
     metas = {};
     history.replaceState(history.state, '', `?ex=${name}`);
     player?.restart();
@@ -106,6 +113,7 @@
   async function share() {
     const url = `${location.origin}/playground${encodeShare(source)}`;
     history.replaceState(history.state, '', url);
+    track('Share link', { example: example || 'shared' });
     try {
       await navigator.clipboard.writeText(url);
       copied = true;
@@ -116,6 +124,7 @@
   }
 
   onMount(() => {
+    if (decodeShare(location.hash)) track('Open shared code');
     void run();
   });
 </script>
