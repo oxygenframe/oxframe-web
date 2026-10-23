@@ -16,6 +16,7 @@
 <p>
   Two lines, each ending in <code>.await</code>: the second one starts when the first is finished.
 </p>
+<!-- snippet-setup: let (a, b) = (view.add(Circle::new()), view.add(Circle::new())); -->
 <pre><code
     >{`a.x().to(500.0, 0.8).await;
 b.x().to(500.0, 0.8).await;`}</code
@@ -26,6 +27,7 @@ b.x().to(500.0, 0.8).await;`}</code
   To play animations together, put them in <code>all((...))</code> — note the double parentheses, it
   takes a group of animations — and await that once. It finishes when the <em>longest</em> one does.
 </p>
+<!-- snippet-setup: let (c, d) = (view.add(Circle::new()), view.add(Circle::new())); -->
 <pre><code>all((c.x().to(500.0, 0.8), d.x().to(500.0, 1.6))).await;</code></pre>
 
 <h2>Pauses and waves</h2>
@@ -34,6 +36,7 @@ b.x().to(500.0, 0.8).await;`}</code
   animation on every item of a list, each one starting 0.1 s after the previous — that is the ripple at
   the end of the preview.
 </p>
+<!-- snippet-setup: let wave: Vec<Circle> = (0..5).map(|_| view.add(Circle::new())).collect(); -->
 <pre><code>stagger(0.1, &wave, |c| c.y().to(200.0, 0.4)).await;</code></pre>
 <p>
   For a list of the same animation that should all start at once, <code>all</code> takes it
@@ -46,6 +49,7 @@ b.x().to(500.0, 0.8).await;`}</code
   Every shape has a few common moves built in. They take their length and easing from the theme, so
   a whole video stays consistent; <code>.duration(seconds)</code> changes one of them.
 </p>
+<!-- snippet-setup: let title = view.add(Txt::new().text("Title")); let badge = view.add(Circle::new()); let card = view.add(Rect::new()); let outline = view.add(Rect::new().stroke(Accent).line_width(4.0)); -->
 <pre><code
     >title.fade_in().await;
 badge.pop_in().await;              // grows from nothing with a small overshoot

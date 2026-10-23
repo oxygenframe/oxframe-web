@@ -40,6 +40,7 @@ impl Draw for Gauge {
   animates it. Fields without the mark are set once on the builder. Every field type needs
   <code>Default</code> and <code>Clone</code>.
 </p>
+<!-- snippet-after: 0 -->
 <pre><code
     >{`let gauge = view.add(Gauge::new().size(240.0));
 gauge.value().to(0.8, 1.0).await;`}</code

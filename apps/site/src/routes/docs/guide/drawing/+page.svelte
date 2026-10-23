@@ -25,6 +25,7 @@
   <code>data</code> to another path morphs between them. oxframe lines up the two outlines first, so a
   star turns into a heart without twisting.
 </p>
+<!-- snippet-setup: let shape = view.add(Path::new()); let heart = BezPath::new(); -->
 <pre><code>shape.data().to(heart, 1.2).await;</code></pre>
 
 <Try>

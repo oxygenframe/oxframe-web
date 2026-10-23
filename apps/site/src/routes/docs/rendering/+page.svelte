@@ -152,6 +152,7 @@ async fn shore(view: View) {
   A soundtrack plays for the whole video. <code>Project::audio("music.mp3")</code> still works, and
   it is the same as <code>Audio::track</code>:
 </p>
+<!-- snippet-setup: #[oxframe::scene] async fn intro(view: View) {} -->
 <pre><code
     >{`Project::new("explainer")
     .audio(Audio::track("assets/music.mp3").duck_under_voice().volume(0.8))
@@ -186,6 +187,7 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   waits until that word. Awaiting the line waits until the end. A line is <code>.priority()</code>,
   so it ducks a soundtrack built with <code>.duck_under_voice()</code>.
 </p>
+<!-- snippet-setup: let square = view.add(Rect::new()); -->
 <pre><code
     >{`let line = voice("First draw a square, then rotate it").start();
 line.at_word("square").await;
@@ -202,6 +204,8 @@ line.await;`}</code
   key stays inside the provider, read from the environment. <code>speak</code> below is your function:
   the HTTP call and the decode.
 </p>
+<!-- snippet-setup: #[oxframe::scene] async fn intro(view: View) {}
+fn speak(key: &str, voice: &str, text: &str) -> Result<(u32, Vec<i16>, Vec<TimedWord>), String> { unimplemented!() } -->
 <pre><code
     >{`use oxframe::{Synthesis, TimedWord, TtsProvider, TtsRequest};
 

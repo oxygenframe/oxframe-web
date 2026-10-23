@@ -43,6 +43,8 @@ jobs:
       - run: bun install --frozen-lockfile && bun run sync-examples && bun run build
       - run: bunx playwright install --with-deps chromium
       - run: bun run --cwd apps/site e2e
+      # Every Rust snippet on the site compiles against the published SDK.
+      - run: bun run --cwd apps/site check-snippets
 
   sandbox-image:
     if: github.event_name != 'pull_request'

@@ -57,6 +57,7 @@ view.add(icon!("simple:github").color(Muted));`}</code
   paths one by one, for <code>draw_on</code>, and <code>Icon::style</code> tells an
   <code>IconStyle::Stroke</code> icon from an <code>IconStyle::Fill</code> one.
 </p>
+<!-- snippet-setup: let server = view.add(icon!("lucide:server")); -->
 <pre><code
     >{`server.color().to(Danger, 0.3).await;
 server.stroke_width().to(3.0, 0.3).await;

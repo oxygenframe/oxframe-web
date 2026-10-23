@@ -24,6 +24,7 @@
     <code>OUT_BACK</code> overshoots a little and comes back — playful, good for things popping in.
   </li>
 </ul>
+<!-- snippet-setup: let ball = view.add(Circle::new()); -->
 <pre><code>ball.x().to(500.0, 1.5).ease(presets::OUT_BACK).await;</code></pre>
 <p>
   <code>presets</code> has the common curves (<code>IN_OUT_CUBIC</code>, <code>OUT_EXPO</code>,

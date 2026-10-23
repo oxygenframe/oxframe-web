@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check-snippets": "bun scripts/check-snippets.ts",
     "dev": "vite dev",
     "build": "bun scripts/check-changelog.ts && bun scripts/crate-versions.ts && bun scripts/github-stars.ts && bun scripts/lastmod.ts && bun scripts/llms.ts && vite build && bun scripts/markdown-pages.ts && pagefind --site build --silent && bun scripts/cf-headers.ts",
     "preview": "bun serve.ts",

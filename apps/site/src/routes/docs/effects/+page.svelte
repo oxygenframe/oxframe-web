@@ -34,7 +34,7 @@
 </p>
 <pre><code
     >{`Group::new().opacity(0.5)                         // group opacity
-Circle::new().clip(true).child(...)              // children clipped to the circle
+Circle::new().clip(true)                         // children added to it are clipped to the circle
 Circle::new().blend(BlendMode::Multiply)         // Multiply, Screen, Overlay, …
 Txt::new().blur(12.0)                            // Gaussian blur (σ, node units)
 Rect::new().shadow(Color::BLACK.with_alpha(0.6), 16.0, (0.0, 12.0))

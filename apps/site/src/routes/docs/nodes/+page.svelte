@@ -187,6 +187,7 @@ demo.playback_rate().to(0.25, 0.5).await;   // slow motion`}</code
 <LiveExample name="text" />
 
 <h2>Rich text, code and morphing</h2>
+<!-- snippet-setup: let src = "fn main() {}"; let next = "fn main() { run(); }"; let code = view.add(Code::new()); let word = view.add(Txt::new().text("frame")); -->
 <pre><code
     >{`Txt::new().rich([span("Signals are "), span("lazy").bold().color(color!("#f5c242"))])
 Code::new().language("rust").code(src).focus(3, 4)   // code.focus_lines(5, 5, 0.4).await moves it

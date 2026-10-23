@@ -9,6 +9,7 @@
 </p>
 
 <h2>The three kinds</h2>
+<!-- snippet-setup: let x = view.add(Rect::new()).x(); -->
 <pre><code
     >{`wait_until("beat").await;                    // marker: a point on the timeline
 x.to(300.0, 1.0).ease(ease!("slide")).await;   // named ease: a curve you can bend

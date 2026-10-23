@@ -34,6 +34,7 @@
 <p>The center of the screen is (0, 0). Positive x goes right, positive y goes <em>down</em>.</p>
 
 <h2>Animating it</h2>
+<!-- snippet-setup: let ball = view.add(Circle::new()); -->
 <pre><code>ball.x().to(400.0, 1.0).await;</code></pre>
 <p>
   Read it as: <em>take the ball's x, move it to 400 over 1 second, and wait until that is done.</em>

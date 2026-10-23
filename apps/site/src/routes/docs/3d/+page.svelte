@@ -45,6 +45,7 @@ cube.rotation().to(Vec3::new(0.0, 360.0, 0.0), 6.0).await;`}</code
 </p>
 
 <h2>Everything is a signal</h2>
+<!-- snippet-after: 0 -->
 <pre><code
     >{`cube.position().to(Vec3::new(1.0, 0.0, 0.0), 1.0).await;
 cube.color().to(Success, 0.5).await;
@@ -62,6 +63,7 @@ sun.intensity().to(0.3, 1.0).await;`}</code
 </p>
 
 <h2>2D labels on 3D points</h2>
+<!-- snippet-after: 0 -->
 <pre><code
     >{`let frame = view.add(View3d::new(&world).size(760.0, 520.0));
 let to_view = frame.projector();

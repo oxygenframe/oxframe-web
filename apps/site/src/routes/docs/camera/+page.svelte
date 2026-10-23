@@ -29,6 +29,8 @@ view.add(Txt::new().text("Title").h2().to_edge(Edge::Top)); // on screen`}</code
   <code>y</code> are the point it looks at, <code>zoom</code> is how close it is (2 = twice as big),
   and <code>rotation</code> turns the view (in degrees, clockwise).
 </p>
+<!-- snippet-after: 0 -->
+<!-- snippet-setup: let api = diagram.add(Rect::new().width(120.0).height(60.0)); -->
 <pre><code
     >{`cam.fit(diagram, 120.0, 0.0).await;   // all of it in the frame, 120 px to spare
 cam.center_on(api, 1.0).await;         // bring one node to the middle
@@ -41,6 +43,8 @@ cam.reset(1.2).await;                  // back to x = y = 0, zoom 1, no rotation
   current size. A duration of <code>0.0</code> jumps there at once — handy for the first frame. To
   move and zoom together, run both in <code>all</code>:
 </p>
+<!-- snippet-after: 0 -->
+<!-- snippet-setup: let api = diagram.add(Rect::new().width(120.0).height(60.0)); -->
 <pre><code>all((cam.center_on(api, 1.2), cam.zoom().to(1.6, 1.2))).await;</code></pre>
 
 <h2>Following a node</h2>
@@ -48,6 +52,8 @@ cam.reset(1.2).await;                  // back to x = y = 0, zoom 1, no rotation
   Bind the camera's position to a node and it follows it every frame. The next animation of the
   camera's <code>x</code> or <code>y</code> releases it.
 </p>
+<!-- snippet-after: 0 -->
+<!-- snippet-setup: let packet = diagram.add(Circle::new().size(24.0)); -->
 <pre><code
     >{`let (px, py) = (packet.x(), packet.y());
 cam.x().bind(move || px.get());

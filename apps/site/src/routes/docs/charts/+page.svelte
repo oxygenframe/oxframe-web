@@ -37,6 +37,7 @@ axes.x_range().to(-10.0..10.0, 1.0).await;`}</code
   draws it like any path, and <code>plot.to_fn(|x| x.cos(), 1.0)</code> morphs it: every x moves from
   the old value to the new one.
 </p>
+<!-- snippet-after: 0 -->
 <pre><code
     >{`let wave = axes.plot(|x| x.sin()).stroke(Accent);
 wave.draw_on().await;
@@ -59,6 +60,7 @@ wave.to_fn(|x| (2.0 * x).sin(), 1.0).await;`}</code
   <code>.labels(["a", "b"])</code> names the bars. <code>axes.line_series(..)</code> draws a line
   through data points and <code>axes.scatter(..)</code> a dot per point.
 </p>
+<!-- snippet-setup: let axes = view.add(Axes::new().x_range(-0.5..2.5).y_range(0.0..8.0)); -->
 <pre><code
     >{`let bars = axes.bars([0.0, 0.0, 0.0]).labels(["rustc", "gcc", "clang"]);
 stagger(0.15, [3.2, 7.5, 5.1].into_iter().enumerate(), |(i, v)| bars.value(i).to(v, 1.0)).await;`}</code

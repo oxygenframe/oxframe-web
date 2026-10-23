@@ -20,6 +20,7 @@
   (change now) and
   <code>.bind(...)</code>:
 </p>
+<!-- snippet-setup: let label = view.add(Txt::new().text("mid")); let (ax, bx) = (view.add(Circle::new()).x(), view.add(Circle::new()).x()); -->
 <pre><code>label.x().bind(move || (ax.get() + bx.get()) / 2.0);</code></pre>
 <p>
   This says: <em>the label's x is always halfway between the two dots.</em> Whenever a dot moves, the
