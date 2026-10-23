@@ -15,15 +15,50 @@
   don't need to know Rust. Your agent does.
 </p>
 
-<h2>Set it up in two commands</h2>
+<h2>Start here</h2>
 <pre><code
     >{`${INSTALL_CLI}            # the oxframe CLI
-${INSTALL_SKILLS}   # skills for your agent`}</code
+oxframe init my-video
+cd my-video                         # open this folder in your agent`}</code
   ></pre>
 <p>
-  The skills install into Claude Code, Codex, Cursor, GitHub Copilot and about twenty other agents.
-  Rendering needs ffmpeg; a project needs Rust, which the agent drives.
+  That is the whole setup. <code>oxframe init</code> writes <code>AGENTS.md</code>, which Codex,
+  Cursor, GitHub Copilot and most other agents read on their own, and a Claude Code skill in
+  <code>.claude/skills/oxframe</code>. Ask for the video in that folder; the agent writes the scene,
+  runs <code>oxframe check</code> and fixes what it reports. Rendering needs ffmpeg; a project needs Rust,
+  which the agent drives.
 </p>
+
+<h2 id="which-setup">Which setup to choose</h2>
+<div class="scroll">
+  <table>
+    <thead><tr><th>You want</th><th>Use</th><th>What the agent gets</th></tr></thead>
+    <tbody>
+      <tr
+        ><td>To make a video now, with any agent</td><td
+          ><code>oxframe init</code> (above) — <strong>recommended</strong></td
+        ><td>Instructions and the API cheat sheet in the project; checks through the shell</td></tr
+      >
+      <tr
+        ><td>oxframe in every project, in Claude Code or Codex</td><td
+          ><a href="#plugins">The plugin</a></td
+        ><td
+          >The skills everywhere, plus <code>oxframe mcp</code>: check, frames and docs as tools</td
+        ></tr
+      >
+      <tr
+        ><td>The skills in another agent, outside an oxframe project</td><td
+          ><code>{INSTALL_SKILLS}</code></td
+        ><td>The <a href="#skills">skills</a>, installed into about twenty agents</td></tr
+      >
+      <tr
+        ><td>An agent that cannot run commands (ChatGPT, a web IDE)</td><td
+          ><a href="#remote-mcp">mcp.oxframe.dev</a></td
+        ><td>The docs only: search, pages, components, examples</td></tr
+      >
+    </tbody>
+  </table>
+</div>
 
 <h2>Your agent</h2>
 <ul class="cards">
@@ -45,7 +80,7 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
   directly.
 </p>
 
-<h2>Plugins</h2>
+<h2 id="plugins">Plugins</h2>
 <p>
   A plugin brings the skills and the MCP server together. In Claude Code:
   <code>/plugin marketplace add oxygenframe/oxframe-sdk</code>, then
@@ -56,7 +91,7 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
   <code>~/.cursor/plugins/local/oxframe</code>.
 </p>
 
-<h2>The docs over MCP, without the CLI</h2>
+<h2 id="remote-mcp">The docs over MCP, without the CLI</h2>
 <p>
   Agents that cannot run commands on your machine, such as ChatGPT or a web IDE, can still read the
   docs: add <code>https://mcp.oxframe.dev/mcp</code> as a remote MCP server (Streamable HTTP, no
@@ -64,7 +99,7 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
   source. Checking and rendering need the local <code>oxframe mcp</code>.
 </p>
 
-<h2>Skills</h2>
+<h2 id="skills">Skills</h2>
 <p>One command installs all of them; each is a page of its own.</p>
 <ul class="skills">
   {#each skills as s (s.name)}
@@ -81,6 +116,10 @@ ${INSTALL_SKILLS}   # skills for your agent`}</code
 </p>
 
 <style>
+  /* The setup table scrolls on its own on a phone. */
+  .scroll {
+    overflow-x: auto;
+  }
   .cards {
     display: flex;
     flex-wrap: wrap;

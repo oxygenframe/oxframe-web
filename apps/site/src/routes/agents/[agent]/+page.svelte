@@ -13,6 +13,13 @@
   {a.name} writes the scenes, runs <code>oxframe check</code> and fixes what the report names, then renders
   the video. Three steps set it up.
 </p>
+<p>
+  <strong>Quickest start:</strong> install the CLI, run <code>oxframe init my-video</code> and open
+  that folder in {a.name}. The project carries its own instructions for the agent, so that alone is
+  enough to make a video. The steps below add the skills to every project and the check as a tool (<a
+    href="/agents#which-setup">which setup to choose</a
+  >).
+</p>
 
 <h2>1. Install the CLI and the skills</h2>
 <pre><code>{`${INSTALL_CLI}\n${INSTALL_SKILLS}`}</code></pre>
