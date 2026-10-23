@@ -113,7 +113,7 @@ cd my-video && oxframe dev</code
     ></pre>
   <p>
     <a href="/docs/getting-started">Getting started</a> walks through it, the
-    <a href="/docs/guide/hello">guide</a> teaches the API in fifteen lessons, and the
+    <a href="/docs/guide/hello">guide</a> teaches the API lesson by lesson, and the
     <a href="/gallery">gallery</a> has the source of every example.
   </p>
 </article>

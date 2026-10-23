@@ -142,7 +142,7 @@
       class="star-top"
       href="https://github.com/oxygenframe/oxframe-sdk"
       rel="external"
-      aria-label="Star oxframe on GitHub{stars ? ` (${stars} stars)` : ''}"
+      aria-label="Star oxframe on GitHub{stars && stars >= 100 ? ` (${stars} stars)` : ''}"
     >
       <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"
         ><path
@@ -151,7 +151,8 @@
         /></svg
       >
       <span class="star-label">Star</span>
-      {#if stars}<span class="star-count">{stars}</span>{/if}
+      <!-- Hide the count until it is social proof, not a negative signal (A10). -->
+      {#if stars && stars >= 100}<span class="star-count">{stars}</span>{/if}
     </a>
   </header>
 
