@@ -55,12 +55,29 @@
   <p>The fonts may be used in the videos you render, commercial ones included.</p>
 
   <h2>Your data</h2>
-  <p>
-    The SDK and the CLI send nothing anywhere: no telemetry, no license check. The only network
-    traffic is cargo downloading crates. The <a href="/playground">playground</a> sends the code you
-    run to <code>compile.oxframe.dev</code>, which builds it and keeps the build in a cache. This
-    site counts visits with Plausible, which sets no cookies.
-  </p>
+  <p>The SDK and the CLI carry no telemetry and no license check. What leaves your machine:</p>
+  <ul>
+    <li>
+      <strong>Building.</strong> <code>cargo</code> downloads crates, and the install script fetches the
+      CLI binary from GitHub releases.
+    </li>
+    <li>
+      <strong>A network voice.</strong> A scene sends nothing on its own. If you add a network
+      <code>TtsProvider</code> (such as ElevenLabs), the text you ask it to speak goes to that provider;
+      without one, oxframe estimates the length offline and sends nothing.
+    </li>
+    <li>
+      <strong>The <a href="/playground">playground</a></strong> sends the code you run to
+      <code>compile.oxframe.dev</code>, which builds it and caches the build. “Share video” uploads
+      the rendered MP4 and a poster to oxframe's storage and returns a <code>/s/…</code> link kept 30
+      days.
+    </li>
+    <li>
+      <strong>This site</strong> counts visits with Plausible, which sets no cookies.
+      <code>mcp.oxframe.dev</code> is a read-only documentation server for agents — it serves docs and
+      keeps nothing about your project.
+    </li>
+  </ul>
 
   <h2>The license texts</h2>
   <ul>
