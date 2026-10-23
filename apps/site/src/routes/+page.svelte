@@ -149,7 +149,7 @@
 </script>
 
 <Seo
-  title="oxframe — motion graphics your AI agent can see"
+  title="oxframe — motion graphics your agent checks in a second"
   description="AI-native motion graphics in Rust: code-based animation, live timeline editor, deterministic rendering, and visual checks for coding agents."
   jsonld={[
     {
@@ -177,10 +177,11 @@
 
 <section class="hero">
   <div>
-    <h1>Motion graphics your AI agent can see</h1>
+    <h1>Motion graphics your agent checks in a second</h1>
     <p class="lead">
-      Explainers, code walkthroughs, charts and release videos from code. Live editor, visual
-      checks, deterministic renders. MIT or Apache-2.0 — no seats, no per-render fees.
+      Explainers, code walkthroughs, charts and release videos from code. Rendered natively — no
+      Chrome, no Node — deterministic, and checked in under a second with a report that points at
+      the line to fix. MIT or Apache-2.0: no seats, no per-render fees.
     </p>
     <div class="tabs" role="tablist" aria-label="Ways to start">
       {#each entries as e (e.id)}

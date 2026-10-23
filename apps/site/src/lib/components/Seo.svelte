@@ -39,7 +39,9 @@
   const image = $derived(picture?.url ?? (card ? SITE + card.image : OG_IMAGE));
   const imageAlt = $derived(
     picture?.alt ??
-      (card ? `${card.title} — oxframe` : 'oxframe — motion graphics your AI agent can see'),
+      (card
+        ? `${card.title} — oxframe`
+        : 'oxframe — motion graphics your agent checks in a second'),
   );
   // `<` is escaped so the JSON cannot close the script element.
   const ld = $derived(
