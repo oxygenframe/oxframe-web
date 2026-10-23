@@ -20,6 +20,8 @@ export async function releases(text: string): Promise<Release[]> {
   const list: Release[] = [];
   for (const part of parts) {
     const [head, ...body] = part.split('\n');
+    // Merged but not released: /changelog lists releases only.
+    if (/^Unreleased\s*$/.test(head!)) continue;
     const m = /^(\d+\.\d+\.\d+)\s+—\s+(\d{4}-\d{2}-\d{2})/.exec(head!);
     if (!m) throw new Error(`changelog heading not understood: ## ${head}`);
     // `### Added` sits under the version's h2 on the page.

@@ -96,13 +96,18 @@ fn main() {
       >
       <tr><td><code>oxframe-render</code></td><td>tiny-skia on the CPU, vello on the GPU</td></tr>
       <tr><td><code>oxframe-3d</code></td><td>meshes, lights and a software rasterizer</td></tr>
+      <tr
+        ><td><code>oxframe-math</code></td><td>formulas set by Typst, with a bundled math font</td
+        ></tr
+      >
       <tr><td><code>oxframe-export</code></td><td>ffmpeg video, PNG sequences, audio</td></tr>
     </tbody>
   </table>
   <p>
     Features: <code>gpu</code> (default), <code>3d</code>, <code>icons</code>, <code>video</code>,
-    <code>wasm</code> and <code>unstable-node-api</code> for nodes of your own. The API reference is
-    on <a href="https://docs.rs/oxframe" rel="external">docs.rs</a>.
+    <a href="/docs/formulas"><code>math</code></a>, <code>wasm</code> and
+    <code>unstable-node-api</code> for nodes of your own. The API reference is on
+    <a href="https://docs.rs/oxframe" rel="external">docs.rs</a>.
   </p>
 
   <h2>Start</h2>
