@@ -21,7 +21,7 @@
         description: `What changed in oxframe ${r.version}, made from the release notes by release-video-action.`,
         thumbnailUrl: `${SITE}${m.poster}`,
         contentUrl: `${SITE}${m.mp4}`,
-        uploadDate: r.date,
+        uploadDate: `${r.date}T00:00:00+00:00`,
         duration: `PT${m.seconds.toFixed(1)}S`,
         width: m.width,
         height: m.height,

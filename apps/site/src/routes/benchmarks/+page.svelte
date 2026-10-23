@@ -38,6 +38,7 @@
         'Render time of one scene in oxframe and other code-video tools, and the pass rate of a coding agent on oxframe reference prompts.',
       creator: { '@type': 'Organization', name: 'oxframe' },
       dateModified: measurements.date,
+      license: 'https://oxframe.dev/license',
       url: 'https://oxframe.dev/benchmarks',
     },
   ]}

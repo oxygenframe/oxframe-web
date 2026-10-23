@@ -31,7 +31,7 @@ export function videoObject(name: string, title: string, description: string): o
     description,
     thumbnailUrl: `${SITE}${m.poster}`,
     contentUrl: `${SITE}${m.mp4}`,
-    uploadDate: data.date,
+    uploadDate: `${data.date}T00:00:00+00:00`,
     duration: `PT${m.seconds.toFixed(1)}S`,
     width: m.width,
     height: m.height,
