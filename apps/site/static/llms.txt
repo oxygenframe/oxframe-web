@@ -13,6 +13,7 @@ Every page also has a Markdown version: add .md to its URL.
 - [Welcome](https://oxframe.dev/docs): Learn oxframe: make animations and motion graphics by writing Rust code, with a live editor to scrub through them and fine-tune the timing.
 - [Install and first project](https://oxframe.dev/docs/getting-started): Install the oxframe CLI with cargo, create your first animation project and open the live editor — five minutes from nothing to a moving scene.
 - [Versions and upgrades](https://oxframe.dev/docs/versions): How oxframe versions work before 1.0: weekly releases, breaking changes batched into minor versions, pinning the SDK, and oxframe upgrade.
+- [Troubleshooting](https://oxframe.dev/docs/troubleshooting): Fixes for the errors of a first oxframe install or render: linker cc not found, old rustc, no ffmpeg, a busy port, protocol versions, WSL and disk space.
 
 ## Guide
 

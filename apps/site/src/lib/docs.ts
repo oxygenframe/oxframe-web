@@ -37,6 +37,12 @@ export const sections: DocSection[] = [
         description:
           'How oxframe versions work before 1.0: weekly releases, breaking changes batched into minor versions, pinning the SDK, and oxframe upgrade.',
       },
+      {
+        slug: 'troubleshooting',
+        title: 'Troubleshooting',
+        description:
+          'Fixes for the errors of a first oxframe install or render: linker cc not found, old rustc, no ffmpeg, a busy port, protocol versions, WSL and disk space.',
+      },
     ],
   },
   {

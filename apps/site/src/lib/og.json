@@ -234,6 +234,11 @@
     "section": "Docs",
     "image": "/og/docs-versions.png"
   },
+  "/docs/troubleshooting": {
+    "title": "Troubleshooting",
+    "section": "Docs",
+    "image": "/og/docs-troubleshooting.png"
+  },
   "/docs/guide/hello": {
     "title": "Your first animation",
     "section": "Guide",
