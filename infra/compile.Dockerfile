@@ -16,6 +16,7 @@ COPY packages/editor-ui/package.json packages/editor-ui/
 COPY packages/protocol/package.json packages/protocol/
 COPY services/compile/package.json services/compile/
 COPY services/compile-cf/package.json services/compile-cf/
+COPY services/mcp/package.json services/mcp/
 RUN bun install --frozen-lockfile --ignore-scripts --filter @oxframe/compile-service
 COPY services/compile/src services/compile/src
 COPY apps/site/src/lib/sdk.ts apps/site/src/lib/sdk.ts

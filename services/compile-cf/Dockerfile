@@ -36,6 +36,7 @@ COPY packages/editor-ui/package.json packages/editor-ui/
 COPY packages/protocol/package.json packages/protocol/
 COPY services/compile/package.json services/compile/
 COPY services/compile-cf/package.json services/compile-cf/
+COPY services/mcp/package.json services/mcp/
 RUN bun install --frozen-lockfile --ignore-scripts --production --filter @oxframe/compile-service
 
 # The SDK sources, for checking an unreleased SDK before it is published
