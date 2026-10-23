@@ -370,14 +370,6 @@
           .date}).
       </p>
     </article>
-    <article>
-      <p class="figure">$0</p>
-      <h3>License</h3>
-      <p>
-        MIT or Apache-2.0: no seats and no per-render fees, for any team.
-        <a href="/license">What it covers</a>
-      </p>
-    </article>
   </div>
   <p>
     An agent pass rate and an average iteration count have not been measured. The prompt set and the
