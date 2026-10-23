@@ -86,10 +86,11 @@
   </table>
 </div>
 <p class="note">
-  Each row is a different scene, so compare a tool with oxframe across a row, not one row with
-  another. fframes is not timed here yet — it needs codec development packages the benchmark machine
-  lacks — and Motion Canvas has no headless render to time. A batch of {vs.csv.rows} personalised cards,
-  {vs.csv.videoSeconds} s each, renders in {s(vs.csv.seconds)} on the CPU, one after another.
+  Compare a tool with oxframe across its row. oxframe's own time is the same in the Remotion and
+  HyperFrames rows because HyperFrames renders the Remotion scene as HTML — it is the same oxframe
+  scene. fframes is not timed here yet — it needs codec development packages the benchmark machine
+  lacks — and Motion Canvas has no headless render to time. A batch of {vs.csv.rows} personalised cards
+  — {vs.csv.videoSeconds} s of video each — renders in {s(vs.csv.seconds)} on the CPU, one after another.
 </p>
 <p>
   Script: <a href="https://github.com/oxygenframe/oxframe-web/blob/main/{vs.script}"
@@ -122,8 +123,8 @@
   </article>
   <article>
     <p class="figure">{a7.meanTurns}</p>
-    <h3>Turns, median run</h3>
-    <p>Mean agent turns to finish a prompt.</p>
+    <h3>Mean turns</h3>
+    <p>Average agent turns to finish a prompt.</p>
   </article>
   <article>
     <p class="figure">{a7.meanMinutes} min</p>

@@ -2,7 +2,7 @@
   "version": "0.20.0",
   "date": "2026-10-22",
   "machine": "Intel(R) Core(TM) Ultra 7 255H, 16 threads, rustc 1.97.1, Linux",
-  "scene": "One scene: a title card, a bullet list and an end card, 30 seconds. oxframe was already built in the same target directory.",
+  "scene": "One scene: a title card, a bullet list and an end card, about 28 seconds. oxframe was already built in the same target directory.",
   "editSeconds": 0.6,
   "checkWarmSeconds": 0.37,
   "checkAfterEditSeconds": 0.83,

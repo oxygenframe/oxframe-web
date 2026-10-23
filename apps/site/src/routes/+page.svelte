@@ -353,10 +353,10 @@
     </article>
     <article>
       <p class="figure">{measurements.render30Seconds}s</p>
-      <h3>{measurements.render30VideoSeconds}-second video</h3>
+      <h3>Render of a {measurements.render30VideoSeconds}s video</h3>
       <p>
         <code>oxframe render --cpu</code> in {measurements.render30Jobs} parallel segments ({measurements.render30OneJobSeconds}s
-        with one), no GPU. Both files are byte for byte the same.
+        with one), no GPU. The two files are byte for byte the same.
       </p>
     </article>
     <article>
