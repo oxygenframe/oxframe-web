@@ -59,8 +59,8 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
       ></tr
     >
     <tr
-      ><td><code>--cpu</code></td><td
-        >Render the preview on the CPU — useful on machines without a working GPU.</td
+      ><td><code>--gpu</code></td><td
+        >Draw the preview on the GPU (vello). The CPU is the default; <code>--cpu</code> is still accepted.</td
       ></tr
     >
   </tbody>
@@ -70,7 +70,7 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
 <p>
   Builds the project like <code>oxframe dev</code> and opens it as a presentation: full screen,
   stopping at every <code>slide_break</code> and scene end. N opens the speaker notes. Takes
-  <code>--port</code>, <code>--no-open</code>, <code>--release</code> and <code>--cpu</code>. See
+  <code>--port</code>, <code>--no-open</code>, <code>--release</code> and <code>--gpu</code>. See
   <a href="/docs/presentations">Presentations from scenes</a>.
 </p>
 
@@ -121,7 +121,12 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
         <code>Project::aspects</code>.</td
       ></tr
     >
-    <tr><td><code>--cpu</code></td><td>Use the CPU renderer, e.g. in CI without a GPU.</td></tr>
+    <tr
+      ><td><code>--gpu</code></td><td
+        >Draw on the GPU (vello). The CPU (tiny-skia) is the default: faster here and byte-for-byte
+        deterministic. <code>--cpu</code> is still accepted and wins.</td
+      ></tr
+    >
     <tr><td><code>--no-audio</code></td><td>Leave the soundtrack out.</td></tr>
   </tbody>
 </table>
@@ -166,6 +171,14 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   <code>storyboard-9x16.png</code> and <code>storyboard-1x1.png</code>. <code>--frames</code> also
   writes each cell at full size under <code>out/check/frames/</code>. The check renders only the
   frames it needs, on the CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
+</p>
+<p>
+  An issue on a node also gets a close-up: <code>out/check/issues/01-out_of_frame.png</code> and so
+  on, that part of the frame at full resolution with the node outlined in red (up to 24 per check).
+  In <code>report.json</code> the issue then has <code>bounds</code>, the node's box at the start of
+  the issue in scene units (as in <code>oxframe inspect</code>), and <code>crop</code>, the path of
+  the picture relative to <code>out/check/</code>. An agent opens the crop instead of hunting for
+  the problem on the storyboard.
 </p>
 <p>
   Name a node with <code>.name("title")</code> so the report is readable. Without a name it is

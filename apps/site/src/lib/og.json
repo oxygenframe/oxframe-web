@@ -349,6 +349,11 @@
     "section": "Docs",
     "image": "/og/docs-icons.png"
   },
+  "/docs/formulas": {
+    "title": "Formulas: Typst math in Rust animations",
+    "section": "Docs",
+    "image": "/og/docs-formulas.png"
+  },
   "/docs/camera": {
     "title": "Camera",
     "section": "Docs",

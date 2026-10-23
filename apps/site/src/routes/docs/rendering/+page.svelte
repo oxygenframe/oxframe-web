@@ -23,7 +23,7 @@ oxframe render --format png --out frames/  # one PNG per frame
 oxframe render --size 3840x2160            # 4K
 oxframe render --scene outro               # just one scene
 oxframe render --range 1..3                # seconds 1 to 3
-oxframe render --cpu                       # no GPU available (CI, servers)
+oxframe render --gpu                       # draw on the GPU (vello); the CPU is the default
 oxframe render --jobs 4                    # four segments at once`}</code
   ></pre>
 <p>
@@ -271,11 +271,17 @@ Project::new("explainer")
 
 <h2>GPU or CPU?</h2>
 <p>
-  By default frames are drawn on the GPU (vello) and fall back to the CPU (tiny-skia) when no GPU is
-  available. Vector scenes match across the two: they pass the same reference-frame tests within a
-  color difference of ΔE 1, which you cannot see. The CPU renderer is also byte-for-byte identical
-  between runs, which is what you want in automated tests. A <code>shaders::waves()</code> node is
-  painted into an image before either backend, so the two show the same crest. The same goes for
+  Frames are drawn on the CPU (tiny-skia) by default. It is faster than the GPU on every scene we
+  benchmark, and it needs no graphics driver, so CI and servers just work. Pass
+  <code>--gpu</code> to <code>oxframe render</code>, <code>oxframe dev</code> or
+  <code>oxframe present</code> to draw with vello; it falls back to the CPU when no GPU is
+  available. Before 0.21 the GPU was the default and <code>--cpu</code> opted out;
+  <code>--cpu</code>
+  still works and wins over <code>--gpu</code>. Vector scenes match across the two: they pass the
+  same reference-frame tests within a color difference of ΔE 1, which you cannot see. The CPU
+  renderer is also byte-for-byte identical between runs, which is what you want in automated tests.
+  A <code>shaders::waves()</code> node is painted into an image before either backend, so the two
+  show the same crest. The same goes for
   <code>lens_drops</code>, <code>ripple</code> and <code>water_wipe</code>: both renderers draw the
   vectors, and the shader runs on those pixels on the CPU. A layer whose vectors did not change is
   reused on the next frame. A scene with no effects is one vector pass;

@@ -41,6 +41,24 @@
   the time range, the node and the line of code that added it. Thresholds live in
   <code>oxframe.toml</code> under <code>[check]</code>.
 </p>
+<p>
+  An issue on a node comes with a close-up in <code>out/check/issues/</code>: the frame around the
+  node at full resolution, the node outlined in red. Its path is the issue's <code>crop</code> field
+  in <code>report.json</code>, next to <code>bounds</code>, the node's box. A node wholly outside
+  the frame gets the strip along the edge it went past.
+</p>
+<figure class="crop">
+  <img
+    src="/rules/crop-out_of_frame.png"
+    width="1481"
+    height="436"
+    loading="lazy"
+    alt="The crop oxframe check writes for out_of_frame: a headline running off the right edge of the frame, outlined in red"
+  />
+  <figcaption>
+    <code>issues/02-out_of_frame.png</code>: a headline that runs off the right edge.
+  </figcaption>
+</figure>
 
 {#snippet pair(rule: string)}
   {@const p = picture(rule)}
@@ -198,6 +216,9 @@
   }
   figure {
     margin: 0;
+  }
+  .crop {
+    margin: 0 0 16px;
   }
   img {
     display: block;

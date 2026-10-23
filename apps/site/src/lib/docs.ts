@@ -186,6 +186,12 @@ export const sections: DocSection[] = [
           'Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.',
       },
       {
+        slug: 'formulas',
+        title: 'Formulas: Typst math in Rust animations',
+        description:
+          'Typeset math in oxframe with Typst: Math::new("e^(i pi) + 1 = 0"), font size and theme color, display style, and writing a formula on glyph by glyph.',
+      },
+      {
         slug: 'camera',
         title: 'Camera',
         description:

@@ -2,6 +2,8 @@
 
 oxframe is procedural animation in Rust. Scenes are async functions; awaiting an animation takes time.
 
+This is oxframe 0.21.0, pre-1.0: the API is not stable and changes between versions. Pin the exact version and follow these docs for it, not model memory.
+
 Full text: https://oxframe.dev/llms-full.txt
 
 Every page also has a Markdown version: add .md to its URL.
@@ -40,6 +42,7 @@ Every page also has a Markdown version: add .md to its URL.
 - [Presentations from scenes](https://oxframe.dev/docs/presentations): Turn oxframe scenes into a talk: slide_break stops, speaker notes in a presenter window, clicker keys, and every stop as a PDF page.
 - [Writing your own node](https://oxframe.dev/docs/custom-nodes): Make a node of your own in Rust: a struct that draws with DrawCtx, animatable signal fields, layout and checks, and a crate template.
 - [Icons: Lucide, Tabler and brand logos](https://oxframe.dev/docs/icons): Lucide, Tabler and Simple Icons in Rust animations: icon!("lucide:server") by name, colors and line widths as signals, and icons in flow diagrams.
+- [Formulas: Typst math in Rust animations](https://oxframe.dev/docs/formulas): Typeset math in oxframe with Typst: Math::new("e^(i pi) + 1 = 0"), font size and theme color, display style, and writing a formula on glyph by glyph.
 - [Camera](https://oxframe.dev/docs/camera): Zoom, pan and rotate the view in oxframe: fit a whole diagram, center on a detail, follow a moving node, and keep titles on screen.
 - [Markers, eases, tunables](https://oxframe.dev/docs/timing): Markers, custom eases and tunables: timing values stored outside your Rust code so you can adjust them visually in the oxframe editor.
 - [The editor](https://oxframe.dev/docs/editor): A tour of the oxframe editor: viewport, timeline, inspector and hot reload — the same app in oxframe dev and in the browser playground.

@@ -2,6 +2,8 @@
 
 oxframe is procedural animation in Rust. Scenes are async functions; awaiting an animation takes time.
 
+This is oxframe 0.17.0, pre-1.0: the API is not stable and changes between versions. Pin the exact version and follow these docs for it, not model memory.
+
 Full text: https://oxframe.dev/docs/0.17.0/llms-full.txt
 
 ## Start here
