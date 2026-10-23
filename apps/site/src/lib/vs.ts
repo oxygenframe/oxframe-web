@@ -57,7 +57,7 @@ export const vsPages: VsPage[] = [
     title: 'oxframe vs Remotion: no Chrome, no seats, no telemetry',
     description:
       'oxframe vs Remotion, checked October 2026: license and seats, Chrome vs native rendering, agent checks, and one scene timed in both tools.',
-    lead: 'Pick oxframe when an AI agent writes the video, it renders in CI, and you want MIT/Apache with no seats, per-render fees or telemetry. Pick Remotion when your team lives in React, wants HTML and CSS in the frame, or renders on Lambda at scale.',
+    lead: 'Pick oxframe when an AI agent writes the video, it renders in CI, and you want MIT or Apache-2.0 with no seats, per-render fees or telemetry. Pick Remotion when your team lives in React, wants HTML and CSS in the frame, or renders on Lambda at scale.',
     rows: [
       ['Language', 'Rust', 'React (TypeScript or JavaScript)'],
       [
@@ -220,7 +220,7 @@ export const vsPages: VsPage[] = [
       {
         heading: 'A page that is filmed, or a scene that is drawn',
         html: `<p>HyperFrames, from HeyGen, treats a video as an HTML page with a timeline. Elements carry <code>data-start</code> and <code>data-duration</code>, a paused GSAP timeline holds the motion, and the renderer seeks the page frame by frame in headless Chrome before FFmpeg encodes it. Anything a browser can show can be in the video, and an agent that writes web pages already knows how to write one.</p>
-<p>oxframe draws the frame itself. A scene is Rust code with signals: a title, a list, a chart, a code block, each a node with properties that animate in an async timeline. There is no page to lay out and no browser to start, so the same scene renders in a fraction of the time and the same code gives the same bytes on every machine.</p>
+<p>oxframe draws the frame itself. A scene is Rust code with signals: a title, a list, a chart, a code block, each a node with properties that animate in an async timeline. There is no page to lay out and no browser to start, so the same scene renders in a fraction of the time, and the render is reproducible: byte-for-byte on the CPU renderer, visually identical (ΔE ≤ 1) on the GPU.</p>
 <p>The trade is plain. HyperFrames wins when the content is web content. oxframe wins when the content is motion graphics, the render runs in CI, and an agent has to check its own frames: <code>oxframe check</code> reports overflowing text, contrast, safe areas and motion that is too fast to read, with the node and the time of each problem.</p>`,
       },
     ],

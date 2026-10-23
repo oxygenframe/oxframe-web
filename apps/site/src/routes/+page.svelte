@@ -39,7 +39,7 @@
     ],
     [
       'Deterministic',
-      'Fixed time steps and a seeded random source. The same code renders the same frames everywhere.',
+      'Fixed time steps and a seeded random source: the same code renders the same frames every time — byte-for-byte on the CPU renderer.',
     ],
     [
       'Edit timing without recompiling',
@@ -180,7 +180,7 @@
     <h1>Motion graphics your AI agent can see</h1>
     <p class="lead">
       Explainers, code walkthroughs, charts and release videos from code. Live editor, visual
-      checks, byte-identical renders. MIT/Apache — no seats, no per-render fees.
+      checks, deterministic renders. MIT or Apache-2.0 — no seats, no per-render fees.
     </p>
     <div class="tabs" role="tablist" aria-label="Ways to start">
       {#each entries as e (e.id)}
@@ -484,7 +484,7 @@ fn main() {
         <code>oxframe init</code>
         writes that file.
       </p>
-      <pre><code>npm install -g @openai/codex</code></pre>
+      <pre><code>oxframe init my-video</code></pre>
     </article>
     <article>
       <h3>OpenAI</h3>
