@@ -1,5 +1,6 @@
 <script lang="ts">
   import LiveExample from '$lib/components/LiveExample.svelte';
+  import { SDK_VERSION } from '$lib/sdk';
 </script>
 
 <h1>Rendering video</h1>
@@ -291,6 +292,27 @@ Project::new("explainer")
   reused on the next frame. A scene with no effects is one vector pass;
   <code>oxframe inspect --graph</code> lists the passes.
 </p>
+
+<h2 id="container">In a container or CI</h2>
+<p>
+  <code>ghcr.io/oxygenframe/oxframe</code> has the oxframe command, Rust and ffmpeg, with the SDK
+  already compiled, so a project's first <code>oxframe check</code> or <code>oxframe render</code>
+  inside it takes seconds instead of compiling the engine. Use the tag of your project's SDK version:
+</p>
+<pre><code
+    >{`docker run --rm -v "$PWD:/work" ghcr.io/oxygenframe/oxframe:${SDK_VERSION} oxframe render`}</code
+  ></pre>
+<p>In GitHub Actions, run the job in it:</p>
+<pre><code
+    >{`jobs:
+  video:
+    runs-on: ubuntu-latest
+    container: ghcr.io/oxygenframe/oxframe:${SDK_VERSION}
+    steps:
+      - uses: actions/checkout@v4
+      - run: oxframe check
+      - run: oxframe render`}</code
+  ></pre>
 
 <h2>In the browser</h2>
 <p>
