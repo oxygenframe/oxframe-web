@@ -6,7 +6,6 @@ import { join } from 'node:path';
 
 const sdk = process.env.OXFRAME_SDK_PATH ?? join(import.meta.dir, '../../oxframe-sdk');
 const to = join(import.meta.dir, '../apps/site/src/lib/examples');
-mkdirSync(to, { recursive: true });
 const names = [
   'intro',
   'text',
@@ -67,9 +66,14 @@ export function sceneSource(source: string): string {
   return source.slice(0, at).trimEnd() + '\n';
 }
 
-for (const n of names) {
-  const from = join(sdk, 'examples/src', `${n}.rs`);
-  if (!existsSync(from)) throw new Error(`missing ${from}`);
-  writeFileSync(join(to, `${n}.rs`), sceneSource(readFileSync(from, 'utf8')));
+// Only when run, not when a test imports `sceneSource`: CI's web job has
+// no SDK checkout next to the site.
+if (import.meta.main) {
+  mkdirSync(to, { recursive: true });
+  for (const n of names) {
+    const from = join(sdk, 'examples/src', `${n}.rs`);
+    if (!existsSync(from)) throw new Error(`missing ${from}`);
+    writeFileSync(join(to, `${n}.rs`), sceneSource(readFileSync(from, 'utf8')));
+  }
+  console.log(`synced ${names.length} examples from ${sdk}`);
 }
-console.log(`synced ${names.length} examples from ${sdk}`);
