@@ -22,9 +22,16 @@ sudo apt install ffmpeg        # Linux
 brew install ffmpeg            # macOS
 winget install Gyan.FFmpeg     # Windows
 
-# the oxframe command
+# the oxframe command, prebuilt (Linux, macOS): seconds, checksum-verified
+curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.sh | sh
+# or build it from source (any system, Windows included)
 cargo install oxframe-cli`}</code
   ></pre>
+<p>
+  The installer puts <code>oxframe</code> in <code>~/.local/bin</code> (set
+  <code>OXFRAME_INSTALL_DIR</code> to change that) and says so if that folder is not on your
+  <code>PATH</code>. Rust is still needed either way: your scenes are Rust code.
+</p>
 
 <h3>Requirements</h3>
 <table>
