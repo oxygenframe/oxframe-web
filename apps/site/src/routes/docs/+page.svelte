@@ -6,10 +6,16 @@
 
 <p>Here is a whole animation: a square slides to the right and becomes a circle.</p>
 <pre><code
-    >{`#[oxframe::scene]
+    >{`use oxframe::prelude::*;
+
+#[oxframe::scene]
 async fn intro(view: View) {
     let square = view.add(Rect::new().size(200.0).x(-300.0));
     all((square.x().to(300.0, 1.0), square.radius().to(100.0, 1.0))).await;
+}
+
+fn main() {
+    Project::new("intro").scene(intro()).main();
 }`}</code
   ></pre>
 <p>
@@ -27,7 +33,7 @@ async fn intro(view: View) {
     <a href="/playground">playground</a>: it runs in your browser, nothing to install.
   </li>
   <li>
-    <strong>Guide</strong> is fifteen short lessons. Each one adds a single idea and has a live preview
+    <strong>Guide</strong> is a series of short lessons. Each one adds a single idea and has a live preview
     you can play with. Read them in order — none of them assumes more than the lessons before it.
   </li>
   <li>
