@@ -36,10 +36,13 @@
         automaticLayout: true,
         minimap: { enabled: false },
         fontSize: 13,
+        fontFamily: "'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace",
         tabSize: 4,
         scrollBeyondLastLine: false,
         readOnly: readonly,
       });
+      // Monaco measures glyphs once; measure again when the web font arrives.
+      void document.fonts?.ready.then(() => monaco?.editor.remeasureFonts());
       editor.onDidChangeModelContent(() => onchange?.(editor!.getValue()));
       editor.addCommand(monaco!.KeyMod.CtrlCmd | monaco!.KeyCode.Enter, () => onsubmit?.());
     } catch (e) {
@@ -108,7 +111,8 @@
   }
   .fallback {
     font:
-      13px/1.5 ui-monospace,
+      13px/1.5 'JetBrains Mono',
+      ui-monospace,
       monospace;
     background: var(--panel);
     color: var(--text);
