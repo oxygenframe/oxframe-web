@@ -4,6 +4,7 @@ import { expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { rows, tools } from '../src/lib/compare';
+import { indexedMediaFor, mediaFor, MIN_INDEXED_SECONDS, videoObject } from '../src/lib/media';
 
 const read = (f: string) => JSON.parse(readFileSync(join(import.meta.dir, f), 'utf8'));
 
@@ -39,4 +40,12 @@ test('every benchmarked /vs scene has a measurement', () => {
     expect(m, `bench key "${key}"`).toBeTruthy();
     expect(typeof m!.seconds, `${key}.seconds`).toBe('number');
   }
+});
+
+test('one-second loops stay out of the video sitemap and VideoObject markup', () => {
+  // theme is a 0.47 s loop; the showreel is a real video.
+  expect(mediaFor('theme')!.seconds).toBeLessThan(MIN_INDEXED_SECONDS);
+  expect(indexedMediaFor('theme')).toBeUndefined();
+  expect(videoObject('theme', 'Theme', 'A loop.')).toBeNull();
+  expect(indexedMediaFor('showreel')!.seconds).toBeGreaterThanOrEqual(MIN_INDEXED_SECONDS);
 });

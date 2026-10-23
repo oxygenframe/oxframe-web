@@ -2,7 +2,7 @@
 import { agents, skills } from '$lib/agents';
 import { href, pages } from '$lib/docs';
 import { galleryItems, slugOf } from '$lib/gallery';
-import { mediaFor } from '$lib/media';
+import { indexedMediaFor } from '$lib/media';
 import { SITE } from '$lib/site';
 import { useCases } from '$lib/use-cases';
 import { vsPages } from '$lib/vs';
@@ -41,7 +41,7 @@ const xml = (s: string) =>
 
 /** A <video:video> entry (Google video sitemap) for an example's video. */
 function video(name: string, title: string, description: string): string {
-  const m = mediaFor(name);
+  const m = indexedMediaFor(name);
   if (!m) return '';
   return [
     '    <video:video>',
@@ -49,7 +49,7 @@ function video(name: string, title: string, description: string): string {
     `      <video:title>${xml(title)}</video:title>`,
     `      <video:description>${xml(description)}</video:description>`,
     `      <video:content_loc>${SITE}${m.mp4}</video:content_loc>`,
-    `      <video:duration>${Math.max(1, Math.round(m.seconds))}</video:duration>`,
+    `      <video:duration>${Math.round(m.seconds)}</video:duration>`,
     '    </video:video>',
   ].join('\n');
 }
