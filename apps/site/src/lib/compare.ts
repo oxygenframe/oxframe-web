@@ -1,14 +1,17 @@
 // The comparison on /compare, one row per criterion. Columns: oxframe,
-// fframes, Remotion, Motion Canvas, Manim. The home page shows a few rows.
-export const tools = ['oxframe', 'fframes', 'Remotion', 'Motion Canvas', 'Manim'];
+// fframes, Remotion, HyperFrames, Motion Canvas, Manim. Facts about other
+// tools are from their own docs/README (October 2026). The home page shows a
+// few rows for the agent-era tools (oxframe, HyperFrames, fframes, Remotion).
+export const tools = ['oxframe', 'fframes', 'Remotion', 'HyperFrames', 'Motion Canvas', 'Manim'];
 
 export const rows: string[][] = [
-  ['Language', 'Rust', 'Rust', 'React', 'TypeScript', 'Python'],
+  ['Language', 'Rust', 'Rust', 'React', 'HTML, CSS, JS', 'TypeScript', 'Python'],
   [
     'Where it renders',
     'Native CPU and GPU',
     'GPU (Skia) or CPU, from SVG',
     'Headless browser',
+    'Headless Chrome, from HTML',
     'Browser canvas',
     'Its own renderer',
   ],
@@ -17,6 +20,7 @@ export const rows: string[][] = [
     'Objects that stay linked: signals, layout, bind',
     'A function of that frame: timelines and formulas',
     'A React render of that frame',
+    'An HTML and CSS render of that frame',
     'Tweens on nodes in a coroutine',
     'Animations applied to mobjects',
   ],
@@ -25,6 +29,7 @@ export const rows: string[][] = [
     'Built in for text and shapes',
     'You draw the in-between',
     'You interpolate it',
+    'CSS and GSAP tweens you write',
     'You tween the values',
     'Transform between mobjects',
   ],
@@ -33,6 +38,7 @@ export const rows: string[][] = [
     'Seek the scene and read its state',
     'The same function, for any index',
     'Render that composition frame',
+    'Render that frame headless',
     'Seek the project',
     'Render that animation frame',
   ],
@@ -41,6 +47,7 @@ export const rows: string[][] = [
     'Yes, seeded',
     'Yes, if render_frame stays pure',
     'If the scene avoids entropy',
+    'If the page avoids entropy',
     'If the scene avoids entropy',
     'Yes, for a fixed seed',
   ],
@@ -49,14 +56,16 @@ export const rows: string[][] = [
     'Timeline, markers, tunables',
     'Preview of any frame',
     'Preview studio',
+    'Studio and a web playground',
     'Editor',
     'No timeline editor',
   ],
   [
     'An agent can see the picture',
-    'oxframe check and MCP',
+    'oxframe check: storyboard and a report with line anchors, plus MCP',
     'A skill, plus frame snapshots',
-    'You wire that yourself',
+    'Agent Skills; render stills and read them',
+    'check --snapshots, snapshot --review/--against, compare',
     'You wire that yourself',
     'You wire that yourself',
   ],
@@ -65,6 +74,7 @@ export const rows: string[][] = [
     '16:9, 9:16, 1:1 in one scene',
     'One size on the video',
     'Whatever the composition is',
+    'The size you set',
     'The project size',
     'The scene size',
   ],

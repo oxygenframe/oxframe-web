@@ -94,9 +94,9 @@
     document.getElementById(`tab-${entry}`)?.focus();
   }
 
-  // A few rows of /compare, without fframes.
+  // A few rows of /compare, the agent-era tools: oxframe, HyperFrames, fframes, Remotion.
   const COMPARE = ['Language', 'Where it renders', 'Live editor', 'An agent can see the picture'];
-  const compareColumns = [0, 2, 3, 4];
+  const compareColumns = [0, 3, 1, 2];
   const compare = compareRows.filter((r) => COMPARE.includes(r[0]!));
 
   let video: HTMLVideoElement | undefined = $state();
@@ -451,7 +451,7 @@ fn main() {
     </table>
   </div>
   <p>
-    <a href="/compare">The full comparison</a>, with fframes, and guides for
+    <a href="/compare">The full comparison</a>, with Motion Canvas and Manim too, and guides for
     <a href="/docs/migrate/remotion">moving from Remotion</a>,
     <a href="/docs/migrate/motion-canvas">Motion Canvas</a> and
     <a href="/docs/migrate/manim">Manim</a>.

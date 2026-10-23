@@ -1,17 +1,17 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { rows } from '$lib/compare';
+  import { rows, tools } from '$lib/compare';
   import { vsPages } from '$lib/vs';
 </script>
 
 <Seo
-  title="oxframe vs Remotion, Manim, Motion Canvas, fframes — oxframe"
-  description="A neutral comparison of oxframe, fframes, Remotion, Motion Canvas and Manim: language, renderer, scene model, morphing, editor and checks an AI agent can read."
+  title="oxframe vs HyperFrames, Remotion, fframes, Manim — oxframe"
+  description="A neutral comparison of oxframe, fframes, Remotion, HyperFrames, Motion Canvas and Manim: language, renderer, scene model, morphing, editor and agent checks."
 />
 
-<h1>oxframe, fframes, Remotion, Motion Canvas, Manim</h1>
+<h1>oxframe, fframes, Remotion, HyperFrames, Motion Canvas, Manim</h1>
 <p class="lead">
-  Five ways to make a video from code. This table is about fit, not a ranking. The facts are the
+  Six ways to make a video from code. This table is about fit, not a ranking. The facts are the
   public models of each tool as of October 2026.
 </p>
 
@@ -20,11 +20,7 @@
     <thead>
       <tr>
         <th></th>
-        <th>oxframe</th>
-        <th>fframes</th>
-        <th>Remotion</th>
-        <th>Motion Canvas</th>
-        <th>Manim</th>
+        {#each tools as t (t)}<th>{t}</th>{/each}
       </tr>
     </thead>
     <tbody>
@@ -46,6 +42,11 @@
     are not rigidly tied together.
   </li>
   <li>Pick Remotion when the video is a React app and the team already lives in that stack.</li>
+  <li>
+    Pick HyperFrames when the agent should write HTML and CSS rather than Rust, and you want its
+    block catalog, player and <code>publish</code>. oxframe's edge is a native render with no
+    Chrome, determinism, and a check that points at the line of code.
+  </li>
   <li>
     Pick Motion Canvas when you want the coroutine model in TypeScript and a browser editor is
     enough.
