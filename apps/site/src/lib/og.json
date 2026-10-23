@@ -229,6 +229,11 @@
     "section": "Docs",
     "image": "/og/docs-getting-started.png"
   },
+  "/docs/versions": {
+    "title": "Versions and upgrades",
+    "section": "Docs",
+    "image": "/og/docs-versions.png"
+  },
   "/docs/guide/hello": {
     "title": "Your first animation",
     "section": "Guide",

@@ -31,6 +31,12 @@ export const sections: DocSection[] = [
         description:
           'Install the oxframe CLI with cargo, create your first animation project and open the live editor — five minutes from nothing to a moving scene.',
       },
+      {
+        slug: 'versions',
+        title: 'Versions and upgrades',
+        description:
+          'How oxframe versions work before 1.0: weekly releases, breaking changes batched into minor versions, pinning the SDK, and oxframe upgrade.',
+      },
     ],
   },
   {
