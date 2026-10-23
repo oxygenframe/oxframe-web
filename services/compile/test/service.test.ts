@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from '../src/app';
@@ -92,6 +92,30 @@ describe('validation', () => {
     expect(validateSource(GOOD + '#[unsafe(no_mangle)] pub fn x(){}', 65536)).toHaveLength(1);
     expect(validateSource('fn main(){}', 65536)[0]?.message).toContain('project');
     expect(validateSource('x'.repeat(70000), 65536)[0]?.message).toContain('limit');
+  });
+  it('lets compile-time macros read only what is public', () => {
+    const ok = (body: string) => validateSource(GOOD + body, 65536);
+    expect(ok('const D: &str = env!("CARGO_MANIFEST_DIR");')).toEqual([]);
+    expect(ok('const V: &str = env!("CARGO_PKG_VERSION");')).toEqual([]);
+    expect(ok('const S: &str = include_str!("scene.rs");')).toEqual([]);
+    expect(ok('const S: &str = include_str!("one_shot/tts.rs");')).toEqual([]);
+    expect(ok('const K: &str = env!("HOME");')[0]?.message).toContain("Cargo's own variables");
+    expect(ok('const K: Option<&str> = option_env!("AWS_SECRET");')).toHaveLength(1);
+    expect(ok('const P: &str = include_str!("/etc/passwd");')[0]?.message).toContain(
+      'relative path',
+    );
+    expect(ok('const P: &[u8] = include_bytes!("../../.cargo/credentials");')).toHaveLength(1);
+    expect(ok('const P: &str = include_str!(concat!("/etc", "/passwd"));')).toHaveLength(1);
+    expect(ok('const P: &str = include_str!(r"/etc/passwd");')).toHaveLength(1);
+    expect(ok('macro_rules! e { () => { env!("HOME") } }')).toHaveLength(1);
+    // Commented out or inside a string, it does nothing.
+    expect(ok('// env!("HOME")\nconst T: &str = "include_str!(\\"/etc/x\\")";')).toEqual([]);
+  });
+  it('accepts every example the site sends', () => {
+    const dir = join(import.meta.dir, '../../../apps/site/src/lib/examples');
+    for (const f of readdirSync(dir).filter((n) => n.endsWith('.rs'))) {
+      expect([f, validateSource(readFileSync(join(dir, f), 'utf8'), 65536)]).toEqual([f, []]);
+    }
   });
   it('ignores comments and strings', () => {
     expect(

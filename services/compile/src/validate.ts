@@ -45,6 +45,7 @@ export function validateSource(source: string, maxBytes: number): ValidationErro
       errors.push({ file: 'scene.rs', line, column, message });
     }
   }
+  errors.push(...compileTimeReads(source, code));
   if (!/\bpub\s+fn\s+project\s*\(\s*\)/.test(code)) {
     errors.push({
       file: 'scene.rs',
@@ -52,6 +53,42 @@ export function validateSource(source: string, maxBytes: number): ValidationErro
       column: 1,
       message: 'define `pub fn project() -> Project`',
     });
+  }
+  return errors;
+}
+
+// Macros that read the build machine while compiling. The output is wasm the
+// caller downloads, so they would carry out whatever they read; only what is
+// public anyway is allowed.
+const COMPILE_TIME = /\b(include_str|include_bytes|include|option_env|env)!\s*[({[]/g;
+const PUBLIC_ENV = /^"(?:CARGO_MANIFEST_DIR|CARGO_CRATE_NAME|CARGO_PKG_[A-Z_]+)"$/;
+// Absolute (`/x`, `\\x`, `C:x`) or climbing out (`..`).
+const OUTSIDE = /^"(?:[\\/]|[A-Za-z]:)|(?:^"|[\\/])\.\.(?:[\\/]|")/;
+
+/**
+ * `env!` and `option_env!` may name only Cargo's own variables, and the
+ * `include*!` macros only a relative path inside the project, both as a
+ * plain string literal (not `concat!`, not another macro).
+ */
+function compileTimeReads(source: string, code: string): ValidationError[] {
+  const errors: ValidationError[] = [];
+  for (const m of code.matchAll(COMPILE_TIME)) {
+    const open = m.index! + m[0].length;
+    // `code` blanks string contents; the argument is read from the source.
+    const literal = /^\s*("(?:[^"\\\n]|\\.)*")\s*[,)\]}]/.exec(source.slice(open))?.[1];
+    const env = m[1] === 'env' || m[1] === 'option_env';
+    const ok = literal !== undefined && (env ? PUBLIC_ENV.test(literal) : !OUTSIDE.test(literal));
+    if (!ok) {
+      const { line, column } = position(code, m.index!);
+      errors.push({
+        file: 'scene.rs',
+        line,
+        column,
+        message: env
+          ? `\`${m[1]}!\` can read only Cargo's own variables in the playground (CARGO_MANIFEST_DIR, CARGO_PKG_*)`
+          : `\`${m[1]}!\` takes a relative path inside the project in the playground`,
+      });
+    }
   }
   return errors;
 }
