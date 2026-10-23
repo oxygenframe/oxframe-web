@@ -8,10 +8,14 @@
 </p>
 
 <h2>1. Install the tools</h2>
-<p>You need Rust and, to make videos, ffmpeg.</p>
+<p>You need Rust with a C linker and, to make videos, ffmpeg.</p>
 <pre><code
     >{`# Rust (skip if you have it)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# a C linker, if this machine has never built C or Rust
+sudo apt install build-essential   # Debian/Ubuntu
+xcode-select --install             # macOS
 
 # ffmpeg
 sudo apt install ffmpeg        # Linux
@@ -21,6 +25,47 @@ winget install Gyan.FFmpeg     # Windows
 # the oxframe command
 cargo install oxframe-cli`}</code
   ></pre>
+
+<h3>Requirements</h3>
+<table>
+  <tbody>
+    <tr
+      ><td>System</td><td>Linux (x86_64, arm64), macOS (Intel, Apple Silicon), Windows (x86_64).</td
+      ></tr
+    >
+    <tr
+      ><td>Rust</td><td
+        >1.95 or newer, from <a href="https://rustup.rs">rustup</a>. <code>rustup update</code> moves
+        an older one forward.</td
+      ></tr
+    >
+    <tr
+      ><td>C linker</td><td
+        >Rust links programs with it. Linux: <code>build-essential</code> (Debian, Ubuntu),
+        <code>gcc</code> (Fedora), <code>base-devel</code> (Arch). macOS: the Xcode command line tools.
+        Windows: the MSVC build tools, which rustup offers to install.</td
+      ></tr
+    >
+    <tr
+      ><td>ffmpeg</td><td
+        >For MP4, WebM and ProRes. The editor, <code>oxframe check</code>, snapshots and PNG frames
+        work without it.</td
+      ></tr
+    >
+    <tr
+      ><td>GPU</td><td
+        >Not needed: frames are drawn on the CPU. <code>--gpu</code> uses Vulkan, Metal or DirectX 12
+        when the machine has them.</td
+      ></tr
+    >
+    <tr
+      ><td>Disk</td><td
+        >A few GB per project for Rust's build cache in <code>target/</code>; the first build fills
+        it.</td
+      ></tr
+    >
+  </tbody>
+</table>
 
 <h2>2. Create a project</h2>
 <pre><code
