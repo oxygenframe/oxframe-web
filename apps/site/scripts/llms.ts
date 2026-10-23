@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import type { DocSection } from '../src/lib/docs';
 import { sections } from '../src/lib/docs';
 import { archives } from '../src/lib/docs-archive';
+import { SDK_VERSION } from '../src/lib/sdk';
 
 const site = join(import.meta.dir, '..');
 
@@ -19,12 +20,15 @@ export function llmsIndex(
   base: string,
   fullHref: string,
   list: DocSection[],
+  version: string,
   markdown = false,
 ): string {
   const lines = [
     '# oxframe',
     '',
     'oxframe is procedural animation in Rust. Scenes are async functions; awaiting an animation takes time.',
+    '',
+    `This is oxframe ${version}, pre-1.0: the API is not stable and changes between versions. Pin the exact version and follow these docs for it, not model memory.`,
     '',
     `Full text: ${fullHref}`,
     '',
@@ -91,6 +95,7 @@ export function writeLlms(): string[] {
     'https://oxframe.dev/docs',
     'https://oxframe.dev/llms-full.txt',
     sections,
+    SDK_VERSION,
     true,
   );
   const indexPath = join(site, 'static/llms.txt');
@@ -102,7 +107,7 @@ export function writeLlms(): string[] {
     const base = `https://oxframe.dev/docs/${series}`;
     const short = join(dir, 'llms.txt');
     const full = join(dir, 'llms-full.txt');
-    writeFileSync(short, llmsIndex(base, `${base}/llms-full.txt`, list));
+    writeFileSync(short, llmsIndex(base, `${base}/llms-full.txt`, list, series));
     writeFileSync(full, llmsFull(series, join(site, 'src/routes/docs', series)));
     written.push(short, full);
   }
