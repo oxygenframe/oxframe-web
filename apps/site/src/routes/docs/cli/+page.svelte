@@ -181,6 +181,30 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   the problem on the storyboard.
 </p>
 <p>
+  The report also lists <code>motion</code>: every node that travels, with its
+  <code>file:line</code>, the stretches of time it visibly moves (<code>moves</code>, in seconds),
+  where it starts and ends, and the length of its path. Read it to check timing without watching the
+  video. <code>out/check/trajectories/&lt;scene&gt;.png</code> draws those paths over the scene's
+  last frame, numbered as in <code>motion</code>. A hard cut between scenes shows on the storyboard
+  as the last frame of one scene next to the first frame of the next.
+</p>
+<p>
+  To see what an edit changed, keep the frames from before it and compare with
+  <code>oxframe check --against &lt;dir&gt;</code>:
+</p>
+<pre><code
+    >{`oxframe check --frames --out out/before
+# edit the scene
+oxframe check --against out/before`}</code
+  ></pre>
+<p>
+  Each frame that changed is listed with the share of its pixels that moved, and
+  <code>out/check/diff/</code> holds the frame dimmed with the changed pixels in red. The report
+  gets a <code>comparison</code>: changed, unchanged, added and removed frames. An edit that changed
+  frames it should not have shows up at once. The reference frames are read with
+  <code>Image::decode_png</code>.
+</p>
+<p>
   Name a node with <code>.name("title")</code> so the report is readable. Without a name it is
   labeled by the line that called <code>add</code>.
 </p>
@@ -191,6 +215,23 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   text and draw order. <code>--scene outro</code> measures the time from the start of that scene.
   <code>--graph</code> adds a <code>passes</code> array: one vector pass, then a composite for each layer
   (a group opacity, a blend, a blur, a shadow or a clip). Without the flag the JSON is unchanged.
+</p>
+
+<h3><code>oxframe add &lt;block&gt;</code></h3>
+<p>
+  Copies a ready-made, checked block into <code>src/blocks/</code> and adds
+  <code>mod blocks;</code> to <code>src/main.rs</code>. Each block is one call that plays itself in
+  and returns its group: <code>blocks::stat_counter(view, 1280.0, "stars").await</code>. With no
+  name it lists them: <code>logo-reveal</code>, <code>stat-counter</code>,
+  <code>progress-bar</code>, <code>quote-card</code>, <code>before-after</code>,
+  <code>timeline</code>. The copied file is yours to edit; <code>--force</code> replaces it.
+</p>
+
+<h3><code>oxframe doctor</code></h3>
+<p>
+  Checks what building and rendering need — Rust 1.95 or newer, a C linker, ffmpeg, and inside a
+  project whether it is on the SDK your CLI makes — and prints the fix for each missing piece on
+  your system. Exits 2 when something required is missing.
 </p>
 
 <h3><code>oxframe agents</code></h3>

@@ -4,13 +4,18 @@
   heading is the text you see.
 </p>
 
+<h2>Start with oxframe doctor</h2>
+<p>
+  <code>oxframe doctor</code> checks Rust, the C linker, ffmpeg and the project's SDK version, and prints
+  the fix for whatever is missing on your system. Most of the problems below show up there first.
+</p>
+
 <h2>version `GLIBC_2.39' not found (required by oxframe)</h2>
 <p>
-  The prebuilt Linux binary of oxframe-cli 0.21.0 was built on a too new system and does not start
-  on Debian 12, Ubuntu 22.04 and other distributions with an older glibc. The next release fixes it.
-  Until then, build the command on your machine instead:
+  The prebuilt Linux binary of oxframe-cli 0.21.0 needs a newer glibc than Debian 12 or Ubuntu 22.04
+  have. From 0.22.0 the binaries run with glibc 2.34 or newer: install again with the installer, or
+  build the command on your machine with <code>cargo install oxframe-cli</code>.
 </p>
-<pre><code>cargo install oxframe-cli</code></pre>
 
 <h2>linker `cc` not found</h2>
 <p>
