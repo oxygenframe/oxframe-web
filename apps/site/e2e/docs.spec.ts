@@ -150,8 +150,12 @@ test('main pages load without a CSP violation', async ({ page }) => {
     if (/Content Security Policy/i.test(m.text())) blocked.push(m.text());
   });
   for (const path of ['/', '/docs', '/gallery', '/playground']) {
-    await page.goto(path);
-    await page.waitForLoadState('networkidle');
+    // 'load', not 'networkidle': the playground keeps the network busy
+    // compiling in the background and never idles, but the layout's
+    // analytics and star-count requests — the ones a CSP would block — have
+    // fired by the load event.
+    await page.goto(path, { waitUntil: 'load' });
+    await page.waitForTimeout(500);
   }
   expect(blocked).toEqual([]);
 });
