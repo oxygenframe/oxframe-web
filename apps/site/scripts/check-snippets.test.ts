@@ -6,6 +6,10 @@ test('shell, TOML and template commands are not Rust', () => {
   expect(isRust('oxframe = { version = "…", features = ["math"] }')).toBe(false);
   expect(isRust('[check]\nmin_contrast = 4.5')).toBe(false);
   expect(isRust('${INSTALL_CLI}')).toBe(false);
+  expect(isRust('docker run --rm -v "$PWD:/work" ghcr.io/oxygenframe/oxframe oxframe render')).toBe(
+    false,
+  );
+  expect(isRust('jobs:\n  video:\n    runs-on: ubuntu-latest')).toBe(false);
   expect(isRust('ball.x().to(400.0, 1.0).await;')).toBe(true);
 });
 

@@ -88,12 +88,14 @@ function unEntity(s: string): string {
 export function isRust(code: string): boolean {
   const first = code.trimStart().split('\n')[0] ?? '';
   if (
-    /^(\$\{|\$ |oxframe |cargo |npm |npx |bun |curl |git |brew |cd |\/plugin|codex |claude |sh |#!|winget |scoop )/.test(
+    /^(\$\{|\$ |docker |podman |oxframe |cargo |npm |npx |bun |curl |git |brew |cd |\/plugin|codex |claude |sh |#!|winget |scoop )/.test(
       first,
     )
   )
     return false;
   if (/^\[[\w.-]+\]\s*$/.test(first) || /^[\w-]+\s*=\s*[{"[\d]/.test(first)) return false;
+  // YAML (a CI workflow): `jobs:` alone on the first line.
+  if (/^[\w-]+:\s*$/.test(first)) return false;
   if (/^[{[]/.test(first.trim()) && !/;\s*$/.test(code.trim())) return false;
   return /[;{}]|\.await|::|=>|\bfn\b|\blet\b/.test(code);
 }
