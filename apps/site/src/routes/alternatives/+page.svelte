@@ -32,6 +32,10 @@
     <a href="/alternatives/remotion">Remotion alternatives in 2026</a>
     <p>Seven tools people move to from Remotion, with licenses, renderers and render times.</p>
   </li>
+  <li>
+    <a href="/alternatives/motion-canvas">Motion Canvas alternatives in 2026</a>
+    <p>Where to go now that Motion Canvas has no new releases: forks, oxframe and others.</p>
+  </li>
 </ul>
 
 <p>

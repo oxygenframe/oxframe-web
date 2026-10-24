@@ -12,12 +12,14 @@
 
   const p = $derived(vsPage(data.slug)!);
   const bench = $derived(p.scene?.bench ? measurements[p.scene.bench] : undefined);
-  const checked = new Date(`${CHECKED}T00:00:00Z`).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  });
+  const checked = $derived(
+    new Date(`${p.checked ?? CHECKED}T00:00:00Z`).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    }),
+  );
   const others = $derived(vsPages.filter((o) => o.slug !== p.slug));
   // FAQ answers are plain text, so they go into JSON-LD as they are.
   const jsonld = $derived([

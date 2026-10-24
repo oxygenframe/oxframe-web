@@ -74,6 +74,11 @@
     "section": "Compare",
     "image": "/og/alternatives-remotion.png"
   },
+  "/alternatives/motion-canvas": {
+    "title": "Motion Canvas alternatives in 2026, compared",
+    "section": "Compare",
+    "image": "/og/alternatives-motion-canvas.png"
+  },
   "/vs/remotion": {
     "title": "oxframe vs Remotion: no Chrome, no seats, no telemetry",
     "section": "Compare",
@@ -103,6 +108,16 @@
     "title": "oxframe vs Revideo: rendering video from code, compared",
     "section": "Compare",
     "image": "/og/vs-revideo.png"
+  },
+  "/vs/midrender": {
+    "title": "oxframe vs Midrender: code library or AI video editor",
+    "section": "Compare",
+    "image": "/og/vs-midrender.png"
+  },
+  "/vs/openmontage": {
+    "title": "oxframe vs OpenMontage: graphics engine or AI studio",
+    "section": "Compare",
+    "image": "/og/vs-openmontage.png"
   },
   "/vs/shotstack": {
     "title": "An open-source Shotstack alternative: video from code",

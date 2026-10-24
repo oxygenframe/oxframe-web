@@ -87,6 +87,7 @@ export function GET(): Response {
     '/showcase',
     '/alternatives',
     '/alternatives/remotion',
+    '/alternatives/motion-canvas',
     ...vsPages.map((p) => `/vs/${p.slug}`),
     '/ai-video-from-code',
     '/rust',
