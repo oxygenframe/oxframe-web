@@ -4,6 +4,11 @@
 // code (`run_worker_first` in wrangler.jsonc); everything else is a static
 // asset.
 //
+// Preview builds (a branch's preview URL) and local runs use the production
+// bucket too, but keep their shared videos under previews/ (`sharesBucket`),
+// which has its own 30-day lifecycle rule, so tests never mix with real
+// shares.
+//
 // Media paths carry the SDK version (/media/0.20.0/gallery/intro.mp4), so a
 // file never changes once uploaded and is cached for a year. Range requests
 // are answered, so a video can seek before it has fully loaded.
@@ -98,16 +103,33 @@ export async function file(request: Request, bucket: R2Bucket, key: string): Pro
   return new Response(object.body, { headers });
 }
 
+const PRODUCTION = new Set(['oxframe.dev', 'www.oxframe.dev']);
+
+/** The bucket as shares see it: under previews/ unless served from oxframe.dev. */
+export function sharesBucket<B extends R2Bucket & ShareBucket>(bucket: B, host: string): B {
+  if (PRODUCTION.has(host)) return bucket;
+  const at = (key: string) => `previews/${key}`;
+  return {
+    ...bucket,
+    get: (key: string, options?: { range?: R2Range }) => bucket.get(at(key), options),
+    head: (key: string) => bucket.head(at(key)),
+    put: (key: string, value: ArrayBuffer | string, options?: Parameters<B['put']>[2]) =>
+      bucket.put(at(key), value, options),
+  };
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const path = new URL(request.url).pathname;
+    const url = new URL(request.url);
+    const path = url.pathname;
     if (path.startsWith('/media/')) return media(request, env.MEDIA);
-    if (path === '/api/share') return upload(request, env.MEDIA, env.SHARE_LIMIT);
+    const shares = sharesBucket(env.MEDIA, url.hostname);
+    if (path === '/api/share') return upload(request, shares, env.SHARE_LIMIT);
     // A share's files (ids are random, so a file never changes) and its page.
     const shared = /^\/s\/([A-Za-z0-9]{10})\/(video\.mp4|poster\.jpg)$/.exec(path);
-    if (shared) return file(request, env.MEDIA, `shares/${shared[1]}/${shared[2]}`);
+    if (shared) return file(request, shares, `shares/${shared[1]}/${shared[2]}`);
     if (path.startsWith('/s/')) {
-      const res = await page(request, env.MEDIA);
+      const res = await page(request, shares);
       if (res) return res;
       // The site's 404 page, with a 404 status.
       const missing = await env.ASSETS.fetch(new Request(new URL('/404', request.url)));

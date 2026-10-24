@@ -2,7 +2,8 @@
 // browser and posts it here with a poster and the scene's share link;
 // `/s/<id>` is a page with og:video, so the link unfolds as a video in
 // Discord and Slack (X shows the poster). The files live in R2 under
-// shares/<id>/ and expire after 30 days (an R2 lifecycle rule on shares/).
+// shares/<id>/ and expire after 30 days (an R2 lifecycle rule on shares/;
+// previews and local runs write under previews/shares/, see index.ts).
 //
 // Limits: an MP4 (checked by its boxes) of at most 16 MB and 30 s, a JPEG
 // poster of at most 1 MB, a share link of at most 64 KB, and a few uploads a
