@@ -22,11 +22,17 @@ function memory(): ShareBucket & { files: Map<string, string | ArrayBuffer> } {
   };
 }
 
-function form(parts: { video?: Uint8Array; poster?: Uint8Array; code?: string }): Request {
+function form(parts: {
+  video?: Uint8Array;
+  poster?: Uint8Array;
+  code?: string;
+  title?: string;
+}): Request {
   const body = new FormData();
   if (parts.video) body.set('video', new Blob([parts.video], { type: 'video/mp4' }), 'v.mp4');
   if (parts.poster) body.set('poster', new Blob([parts.poster], { type: 'image/jpeg' }), 'p.jpg');
   if (parts.code !== undefined) body.set('code', parts.code);
+  if (parts.title !== undefined) body.set('title', parts.title);
   return new Request('https://oxframe.dev/api/share', { method: 'POST', body });
 }
 
@@ -54,6 +60,30 @@ test('a share is stored and has a page with og:video', async () => {
   expect(html).toContain('<meta name="robots" content="noindex">');
   expect(html).toContain(`href="/playground${code}"`);
   expect(await page(new Request('https://oxframe.dev/s/AAAAAAAAAA'), bucket)).toBeNull();
+});
+
+test('a video from oxframe publish has a title and no playground link', async () => {
+  const bucket = memory();
+  const res = await upload(
+    form({ video: tiny, poster: jpeg, title: '  Launch <teaser>\n v2 ' }),
+    bucket,
+    undefined,
+  );
+  expect(res.status).toBe(201);
+  const { id, url } = (await res.json()) as { id: string; url: string };
+  const meta = JSON.parse(bucket.files.get(`shares/${id}/meta.json`) as string);
+  expect(meta.title).toBe('Launch <teaser> v2');
+  expect(meta.code).toBeUndefined();
+  const html = await (await page(new Request(url), bucket))!.text();
+  expect(html).toContain('<title>Launch &lt;teaser&gt; v2</title>');
+  expect(html).toContain('<meta property="og:title" content="Launch &lt;teaser&gt; v2">');
+  expect(html).not.toContain('/playground');
+  const long = await upload(
+    form({ video: tiny, poster: jpeg, title: 'x'.repeat(101) }),
+    bucket,
+    undefined,
+  );
+  expect(long.status).toBe(400);
 });
 
 test('what is not a playground video is refused', async () => {

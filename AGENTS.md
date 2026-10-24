@@ -55,7 +55,9 @@ changes to `services/mcp`.
 The playground's "Share video" renders the scene in the browser and posts
 it to `/api/share` (`apps/site/worker/share.ts`): MP4 checked by its boxes,
 at most 16 MB and 30 s, a JPEG poster, the scene's share link, 3 uploads a
-minute per address. Files live in R2 under `shares/<id>/` and an R2
+minute per address. `oxframe publish` (CLI) posts to the same endpoint with
+no share link and an optional `title` (≤ 100 characters); its page has no
+playground button. Files live in R2 under `shares/<id>/` and an R2
 lifecycle rule (`shares-30-days`) deletes them after 30 days; `/s/<id>` is
 a `noindex` page with `og:video`. Remove one earlier with `bun
 scripts/delete-share.ts <id>`.

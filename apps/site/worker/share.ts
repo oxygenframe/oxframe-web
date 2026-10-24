@@ -1,18 +1,21 @@
-// Shared playground videos. The playground renders the scene to MP4 in the
-// browser and posts it here with a poster and the scene's share link;
+// Shared videos. The playground renders the scene to MP4 in the browser and
+// posts it here with a poster and the scene's share link; `oxframe publish`
+// posts a video rendered by the CLI, with a poster and an optional title;
 // `/s/<id>` is a page with og:video, so the link unfolds as a video in
 // Discord and Slack (X shows the poster). The files live in R2 under
 // shares/<id>/ and expire after 30 days (an R2 lifecycle rule on shares/;
 // previews and local runs write under previews/shares/, see index.ts).
 //
 // Limits: an MP4 (checked by its boxes) of at most 16 MB and 30 s, a JPEG
-// poster of at most 1 MB, a share link of at most 64 KB, and a few uploads a
+// poster of at most 1 MB, a share link of at most 64 KB, a title of at most
+// 100 characters, and a few uploads a
 // minute per address (the SHARE_LIMIT rate limiter).
 
 export const MAX_VIDEO = 16 * 1024 * 1024;
 export const MAX_POSTER = 1024 * 1024;
 export const MAX_CODE = 64 * 1024;
 export const MAX_SECONDS = 30;
+export const MAX_TITLE = 100;
 
 export interface ShareBucket {
   put(
@@ -28,8 +31,11 @@ export interface RateLimit {
 }
 
 export interface ShareMeta {
-  /** The playground link's hash: `#code=…` (lz-string, URI-safe). */
-  code: string;
+  /** The playground link's hash: `#code=…` (lz-string, URI-safe); absent
+   * for videos from `oxframe publish`. */
+  code?: string;
+  /** Plain text, from `oxframe publish --title`. */
+  title?: string;
   seconds: number;
   width: number;
   height: number;
@@ -106,7 +112,7 @@ const json = (status: number, body: object) =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
-/** POST /api/share: multipart `video`, `poster` and `code`. */
+/** POST /api/share: multipart `video`, `poster`, and `code` or `title` (both optional). */
 export async function upload(
   request: Request,
   bucket: ShareBucket,
@@ -130,14 +136,25 @@ export async function upload(
   }
   const video = form.get('video');
   const poster = form.get('poster');
-  const code = form.get('code');
-  if (!(video instanceof Blob) || !(poster instanceof Blob) || typeof code !== 'string') {
+  const code = form.get('code') ?? '';
+  const title = form.get('title') ?? '';
+  if (
+    !(video instanceof Blob) ||
+    !(poster instanceof Blob) ||
+    typeof code !== 'string' ||
+    typeof title !== 'string'
+  ) {
     return json(400, { error: 'Expected a form with video, poster and code.' });
   }
   if (video.size > MAX_VIDEO) return json(413, { error: 'The video is larger than 16 MB.' });
   if (poster.size > MAX_POSTER) return json(413, { error: 'The poster is larger than 1 MB.' });
-  if (code.length > MAX_CODE || !/^#code=[A-Za-z0-9+\-$]+$/.test(code)) {
+  if (code && (code.length > MAX_CODE || !/^#code=[A-Za-z0-9+\-$]+$/.test(code))) {
     return json(400, { error: 'The code is not a playground share link.' });
+  }
+  // One line of text: control characters and runs of spaces become one space.
+  const name = title.replace(/[\p{Cc}\s]+/gu, ' ').trim();
+  if ([...name].length > MAX_TITLE) {
+    return json(400, { error: `The title is longer than ${MAX_TITLE} characters.` });
   }
   const mp4 = await video.arrayBuffer();
   const info = mp4Info(mp4);
@@ -149,7 +166,8 @@ export async function upload(
   if (!isJpeg(jpeg)) return json(415, { error: 'The poster is not a JPEG.' });
   const id = newId();
   const meta: ShareMeta = {
-    code,
+    ...(code ? { code } : {}),
+    ...(name ? { title: name } : {}),
     seconds: Math.round(info.seconds * 100) / 100,
     width: Math.round(info.width) || 1920,
     height: Math.round(info.height) || 1080,
@@ -171,9 +189,10 @@ const escape = (s: string) =>
 /** The page of a share: the video, a way into the playground, link previews. */
 export function sharePage(origin: string, id: string, meta: ShareMeta): string {
   const base = `${origin}/s/${id}`;
-  const title = 'A scene made with oxframe';
-  const description =
-    'Rendered by oxframe from Rust code in the browser. Open it in the playground to see and change the code.';
+  const title = escape(meta.title ?? 'A scene made with oxframe');
+  const description = meta.code
+    ? 'Rendered by oxframe from Rust code in the browser. Open it in the playground to see and change the code.'
+    : 'A video rendered by oxframe, procedural animation in Rust.';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -214,8 +233,8 @@ a{color:var(--accent)} p{color:var(--muted)}
 <p><a href="/">oxframe</a></p>
 <h1>${title}</h1>
 <video src="/s/${id}/video.mp4" poster="/s/${id}/poster.jpg" width="${meta.width}" height="${meta.height}" controls playsinline muted autoplay loop></video>
-<p>Rendered by oxframe from Rust code, in the browser. Shared ${escape(meta.created.slice(0, 10))}; links last 30 days.</p>
-<p><a class="btn" href="/playground${escape(meta.code)}">Open in the playground</a><a href="/">What is oxframe?</a></p>
+<p>Rendered by oxframe from Rust code${meta.code ? ', in the browser' : ''}. Shared ${escape(meta.created.slice(0, 10))}; links last 30 days.</p>
+<p>${meta.code ? `<a class="btn" href="/playground${escape(meta.code)}">Open in the playground</a>` : ''}<a href="/">What is oxframe?</a></p>
 </main>
 </body>
 </html>
