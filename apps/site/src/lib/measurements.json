@@ -12,15 +12,15 @@
   "render30VideoSeconds": 27.52,
   "render30SameBytes": true,
   "a7": {
-    "version": "0.20.5",
-    "date": "2026-10-22",
+    "version": "0.23.2",
+    "date": "2026-10-24",
     "agent": "Claude Code",
     "prompts": 47,
     "passed": 46,
     "passRate": 0.979,
     "buildRate": 1.0,
-    "meanTurns": 19.3,
-    "meanMinutes": 1.26,
+    "meanTurns": 19.1,
+    "meanMinutes": 1.29,
     "scriptUrl": "https://github.com/oxygenframe/oxframe-cli/blob/main/evals/run.py"
   },
   "commands": [
