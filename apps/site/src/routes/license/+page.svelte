@@ -55,7 +55,10 @@
   <p>The fonts may be used in the videos you render, commercial ones included.</p>
 
   <h2>Your data</h2>
-  <p>The SDK and the CLI carry no telemetry and no license check. What leaves your machine:</p>
+  <p>
+    The SDK and the CLI carry no telemetry and no license check. What leaves your machine (the
+    details are on the <a href="/privacy">privacy page</a>):
+  </p>
   <ul>
     <li>
       <strong>Building.</strong> <code>cargo</code> downloads crates, and the install script fetches the
