@@ -1,6 +1,6 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
-  import { AUTHOR_X_URL, CONTACT_EMAIL, ORGANIZATION, SITE, X_URL } from '$lib/site';
+  import { AUTHOR_X_URL, CONTACT_EMAIL, DISCORD_URL, ORGANIZATION, SITE, X_URL } from '$lib/site';
 
   const jsonld = [
     {
@@ -57,6 +57,10 @@
       <a href="https://github.com/oxygenframe/oxframe-sdk/issues" rel="external"
         >issues on oxframe-sdk</a
       >.
+    </li>
+    <li>
+      Questions, help and showing what you made:
+      <a href={DISCORD_URL} rel="external">the oxframe Discord</a>.
     </li>
     <li>News: <a href={X_URL} rel="external">@oxframe on X</a>.</li>
     <li>The author: <a href={AUTHOR_X_URL} rel="external">@hovs_io on X</a>.</li>

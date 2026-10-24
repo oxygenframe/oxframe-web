@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { DISCORD_URL } from '$lib/site';
+</script>
+
 <h1>Troubleshooting</h1>
 <p class="lead">
   The messages people meet on a first install or a first render, what they mean, and the fix. Each
@@ -117,5 +121,6 @@ oxframe upgrade`}</code
   Open an issue on
   <a href="https://github.com/oxygenframe/oxframe-sdk/issues/new/choose">GitHub</a> with the
   command, its full output, <code>oxframe --version</code> and your system. Add
-  <code>-v</code> to the command for detailed logs.
+  <code>-v</code> to the command for detailed logs. For a quick question, ask on the
+  <a href={DISCORD_URL} rel="external">oxframe Discord</a>.
 </p>

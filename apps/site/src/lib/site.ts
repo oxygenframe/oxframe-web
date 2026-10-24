@@ -16,6 +16,9 @@ export const LOGO = `${SITE}/logo-512.png`;
 export const X_HANDLE = 'oxframe';
 export const X_URL = `https://x.com/${X_HANDLE}`;
 
+/** The community server on Discord. */
+export const DISCORD_URL = 'https://discord.gg/X7qD6z2cV';
+
 /** Where to write: questions, press, security reports, removing a shared video. */
 export const CONTACT_EMAIL = 'contact@oxframe.dev';
 
