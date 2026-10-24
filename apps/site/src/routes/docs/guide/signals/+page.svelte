@@ -23,6 +23,15 @@
 <!-- snippet-setup: let label = view.add(Txt::new().text("mid")); let (ax, bx) = (view.add(Circle::new()).x(), view.add(Circle::new()).x()); -->
 <pre><code>label.x().bind(move || (ax.get() + bx.get()) / 2.0);</code></pre>
 <p>
+  <code>Signal::set</code> takes what <code>Signal::to</code> takes, so
+  <code>text.set("Done")</code>
+  and <code>fill.set(Accent)</code> need no conversion. <code>Node::scale()</code> is a
+  <code>ScaleSignal</code>: a <code>Signal&lt;Vec2&gt;</code> whose <code>to</code> and
+  <code>set</code> also take one number for both axes, as in <code>node.scale().to(1.2, 0.3)</code>.
+  On a builder, <code>.scale(..)</code> takes one number, a pair or a <code>Vec2</code>:
+  <code>.scale(1.5)</code>, <code>.scale((2.0, 0.5))</code>, <code>.scale(2)</code>.
+</p>
+<p>
   This says: <em>the label's x is always halfway between the two dots.</em> Whenever a dot moves, the
   label follows by itself. In the preview only the two dots are animated; the line, the label and its
   text are all bound.

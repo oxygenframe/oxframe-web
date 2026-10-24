@@ -90,6 +90,14 @@ export const galleryItems: GalleryItem[] = [
       'Into the wave: the sea under a camera, a swell, spray toward the lens and a wet lens, a dive into the water, then the sea washes into an end card.',
   },
   {
+    name: 'magnifier',
+    title: 'A magnifying glass written in WGSL',
+    tags: ['explainer'],
+    prompt:
+      'Write a lens shader in WGSL that reads the frame drawn before it and magnifies the fine print under a moving circle, with a color fringe at the rim.',
+    playground: false,
+  },
+  {
     name: 'splash',
     title: 'A drop, a wet lens and rising water',
     tags: ['explainer'],

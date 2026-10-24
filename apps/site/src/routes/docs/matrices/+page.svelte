@@ -43,7 +43,8 @@ axes.matrix().to(Mat2::IDENTITY, 1.0).await;`}</code
 <p>
   <code>axes.vector(x, y)</code> draws an arrow from the origin. Its tip is two signals,
   <code>v.x()</code> and <code>v.y()</code>, and <code>v.to(x, y, seconds)</code> moves both;
-  <code>.label("v")</code> keeps a label past the tip.
+  <code>.label("v")</code> keeps a label past the tip, off to the side, so
+  <code>axes.vector(..).label("i")</code> along an axis does not sit on the axis line.
 </p>
 <p>
   <code>axes.apply_matrix(m, seconds)</code> maps the plane through a 2 × 2 matrix, written row by

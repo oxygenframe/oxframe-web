@@ -42,6 +42,7 @@ const names = [
   'theme',
   // Code only: on its gallery page, not in the playground (`playground: false`).
   'one_shot',
+  'magnifier',
   // Guide lessons (docs only, not in the gallery).
   'learn_01_hello',
   'learn_02_together',

@@ -1,289 +1,297 @@
 {
-  "sdk": "0.20.5",
-  "date": "2026-10-22",
+  "sdk": "0.23.0",
+  "date": "2026-10-24",
   "items": {
+    "one_shot": {
+      "mp4": "/media/0.23.0/gallery/one_shot.mp4",
+      "poster": "/media/0.23.0/gallery/one_shot.jpg",
+      "seconds": 48.68,
+      "width": 1280,
+      "height": 720,
+      "bytes": 3255855,
+      "captions": "/media/0.23.0/gallery/one_shot.vtt",
+      "transcript": "One scene. One camera. No cuts. This number shapes the sea. Change it, and remember it. The line is one node in a graph. The graph sits in a dashboard. Bars, a curve, a clip. Remember that number? Here it goes. All of it is one frame of oxframe check. Zero errors. Three formats. Made with oxframe. One scene, one camera, no cuts."
+    },
     "release": {
-      "mp4": "/media/0.20.3/gallery/release.mp4",
-      "poster": "/media/0.20.3/gallery/release.jpg",
+      "mp4": "/media/0.23.0/gallery/release.mp4",
+      "poster": "/media/0.23.0/gallery/release.jpg",
       "seconds": 19.82,
       "width": 1280,
       "height": 720,
       "bytes": 319178
     },
     "cube_3d": {
-      "mp4": "/media/0.20.1/gallery/cube_3d.mp4",
-      "poster": "/media/0.20.1/gallery/cube_3d.jpg",
+      "mp4": "/media/0.23.0/gallery/cube_3d.mp4",
+      "poster": "/media/0.23.0/gallery/cube_3d.jpg",
       "seconds": 7.12,
       "width": 1280,
       "height": 720,
-      "bytes": 108265
+      "bytes": 112779
     },
     "slides": {
-      "mp4": "/media/0.20.1/gallery/slides.mp4",
-      "poster": "/media/0.20.1/gallery/slides.jpg",
+      "mp4": "/media/0.23.0/gallery/slides.mp4",
+      "poster": "/media/0.23.0/gallery/slides.jpg",
       "seconds": 11.03,
       "width": 1280,
       "height": 720,
-      "bytes": 74268
+      "bytes": 73930
     },
     "matrix_multiply": {
-      "mp4": "/media/0.20.1/gallery/matrix_multiply.mp4",
-      "poster": "/media/0.20.1/gallery/matrix_multiply.jpg",
+      "mp4": "/media/0.23.0/gallery/matrix_multiply.mp4",
+      "poster": "/media/0.23.0/gallery/matrix_multiply.jpg",
       "seconds": 7.27,
       "width": 1280,
       "height": 720,
       "bytes": 68799
     },
     "linear_map": {
-      "mp4": "/media/0.20.1/gallery/linear_map.mp4",
-      "poster": "/media/0.20.1/gallery/linear_map.jpg",
+      "mp4": "/media/0.23.0/gallery/linear_map.mp4",
+      "poster": "/media/0.23.0/gallery/linear_map.jpg",
       "seconds": 6.32,
       "width": 1280,
       "height": 720,
-      "bytes": 597181
+      "bytes": 596996
     },
     "table_sort": {
-      "mp4": "/media/0.20.1/gallery/table_sort.mp4",
-      "poster": "/media/0.20.1/gallery/table_sort.jpg",
+      "mp4": "/media/0.23.0/gallery/table_sort.mp4",
+      "poster": "/media/0.23.0/gallery/table_sort.jpg",
       "seconds": 4.47,
       "width": 1280,
       "height": 720,
       "bytes": 97748
     },
     "architecture": {
-      "mp4": "/media/0.20.1/gallery/architecture.mp4",
-      "poster": "/media/0.20.1/gallery/architecture.jpg",
+      "mp4": "/media/0.23.0/gallery/architecture.mp4",
+      "poster": "/media/0.23.0/gallery/architecture.jpg",
       "seconds": 5.17,
       "width": 1280,
       "height": 720,
       "bytes": 54998
     },
     "gauge": {
-      "mp4": "/media/0.20.1/gallery/gauge.mp4",
-      "poster": "/media/0.20.1/gallery/gauge.jpg",
+      "mp4": "/media/0.23.0/gallery/gauge.mp4",
+      "poster": "/media/0.23.0/gallery/gauge.jpg",
       "seconds": 1.92,
       "width": 1280,
       "height": 720,
       "bytes": 17726
     },
     "charts": {
-      "mp4": "/media/0.20.1/gallery/charts.mp4",
-      "poster": "/media/0.20.1/gallery/charts.jpg",
+      "mp4": "/media/0.23.0/gallery/charts.mp4",
+      "poster": "/media/0.23.0/gallery/charts.jpg",
       "seconds": 8.38,
       "width": 1280,
       "height": 720,
       "bytes": 177763
     },
     "ocean": {
-      "mp4": "/media/0.20.1/gallery/ocean.mp4",
-      "poster": "/media/0.20.1/gallery/ocean.jpg",
+      "mp4": "/media/0.23.0/gallery/ocean.mp4",
+      "poster": "/media/0.23.0/gallery/ocean.jpg",
       "seconds": 6.37,
       "width": 1280,
       "height": 720,
-      "bytes": 187944
+      "bytes": 186064
+    },
+    "magnifier": {
+      "mp4": "/media/0.23.0/gallery/magnifier.mp4",
+      "poster": "/media/0.23.0/gallery/magnifier.jpg",
+      "seconds": 6.17,
+      "width": 1280,
+      "height": 720,
+      "bytes": 240985
     },
     "splash": {
-      "mp4": "/media/0.20.1/gallery/splash.mp4",
-      "poster": "/media/0.20.1/gallery/splash.jpg",
+      "mp4": "/media/0.23.0/gallery/splash.mp4",
+      "poster": "/media/0.23.0/gallery/splash.jpg",
       "seconds": 3.83,
       "width": 1280,
       "height": 720,
-      "bytes": 96839
+      "bytes": 94282
     },
     "waves": {
-      "mp4": "/media/0.20.1/gallery/waves.mp4",
-      "poster": "/media/0.20.1/gallery/waves.jpg",
+      "mp4": "/media/0.23.0/gallery/waves.mp4",
+      "poster": "/media/0.23.0/gallery/waves.jpg",
       "seconds": 1.23,
       "width": 1280,
       "height": 720,
       "bytes": 14308
     },
     "voice": {
-      "mp4": "/media/0.20.1/gallery/voice.mp4",
-      "poster": "/media/0.20.1/gallery/voice.jpg",
+      "mp4": "/media/0.23.0/gallery/voice.mp4",
+      "poster": "/media/0.23.0/gallery/voice.jpg",
       "seconds": 1.22,
       "width": 1280,
       "height": 720,
       "bytes": 8852
     },
     "sounds": {
-      "mp4": "/media/0.20.1/gallery/sounds.mp4",
-      "poster": "/media/0.20.1/gallery/sounds.jpg",
+      "mp4": "/media/0.23.0/gallery/sounds.mp4",
+      "poster": "/media/0.23.0/gallery/sounds.jpg",
       "seconds": 1.13,
       "width": 1280,
       "height": 720,
       "bytes": 39574,
-      "captions": "/media/0.20.1/gallery/sounds.vtt"
+      "captions": "/media/0.23.0/gallery/sounds.vtt"
     },
     "spray": {
-      "mp4": "/media/0.20.1/gallery/spray.mp4",
-      "poster": "/media/0.20.1/gallery/spray.jpg",
+      "mp4": "/media/0.23.0/gallery/spray.mp4",
+      "poster": "/media/0.23.0/gallery/spray.jpg",
       "seconds": 1.22,
       "width": 1280,
       "height": 720,
       "bytes": 29751
     },
     "transitions": {
-      "mp4": "/media/0.20.1/gallery/transitions.mp4",
-      "poster": "/media/0.20.1/gallery/transitions.jpg",
+      "mp4": "/media/0.23.0/gallery/transitions.mp4",
+      "poster": "/media/0.23.0/gallery/transitions.jpg",
       "seconds": 1.78,
       "width": 1280,
       "height": 720,
       "bytes": 21822
     },
     "svg": {
-      "mp4": "/media/0.20.1/gallery/svg.mp4",
-      "poster": "/media/0.20.1/gallery/svg.jpg",
+      "mp4": "/media/0.23.0/gallery/svg.mp4",
+      "poster": "/media/0.23.0/gallery/svg.jpg",
       "seconds": 1.97,
       "width": 1280,
       "height": 720,
       "bytes": 13998
     },
     "code_steps": {
-      "mp4": "/media/0.20.1/gallery/code_steps.mp4",
-      "poster": "/media/0.20.1/gallery/code_steps.jpg",
+      "mp4": "/media/0.23.0/gallery/code_steps.mp4",
+      "poster": "/media/0.23.0/gallery/code_steps.jpg",
       "seconds": 3.42,
       "width": 1280,
       "height": 720,
       "bytes": 29497
     },
     "quicksort": {
-      "mp4": "/media/0.20.1/gallery/quicksort.mp4",
-      "poster": "/media/0.20.1/gallery/quicksort.jpg",
+      "mp4": "/media/0.23.0/gallery/quicksort.mp4",
+      "poster": "/media/0.23.0/gallery/quicksort.jpg",
       "seconds": 45.65,
       "width": 1280,
       "height": 720,
       "bytes": 922825
     },
     "camera": {
-      "mp4": "/media/0.20.1/gallery/camera.mp4",
-      "poster": "/media/0.20.1/gallery/camera.jpg",
+      "mp4": "/media/0.23.0/gallery/camera.mp4",
+      "poster": "/media/0.23.0/gallery/camera.jpg",
       "seconds": 10.47,
       "width": 1280,
       "height": 720,
       "bytes": 330286
     },
     "components": {
-      "mp4": "/media/0.20.1/gallery/components.mp4",
-      "poster": "/media/0.20.1/gallery/components.jpg",
+      "mp4": "/media/0.23.0/gallery/components.mp4",
+      "poster": "/media/0.23.0/gallery/components.jpg",
       "seconds": 12.37,
       "width": 1280,
       "height": 720,
       "bytes": 84606
     },
     "chart": {
-      "mp4": "/media/0.20.1/gallery/chart.mp4",
-      "poster": "/media/0.20.1/gallery/chart.jpg",
+      "mp4": "/media/0.23.0/gallery/chart.mp4",
+      "poster": "/media/0.23.0/gallery/chart.jpg",
       "seconds": 6.82,
       "width": 1280,
       "height": 720,
       "bytes": 112317
     },
     "relative": {
-      "mp4": "/media/0.20.1/gallery/relative.mp4",
-      "poster": "/media/0.20.1/gallery/relative.jpg",
+      "mp4": "/media/0.23.0/gallery/relative.mp4",
+      "poster": "/media/0.23.0/gallery/relative.jpg",
       "seconds": 1.47,
       "width": 1280,
       "height": 720,
       "bytes": 14129
     },
     "theme": {
-      "mp4": "/media/0.20.1/gallery/theme.mp4",
-      "poster": "/media/0.20.1/gallery/theme.jpg",
+      "mp4": "/media/0.23.0/gallery/theme.mp4",
+      "poster": "/media/0.23.0/gallery/theme.jpg",
       "seconds": 0.47,
       "width": 1280,
       "height": 720,
       "bytes": 9993
     },
     "text": {
-      "mp4": "/media/0.20.1/gallery/text.mp4",
-      "poster": "/media/0.20.1/gallery/text.jpg",
+      "mp4": "/media/0.23.0/gallery/text.mp4",
+      "poster": "/media/0.23.0/gallery/text.jpg",
       "seconds": 6.12,
       "width": 1280,
       "height": 720,
       "bytes": 76236
     },
     "typography": {
-      "mp4": "/media/0.20.1/gallery/typography.mp4",
-      "poster": "/media/0.20.1/gallery/typography.jpg",
+      "mp4": "/media/0.23.0/gallery/typography.mp4",
+      "poster": "/media/0.23.0/gallery/typography.jpg",
       "seconds": 8.72,
       "width": 1280,
       "height": 720,
       "bytes": 113201
     },
     "effects": {
-      "mp4": "/media/0.20.1/gallery/effects.mp4",
-      "poster": "/media/0.20.1/gallery/effects.jpg",
+      "mp4": "/media/0.23.0/gallery/effects.mp4",
+      "poster": "/media/0.23.0/gallery/effects.jpg",
       "seconds": 4.82,
       "width": 1280,
       "height": 720,
       "bytes": 96891
     },
     "layout": {
-      "mp4": "/media/0.20.1/gallery/layout.mp4",
-      "poster": "/media/0.20.1/gallery/layout.jpg",
+      "mp4": "/media/0.23.0/gallery/layout.mp4",
+      "poster": "/media/0.23.0/gallery/layout.jpg",
       "seconds": 3.97,
       "width": 1280,
       "height": 720,
       "bytes": 49434
     },
     "particles": {
-      "mp4": "/media/0.20.1/gallery/particles.mp4",
-      "poster": "/media/0.20.1/gallery/particles.jpg",
+      "mp4": "/media/0.23.0/gallery/particles.mp4",
+      "poster": "/media/0.23.0/gallery/particles.jpg",
       "seconds": 3.82,
       "width": 1280,
       "height": 720,
       "bytes": 182618
     },
     "morph": {
-      "mp4": "/media/0.20.1/gallery/morph.mp4",
-      "poster": "/media/0.20.1/gallery/morph.jpg",
+      "mp4": "/media/0.23.0/gallery/morph.mp4",
+      "poster": "/media/0.23.0/gallery/morph.jpg",
       "seconds": 6.22,
       "width": 1280,
       "height": 720,
       "bytes": 71911
     },
     "shapes": {
-      "mp4": "/media/0.20.1/gallery/shapes.mp4",
-      "poster": "/media/0.20.1/gallery/shapes.jpg",
+      "mp4": "/media/0.23.0/gallery/shapes.mp4",
+      "poster": "/media/0.23.0/gallery/shapes.jpg",
       "seconds": 6.82,
       "width": 1280,
       "height": 720,
       "bytes": 96089
     },
     "showcase": {
-      "mp4": "/media/0.20.1/gallery/showcase.mp4",
-      "poster": "/media/0.20.1/gallery/showcase.jpg",
+      "mp4": "/media/0.23.0/gallery/showcase.mp4",
+      "poster": "/media/0.23.0/gallery/showcase.jpg",
       "seconds": 5.52,
       "width": 1280,
       "height": 720,
       "bytes": 80331
     },
     "intro": {
-      "mp4": "/media/0.20.1/gallery/intro.mp4",
-      "poster": "/media/0.20.1/gallery/intro.jpg",
+      "mp4": "/media/0.23.0/gallery/intro.mp4",
+      "poster": "/media/0.23.0/gallery/intro.jpg",
       "seconds": 1.02,
       "width": 1280,
       "height": 720,
       "bytes": 12058
     },
     "showreel": {
-      "mp4": "/media/0.20.1/gallery/showreel.mp4",
-      "poster": "/media/0.20.1/gallery/showreel.jpg",
+      "mp4": "/media/0.23.0/gallery/showreel.mp4",
+      "poster": "/media/0.23.0/gallery/showreel.jpg",
       "seconds": 30.2,
       "width": 1280,
       "height": 720,
-      "bytes": 1126532
-    },
-    "one_shot": {
-      "mp4": "/media/0.20.5/gallery/one_shot.mp4",
-      "poster": "/media/0.20.5/gallery/one_shot.jpg",
-      "seconds": 48.68,
-      "width": 1280,
-      "height": 720,
-      "bytes": 3255855,
-      "captions": "/media/0.20.5/gallery/one_shot.vtt",
-      "transcript": "One scene. One camera. No cuts. This number shapes the sea. Change it, and remember it. The line is one node in a graph. The graph sits in a dashboard. Bars, a curve, a clip. Remember that number? Here it goes. All of it is one frame of oxframe check. Zero errors. Three formats. Made with oxframe. One scene, one camera, no cuts."
+      "bytes": 1131457
     }
   }
 }

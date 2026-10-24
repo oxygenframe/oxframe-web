@@ -24,10 +24,10 @@
 
 <h2>How often</h2>
 <p>
-  About once a week. Breaking changes wait for the next minor release and come out together, so you
-  update your scenes once instead of after every change. An urgent fix ships on its own as a patch
-  release. Every release has its own section in the <a href="/changelog">changelog</a>, with a short
-  video of what is new.
+  Before 1.0 there is no fixed schedule: a release comes out when a finished feature is ready.
+  Breaking changes only come with a minor release (0.22 → 0.23), never in a patch, and each one is
+  listed with a before → after example. A fix ships as a patch. Every release has its own section in
+  the <a href="/changelog">changelog</a>, with a short video of what is new.
 </p>
 
 <h2>Pin the version</h2>
@@ -37,10 +37,10 @@
 </p>
 <pre><code
     >{`[dependencies]
-oxframe = "=0.21.0"`}</code
+oxframe = "=0.23.0"`}</code
   ></pre>
 <p>
-  Keep the <code>=</code>. With a plain <code>"0.21"</code>, Cargo may pick a newer patch the next
+  Keep the <code>=</code>. With a plain <code>"0.23"</code>, Cargo may pick a newer patch the next
   time the lock file is refreshed.
 </p>
 
@@ -58,6 +58,30 @@ oxframe check               # build, then look at what changed`}</code
   version and the new one. A breaking change is listed under <strong>Changed</strong> or
   <strong>Breaking</strong> with a before → after example, which is usually the whole edit.
 </p>
+
+<h3 id="upgrade-0-23">From 0.22 to 0.23</h3>
+<ul>
+  <li>
+    <code>Signal::set</code> converts its argument, so drop a bare <code>.into()</code> there:
+    <code>m.cell(0, 1).text().set("7".into());</code>
+    becomes <code>m.cell(0, 1).text().set("7");</code>.
+  </li>
+  <li>
+    <code>Node::scale()</code> returns a <code>ScaleSignal</code>. Code that names the type changes:
+    <code>let s: Signal&lt;Vec2&gt; = node.scale();</code> becomes
+    <code>let s: Signal&lt;Vec2&gt; = node.scale().signal();</code>.
+  </li>
+  <li>
+    <code>Input</code> holds an image now, so it is not <code>Copy</code>: clone it where it was
+    copied. <code>Input::name</code> takes <code>&amp;self</code>.
+  </li>
+  <li>
+    If you build lint data by hand: <code>lint::Sample</code> has a <code>contrast</code> field (<code
+      >Sample &#123; time, nodes, contrast: Vec::new() &#125;</code
+    >), and <code>InspectNode</code>
+    has <code>reads_frame</code>.
+  </li>
+</ul>
 
 <h2>Docs for your version</h2>
 <p>

@@ -121,14 +121,21 @@
 </p>
 
 <h3 id="covers_text"><code>covers_text</code></h3>
-<p>A shader is drawn over text, so the text is hidden behind it.</p>
+<p>
+  A shader is drawn over text, so the text is hidden behind it. A shader that reads the frame (<code
+    >lens_drops</code
+  >, or your own with <code>Input::frame()</code>) shows the text through it and is not reported.
+</p>
 {@render pair('covers_text')}
 <p>Fix: add the shader before the text, or move the text out of its box.</p>
 
 <h3 id="low_contrast"><code>low_contrast</code></h3>
 <p>
   Text is too close in color to what is behind it, below the WCAG ratio (4.5 by default,
-  <code>--min-contrast</code>).
+  <code>--min-contrast</code>). Over a plain fill the two colors are compared. Over a shader, an
+  image, a video, <code>Custom</code>, particles or 3D, <code>check</code> draws the frame without the
+  text and reads the pixels behind it: the ratio is the median over the text's box, and it must stay low
+  for 0.5 s, so something moving past a label is not reported.
 </p>
 {@render pair('low_contrast')}
 <p>
@@ -182,14 +189,6 @@
 <h3 id="shader_slow"><code>shader_slow</code></h3>
 <p>A shader takes longer per frame than the budget.</p>
 <p>Fix: a smaller box, fewer loop iterations, or a preset from <code>shaders::</code>.</p>
-
-<h3 id="input_cycle"><code>input_cycle</code></h3>
-<p>
-  A shader that reads drawn pixels (<code>lens_drops</code>, an effect) is inside a group that is
-  itself drawn as a layer (opacity below 1, blur, clip, blend, shadow, another effect). The shader
-  is skipped.
-</p>
-<p>Fix: put the effect on that group instead, or take the node out of it.</p>
 
 <h2>Determinism and media</h2>
 

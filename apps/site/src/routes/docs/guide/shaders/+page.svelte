@@ -39,10 +39,11 @@
 <h2>Make events signals</h2>
 <p>
   A splash at two seconds is a signal change at that moment, not a formula of time. That way the
-  editor shows it on the timeline and <code>oxframe check</code> sees it. A shader can only read
-  finished pixels: inside a fading group or a blur, <code>check</code> reports
-  <code>input_cycle</code>. <a href="/docs/rendering#shaders-that-read-pixels">Rendering video</a>
-  has the details.
+  editor shows it on the timeline and <code>oxframe check</code> sees it. Inside a fading group or a
+  blur, a lens or a ripple reads what the group drew, then the group fades as a whole.
+  <a href="/docs/rendering#shaders-that-read-pixels">Rendering video</a> has the details, and
+  <a href="/docs/rendering#wgsl-inputs">your own WGSL shader</a> reads the frame, an image or a node the
+  same way.
 </p>
 
 <Try>

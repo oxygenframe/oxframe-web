@@ -1,6 +1,10 @@
 <script lang="ts">
+  import ExampleVideo from '$lib/components/ExampleVideo.svelte';
   import LiveExample from '$lib/components/LiveExample.svelte';
+  import { mediaFor } from '$lib/media';
   import { SDK_VERSION } from '$lib/sdk';
+
+  const magnifier = mediaFor('magnifier');
 </script>
 
 <h1>Rendering video</h1>
@@ -92,8 +96,85 @@ sea.amp().to(0.12, 1.2).await;`}</code
   <code>Shader::file</code> reads a <code>.wgsl</code> file on every draw, so saving it updates the
   picture without a rebuild. <code>.uniform()</code> sets a number. A name or a type that is not in
   <code>Params</code> fails the check, and the message lists the fields. WGSL that does not compile
-  fails it too, with the line in your source. A custom <code>shade</code> is type-checked on every draw.
-  The waves preset is what gets painted.
+  fails it too, with the line in your source. Your <code>shade</code> runs on the CPU, a tile of
+  pixels at a time, with the same bytes on every OS (about 0.13 s for a 1080p frame), in
+  <code>oxframe dev</code>, <code>check</code> and <code>render</code>. It cannot use textures,
+  samplers or derivatives; it reads its inputs with functions instead (below). The playground does
+  not paint a custom shader yet.
+</p>
+
+<h3 id="wgsl-inputs">Your own WGSL: reading the frame, an image or a node</h3>
+<p>
+  An input is a function in your WGSL. <code>.input("scene", Input::frame())</code> gives
+  <code>sample_scene(uv)</code>, the pixels drawn before the shader; the shader is then painted over
+  them inside its box. This magnifying glass bends the frame inside a moving circle, and its center,
+  radius and zoom are uniforms, so <code>.to()</code> animates them:
+</p>
+<p><code>lens.wgsl</code>:</p>
+<!-- snippet-skip: WGSL, not Rust -->
+<pre><code
+    >{`struct Params { cx: f32, cy: f32, radius: f32, zoom: f32 }
+@group(1) @binding(0) var<uniform> p: Params;
+
+fn shade(i: ShadeIn) -> vec4<f32> {
+    let res = ox.resolution;
+    let center = vec2<f32>(p.cx, p.cy) * res;
+    let d = i.screen - center;
+    let r = length(d) / p.radius;
+    if (r > 1.0) {
+        return sample_scene(i.screen / res);
+    }
+    let at = center + d * mix(1.0 / p.zoom, 1.0, r * r);
+    let rim = smoothstep(0.9, 1.0, r);
+    return vec4<f32>(mix(sample_scene(at / res).rgb, vec3<f32>(1.0), rim * 0.7), 1.0);
+}`}</code
+  ></pre>
+<p>The scene:</p>
+<pre><code
+    >{`#[oxframe::scene]
+async fn magnifier(view: View) {
+    view.add(Txt::new().text("Read the fine print").h1().y(-330.0));
+    // ... the text to read ...
+    let lens = view.add(
+        Shader::file("lens.wgsl")
+            .uniform("cx", 0.27).uniform("cy", 0.53)
+            .uniform("radius", 0.0).uniform("zoom", 2.2)
+            .input("scene", Input::frame())
+            .fullscreen(), // added last: it reads everything above
+    );
+    lens.uniform("radius").to(170.0, 0.5).await;
+    lens.uniform("cx").to(0.73, 3.0).await;
+}`}</code
+  ></pre>
+{#if magnifier}
+  <ExampleVideo media={magnifier} title="A magnifying glass written in WGSL" />
+{/if}
+<p>
+  The whole scene, with a color fringe at the rim, is the
+  <a href="/gallery/magnifier">magnifier example in the gallery</a>. A frame shader inside the box
+  sees screen pixels: <code>sample_scene(i.screen / ox.resolution)</code> reads the pixel under the one
+  being shaded.
+</p>
+<p>
+  The other inputs work the same way, each read with <code>sample_&lt;name&gt;(uv)</code>, where
+  <code>uv</code> runs from 0 to 1 across the input:
+</p>
+<ul>
+  <li>
+    <code>.input("photo", Input::file("photo.png"))</code> reads a PNG or JPEG from the project and
+    gives <code>sample_photo(uv)</code>. <code>Input::image(include_bytes!(..))</code> builds the file
+    into the binary instead.
+  </li>
+  <li>
+    <code>Input::node(handle)</code> reads another node, children included, across its box. Add that
+    node with <code>.offscreen()</code> and it is drawn only for the shader: never on screen, and
+    <code>oxframe check</code> skips it. That is how a shader distorts a logo or a title.
+  </li>
+</ul>
+<p>
+  Calling <code>sample_x</code> with no input named <code>x</code> fails the check, and the message
+  says how to add it. <code>Shader::size(width, height)</code> sets the box in one call, like
+  <code>Rect</code>.
 </p>
 
 <h3 id="shaders-that-read-pixels">Shaders that read pixels</h3>
@@ -135,17 +216,12 @@ async fn shore(view: View) {
   so use it on water, text, a gradient or an image: a flat fill shows no rings. A node has one effect.
 </p>
 <p>
-  A shader can only read finished pixels. <code>lens_drops</code> or an effect inside a group with
-  opacity below 1, a blur, a clip, a blend, a shadow or another effect fails
-  <code>oxframe check</code> with <code>input_cycle</code>, and the shader is skipped. Put the
-  effect on that group instead. <code>oxframe inspect --graph</code> lists these shaders as
-  <code>effect</code> passes, and a <code>Shader</code> handle works wherever a <code>Node</code>
-  does, for example in <code>Camera::center_on</code>.
-</p>
-<p>
-  Not there yet: <code>Input::node</code> (another node as a texture), <code>Input::image</code>
-  (a texture file), <code>.offscreen()</code>, and running your own <code>shade</code>, which is
-  still only checked.
+  <code>lens_drops</code>, <code>node.effect(..)</code> or a frame-reading shader of your own also
+  works inside a group with opacity below 1, a blur, a clip, a blend, a shadow or another effect.
+  The group is drawn on its own first, so a shader in it reads what the group drew before it; then
+  the group fades, blurs or clips as a whole. <code>oxframe inspect --graph</code> lists these
+  shaders as <code>effect</code> passes, and a <code>Shader</code> handle works wherever a
+  <code>Node</code> does, for example in <code>Camera::center_on</code>.
 </p>
 
 <h2>Sound</h2>

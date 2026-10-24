@@ -100,6 +100,10 @@ end.next().await;
 end.exit().await;`}</code
   ></pre>
 <p>Same rhythm as a title card. The note waits for <code>next</code>.</p>
+<p>
+  Every component goes wherever a node does, so you can place other nodes around it:
+  <code>caption.next_to(&end_card, Side::Bottom)</code>.
+</p>
 
 <p>
   The gallery example <code>components</code> is a full explainer in under 40 lines.

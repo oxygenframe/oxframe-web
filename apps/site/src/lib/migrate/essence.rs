@@ -42,11 +42,11 @@ pub async fn essence(view: View) {
     wait_for(0.8).await;
 
     // î lands on (1, -2) and ĵ on (3, 0): those are the matrix's columns.
-    m.cell(1, 0).text().set("-2".into());
-    m.cell(0, 1).text().set("3".into());
-    m.cell(1, 1).text().set("0".into());
+    m.cell(1, 0).text().set("-2");
+    m.cell(0, 1).text().set("3");
+    m.cell(1, 1).text().set("0");
     axes.apply_matrix([[1.0, 3.0], [-2.0, 0.0]], 2.5).await;
-    title.text().set("v lands on -1·(1, -2) + 2·(3, 0) = (5, 2)".into());
+    title.text().set("v lands on -1·(1, -2) + 2·(3, 0) = (5, 2)");
     wait_for(1.5).await;
 }
 
