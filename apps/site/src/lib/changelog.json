@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.2",
+    "date": "2026-10-24",
+    "html": "<h3>Added</h3>\n<ul><li><code>oxframe publish</code> (oxframe-cli): renders the project, or takes an MP4, uploads it to oxframe.dev and prints a link with a player that unfolds as a video in Discord and Slack. Up to 30 s and 16 MB (a larger render is re-encoded at 720p); kept for 30 days. <code>--title</code> names the page. No SDK code changed; the agent skill knows the command.</li></ul>"
+  },
+  {
     "version": "0.23.1",
     "date": "2026-10-24",
     "html": "<h3>Added</h3>\n<ul><li>Custom WGSL shaders (<code>Shader::source</code>, <code>Shader::file</code>, and their <code>Input::frame()</code> and <code>Input::node</code> inputs) paint in the browser playground too: the CPU interpreter is built for wasm. A 1080p frame takes about 0.3 s there; playback skips frames to keep time. The browser bundle grows by about 360 KB gzipped.</li></ul>"

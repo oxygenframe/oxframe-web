@@ -12,8 +12,8 @@
   <h1>Privacy</h1>
   <p class="lead">
     oxframe is a library you run yourself. The SDK and the <code>oxframe</code> CLI collect nothing and
-    send nothing to us. This page lists everything that does reach a server: the website, the playground
-    and the documentation server for agents. Last updated 24 October 2026.
+    send nothing to us unless you publish a video. This page lists everything that does reach a server:
+    the website, the playground and the documentation server for agents. Last updated 24 October 2026.
   </p>
 
   <h2>The SDK and the CLI</h2>
@@ -22,6 +22,11 @@
     network is used only by things you start: <code>cargo</code> downloading crates, the install script
     downloading the CLI from GitHub, and a speech provider you add yourself (such as ElevenLabs), which
     receives the text you ask it to speak under its own privacy policy.
+  </p>
+  <p>
+    <code>oxframe publish</code> uploads the video you rendered, a poster frame and the title you
+    gave it, and returns a public <code>/s/…</code> link. It is kept and deleted like a video shared from
+    the playground (below), without any code.
   </p>
 
   <h2>This website</h2>

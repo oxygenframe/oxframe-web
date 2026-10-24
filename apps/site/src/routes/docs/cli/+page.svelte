@@ -143,6 +143,28 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   </tbody>
 </table>
 
+<h3><code>oxframe publish</code></h3>
+<p>
+  Renders the project and uploads the video to oxframe.dev, then prints a link to a page with a
+  player. Pasted into Discord or Slack, the link unfolds as a video; X shows its poster. Use it to
+  show a draft to someone without sending a file.
+</p>
+<pre><code
+    >{`oxframe publish --title "Launch teaser"
+# https://oxframe.dev/s/86sKmiYNNe
+oxframe publish out/teaser.mp4           # an MP4 you already rendered
+oxframe publish --range 0..30            # the first 30 seconds of a longer video`}</code
+  ></pre>
+<p>
+  Anyone with the link can watch the video, and it is deleted after 30 days. A video can be up to 30
+  seconds and 16 MB; a larger render is re-encoded at 720p once. The upload sends the video, a
+  poster frame and the title, nothing else (see <a href="/privacy">Privacy</a>). It needs ffmpeg and
+  <code>curl</code>, which ships with Linux, macOS and Windows 10 and later. Flags:
+  <code>--title</code> (up to 100 characters, shown on the page and in link previews),
+  <code>--scene</code>, <code>--range</code> and <code>--gpu</code>, as for <code>render</code>.
+  With <code>--json</code> it prints <code>url</code>, <code>id</code> and <code>seconds</code>.
+</p>
+
 <h3><code>oxframe check</code></h3>
 <p>
   Compiles the project (<code>cargo check</code>), validates every <code>meta.json</code>, compares
@@ -339,8 +361,9 @@ cell_width = 320`}</code
 
 <h2>Security</h2>
 <p>
-  The editor server listens on 127.0.0.1 only, checks the <code>Origin</code> of every WebSocket connection
-  and requires a one-time token. The CLI runs nothing but cargo and your own project.
+  The editor server listens on 127.0.0.1 only, checks the <code>Origin</code> of every WebSocket
+  connection and requires a one-time token. The CLI runs nothing but cargo, ffmpeg and your own
+  project, and uploads nothing unless you run <code>oxframe publish</code>.
 </p>
 
 <style>
