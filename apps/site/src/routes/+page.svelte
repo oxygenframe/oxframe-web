@@ -375,7 +375,7 @@
   <p>
     This is self-reported: a prompt passes when the scene builds and oxframe's own
     <code>oxframe check</code> reports no error, run with one agent (Claude Code), {measurements.a7
-      .meanTurns} turns on the median prompt. A comparison across tools, judged independently, is still
+      .meanTurns} turns per prompt on average. A comparison across tools, judged independently, is still
     to come — the prompt set and the runner are open in the CLI.
   </p>
 </section>

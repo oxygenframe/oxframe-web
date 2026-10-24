@@ -134,11 +134,11 @@
   </article>
 </div>
 <p class="note">
-  oxframe {a7.version}, {a7.date}. The one miss is the useful part: on a code-explanation prompt the
-  agent wrote plain text instead of the <code>Code</code> node, which would have let it highlight the
-  expression a piece at a time — a gap in the skill to close next. (Two 9:16 shorts and one video prompt
-  first failed on bugs in the scorer itself — a vertical pixel size it did not read as 9:16, and an asset
-  a fresh project lacks — both since fixed in the eval.)
+  oxframe {a7.version}, {a7.date}. The one miss is the useful part: asked to explain a line of code,
+  the agent answered in the chat instead of making a video. The same prompt was the miss in the
+  0.20.5 run too, so the agent files of the next release say that such a request means a scene. (Two
+  9:16 shorts and one video prompt first failed on bugs in the scorer itself — a vertical pixel size
+  it did not read as 9:16, and an asset a fresh project lacks — both since fixed in the eval.)
 </p>
 <p>
   Script: <a href={a7.scriptUrl}><code>evals/run.py</code></a> in oxframe-cli, with the prompts
