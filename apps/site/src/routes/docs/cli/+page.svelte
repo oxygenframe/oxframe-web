@@ -269,10 +269,29 @@ oxframe check --against out/before`}</code
   Copies a ready-made, checked block into <code>src/blocks/</code> and adds
   <code>mod blocks;</code> to <code>src/main.rs</code>. Each block is one call that plays itself in
   and returns its group: <code>blocks::stat_counter(view, 1280.0, "stars").await</code>. With no
-  name it lists them: <code>logo-reveal</code>, <code>stat-counter</code>,
-  <code>progress-bar</code>, <code>quote-card</code>, <code>before-after</code>,
-  <code>timeline</code>. The copied file is yours to edit; <code>--force</code> replaces it.
+  name it lists all eighteen, each passing <code>oxframe check</code>. The copied file is yours to
+  edit; <code>--force</code> replaces it.
 </p>
+<ul>
+  <li>
+    Titles and endings: <code>logo-reveal</code>, <code>kinetic-title</code>,
+    <code>call-to-action</code>, <code>countdown</code> (numbers in a filling ring).
+  </li>
+  <li>
+    Numbers and data: <code>stat-counter</code>, <code>progress-bar</code>, <code>bar-chart</code>,
+    <code>comparison</code> (a yes/no table against another product).
+  </li>
+  <li>
+    Product and release: <code>feature-grid</code> (feature cards in a row),
+    <code>release-notes</code>, <code>before-after</code>, <code>timeline</code>,
+    <code>checklist</code> (items ticked off).
+  </li>
+  <li>
+    Developer stories: <code>terminal</code>, <code>code-change</code>,
+    <code>pull-request</code> (a PR card that gets merged), <code>chat-messages</code> (a
+    conversation in bubbles), <code>quote-card</code>.
+  </li>
+</ul>
 
 <h3><code>oxframe doctor</code></h3>
 <p>

@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.3",
+    "date": "2026-10-24",
+    "html": "<h3>Added</h3>\n<ul><li>Six more blocks for <code>oxframe add</code> (oxframe-cli): <code>feature-grid</code>, <code>checklist</code>, <code>comparison</code>, <code>chat-messages</code>, <code>pull-request</code> and <code>countdown</code>, eighteen in all, every one passing <code>oxframe check</code>.</li><li>The agent skill: a request to explain or show something means a scene, not an answer in chat; hints for the compile errors seen most in the 0.23.2 agent eval. No SDK code changed.</li></ul>"
+  },
+  {
     "version": "0.23.2",
     "date": "2026-10-24",
     "html": "<h3>Added</h3>\n<ul><li><code>oxframe publish</code> (oxframe-cli): renders the project, or takes an MP4, uploads it to oxframe.dev and prints a link with a player that unfolds as a video in Discord and Slack. Up to 30 s and 16 MB (a larger render is re-encoded at 720p); kept for 30 days. <code>--title</code> names the page. No SDK code changed; the agent skill knows the command.</li></ul>"
