@@ -95,7 +95,6 @@ export const galleryItems: GalleryItem[] = [
     tags: ['explainer'],
     prompt:
       'Write a lens shader in WGSL that reads the frame drawn before it and magnifies the fine print under a moving circle, with a color fringe at the rim.',
-    playground: false,
   },
   {
     name: 'splash',

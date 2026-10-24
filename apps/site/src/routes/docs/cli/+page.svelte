@@ -45,6 +45,18 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
   Builds the project, opens the editor in your browser and rebuilds every time you save. If the code
   does not compile, the error shows over the preview and the last good build keeps playing.
 </p>
+<figure>
+  <img
+    src="/images/editor.png"
+    width="1440"
+    height="900"
+    loading="lazy"
+    alt="The editor oxframe dev opens: the frame of a new project in the middle, the inspector on the right and the timeline with a marker at the bottom"
+  />
+  <figcaption>
+    What <code>oxframe dev</code> opens, on the project <code>oxframe init</code> creates.
+  </figcaption>
+</figure>
 <table>
   <tbody>
     <tr><td><code>--port &lt;n&gt;</code></td><td>Editor port (default 3000).</td></tr>
@@ -138,6 +150,19 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
   <code>out/check/storyboard.png</code> (a grid of frames at markers and at equal intervals, with
   the time and marker name under each cell) and <code>out/check/report.json</code>.
 </p>
+<figure>
+  <img
+    src="/storyboard.png"
+    width="1320"
+    height="214"
+    loading="lazy"
+    alt="A storyboard written by oxframe check: four frames at 0, 1, 2 and 2.7 seconds, with the time under each; at 1 and 2 seconds a bullet list is drawn over the title Binary search"
+  />
+  <figcaption>
+    A storyboard of a scene with a mistake: the list sits on top of the title, and
+    <code>report.json</code> names the two nodes and the source line.
+  </figcaption>
+</figure>
 <p>
   Each issue has a rule, a severity (<code>error</code> or <code>warning</code>), a time range, the
   node name, the source <code>file:line</code> and a hint:
@@ -317,3 +342,20 @@ cell_width = 320`}</code
   The editor server listens on 127.0.0.1 only, checks the <code>Origin</code> of every WebSocket connection
   and requires a one-time token. The CLI runs nothing but cargo and your own project.
 </p>
+
+<style>
+  figure {
+    margin: 0 0 24px;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+</style>
