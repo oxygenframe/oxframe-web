@@ -46,5 +46,15 @@ const headers = `/*
   Content-Security-Policy: ${searchCsp}
 `;
 writeFileSync(join(build, '_headers'), headers);
-writeFileSync(join(build, '_redirects'), REDIRECTS.map((r) => r.join(' ')).join('\n') + '\n');
+// Cloudflare counts every rule after the first splat as dynamic and allows
+// 100 of those, so exact paths go first. Each exact path is checked before
+// the splats in redirectFor as well, so the order does not change a match.
+const dynamic = (from: string) => from.includes('*') || from.includes('/:');
+const rules = [
+  ...REDIRECTS.filter(([from]) => !dynamic(from)),
+  ...REDIRECTS.filter(([from]) => dynamic(from)),
+];
+const splats = rules.filter(([from]) => dynamic(from)).length;
+if (splats > 100) throw new Error(`_redirects: ${splats} dynamic rules, Cloudflare allows 100`);
+writeFileSync(join(build, '_redirects'), rules.map((r) => r.join(' ')).join('\n') + '\n');
 console.log(`wrote build/_headers (compile service: ${compile}) and build/_redirects`);
