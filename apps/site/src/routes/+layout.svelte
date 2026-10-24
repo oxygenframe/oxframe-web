@@ -50,6 +50,7 @@
       title: 'Alternatives',
       links: [
         { href: '/alternatives/remotion', label: 'Remotion alternatives' },
+        { href: '/alternatives/motion-canvas', label: 'Motion Canvas alternatives' },
         { href: '/vs/manim', label: 'oxframe vs Manim' },
         { href: '/vs/motion-canvas', label: 'oxframe vs Motion Canvas' },
         { href: '/alternatives', label: 'All comparisons' },

@@ -3,6 +3,8 @@
 // render times come from bench/vs/measure.sh (vs-measurements.json). Text
 // fields may hold inline HTML (links, <code>), written here, never user input.
 
+import { SDK_VERSION } from './sdk';
+
 /** The day the facts on these pages were checked against their sources. */
 export const CHECKED = '2026-10-22';
 
@@ -13,6 +15,8 @@ export interface VsPage {
   slug: string;
   /** The other tool, as its authors write it. */
   name: string;
+  /** When this page's facts were checked, if later than `CHECKED`. */
+  checked?: string;
   /** <title> without " — oxframe". */
   title: string;
   description: string;
@@ -548,7 +552,7 @@ cd my-video && oxframe dev</code></pre>
         'Editor with real-time preview and timeline',
       ],
       ['Layout', 'Rows, columns, relative placement, wrapping text', 'Flexbox layout'],
-      ['Latest release', '0.20.4, October 2026', 'v3.17.2, December 2024'],
+      ['Latest release', SDK_VERSION, 'v3.17.2, December 2024'],
       [
         'An agent sees the frames',
         '<code>oxframe check</code> with a JSON report, MCP server',
@@ -678,7 +682,7 @@ cd my-video && oxframe dev</code></pre>
         'None',
         'Counts rendered videos via PostHog; <code>DISABLE_TELEMETRY=true</code> turns it off',
       ],
-      ['Releases', '0.20.4, October 2026', 'No GitHub releases; 0.11.0 on npm'],
+      ['Releases', SDK_VERSION, 'No GitHub releases; 0.11.0 on npm'],
       [
         'An agent sees the frames',
         '<code>oxframe check</code> with a JSON report, MCP server',
@@ -757,6 +761,177 @@ cd my-video && oxframe dev</code></pre>
     sources: [
       { label: 'Revideo on GitHub', url: 'https://github.com/midrender/revideo' },
       { label: '@revideo/core on npm', url: 'https://www.npmjs.com/package/@revideo/core' },
+      ...OXFRAME_SOURCES,
+    ],
+  },
+  {
+    slug: 'midrender',
+    name: 'Midrender',
+    checked: '2026-10-24',
+    title: 'oxframe vs Midrender: code library or AI video editor',
+    description:
+      'oxframe vs Midrender, checked October 2026: an open-source Rust library against a hosted AI motion-graphics editor on Revideo, with pricing, rendering and agents.',
+    lead: 'Pick oxframe when the video lives in your repository as code, renders on your machine or in CI for free, and an agent should check its own frames. Pick Midrender when you want a visual timeline with keyframes next to an AI agent, rendering in the cloud, and a hosted product with plans.',
+    rows: [
+      [
+        'What it is',
+        'An open-source library and CLI',
+        'A hosted editor for AI motion graphics, built on the Revideo engine',
+      ],
+      ['Scenes', 'Rust code in your project', 'Code that the editor and agents share'],
+      [
+        'Editing by hand',
+        'Code, plus a live editor for timing, eases and tunables',
+        'A visual editor with a timeline, properties and keyframes',
+      ],
+      [
+        'Agents',
+        'Any coding agent: <code>oxframe check</code>, an MCP server, skills',
+        'Its own agent, or yours through its CLI or MCP',
+      ],
+      [
+        'Rendering',
+        'On your machine or CI, CPU or GPU, no browser',
+        'A cloud render pipeline; a macOS desktop app',
+      ],
+      [
+        'Price',
+        'Free',
+        'Free (3 projects, 100 MCP tool calls a week), Pro $20 a month, Business $100 a month, Enterprise',
+      ],
+      ['License', 'MIT or Apache-2.0', 'No license published for the editor; Revideo is MIT'],
+      ['Latest release', SDK_VERSION, 'A hosted app; Revideo 0.11.0 on npm, July 2026'],
+    ],
+    sections: [
+      {
+        heading: 'A library you own, or a product you use',
+        html: `<p>Midrender comes from the team behind <a href="/vs/revideo">Revideo</a>, the Motion Canvas fork. Its site describes it as AI motion graphics you can still edit by hand: an agent writes the animation, and the result stays code that you can also change in a visual editor with a timeline and keyframes. You bring your own agent through its CLI or MCP, or use its own. Rendering moved to a cloud pipeline in May 2026, and there is a macOS desktop app.</p>
+<p>oxframe is a library: the scenes are Rust files in your repository, reviewed and versioned like the rest of your code, and the <code>oxframe</code> CLI renders them on your machine or in CI without an account, a browser or a usage limit. The live editor (<code>oxframe dev</code>) adjusts timing, eases and tunable values and writes them next to the code, but you do not draw keyframes in it.</p>`,
+      },
+      {
+        heading: 'How an agent knows the video is right',
+        html: `<p>In Midrender an agent works inside the product: it calls Midrender's tools, and a person can open the result in the editor. In oxframe the agent runs <code>oxframe check</code>, which compiles the scene, renders a storyboard and writes a JSON report of overlapping or clipped text, low contrast, motion too fast to read and other problems, each with the node and the source line. The agent fixes what the report says without anyone watching the video. The <a href="/docs/agents">agent guide</a> shows the loop.</p>`,
+      },
+    ],
+    pickThem: [
+      'You want a visual timeline and keyframes next to an AI agent.',
+      'Designers or marketers on the team edit videos without writing code.',
+      'You prefer a hosted service that renders in the cloud.',
+    ],
+    pickOxframe: [
+      'The video is code in your repository, reviewed and diffed like code.',
+      'Renders run offline or in CI, with no account and no usage limits.',
+      'You want open source under MIT or Apache-2.0.',
+      'An agent should check its own frames before it says it is done.',
+    ],
+    faq: [
+      {
+        q: 'Is Midrender open source?',
+        a: 'Its engine, Revideo, is open source under MIT. We found no published source or license for the Midrender editor itself; it is a hosted product with a free plan and paid plans.',
+      },
+      {
+        q: 'How is Midrender related to Revideo and Motion Canvas?',
+        a: 'Revideo is a fork of Motion Canvas made by the founders of Midrender, and its README calls it the engine behind Midrender. Midrender adds a visual editor, an AI agent and cloud rendering on top.',
+      },
+      {
+        q: 'Can I use Claude Code or Cursor with both?',
+        a: 'Yes. Midrender connects to agents through its CLI or an MCP server. oxframe works with any coding agent: it ships skills and an MCP server, and oxframe check gives the agent a report of what is wrong in the frames.',
+      },
+      {
+        q: 'Does oxframe have a visual editor?',
+        a: 'oxframe dev opens a live editor with a preview, a timeline, markers, eases and tunable values that are saved next to the code. Shapes and motion are written in code, not drawn with keyframes.',
+      },
+      {
+        q: 'What does each cost?',
+        a: 'oxframe is free under MIT or Apache-2.0. Midrender has a free plan with 3 projects and 100 MCP tool calls a week, Pro at $20 a month, Business at $100 a month and an Enterprise plan, as listed on its pricing page.',
+      },
+    ],
+    sources: [
+      { label: 'Midrender', url: 'https://midrender.com' },
+      { label: 'Midrender pricing', url: 'https://midrender.com/pricing' },
+      { label: 'Midrender changelog', url: 'https://midrender.com/changelog' },
+      {
+        label: 'Midrender on Y Combinator',
+        url: 'https://www.ycombinator.com/companies/midrender',
+      },
+      { label: 'Revideo on GitHub', url: 'https://github.com/midrender/revideo' },
+      ...OXFRAME_SOURCES,
+    ],
+  },
+  {
+    slug: 'openmontage',
+    name: 'OpenMontage',
+    checked: '2026-10-24',
+    title: 'oxframe vs OpenMontage: graphics engine or AI studio',
+    description:
+      'oxframe vs OpenMontage, checked October 2026: what each is for, Remotion, HyperFrames and FFmpeg against a native renderer, licenses, and using both together.',
+    lead: 'They do different jobs. OpenMontage turns a coding agent into a production studio: research, script, footage, voice, music and editing, composed by Remotion, HyperFrames or FFmpeg. oxframe draws motion graphics from code: diagrams, charts, code, formulas and product explainers that must be exact. Pick OpenMontage for a whole video from a prompt; pick oxframe for the animated parts that you want precise and checked.',
+    rows: [
+      [
+        'What it is',
+        'A motion-graphics library and CLI',
+        'An agentic video production system: pipelines, tools and skills for a coding agent',
+      ],
+      ['Written in', 'Rust', 'Python tools, Markdown skills, YAML pipelines'],
+      [
+        'In the frame',
+        'Shapes, text, charts, code, formulas, 3D and shaders drawn by code',
+        'Stock and generated footage, avatars, voice, music and graphics',
+      ],
+      [
+        'Renderer',
+        'Its own, native, no browser',
+        'Remotion, HyperFrames or FFmpeg, chosen per project',
+      ],
+      ['Paid APIs', 'None', 'Optional: it works with free tools and footage, more with keys'],
+      ['License', 'MIT or Apache-2.0', 'AGPL-3.0'],
+    ],
+    sections: [
+      {
+        heading: 'Different layers of the same job',
+        html: `<p>OpenMontage is a set of pipelines (explainer, talking head, documentary montage, screen demo, podcast repurpose and more), over a hundred tools and hundreds of skill files that teach a coding agent to produce a video end to end. Its README says you do not need paid API keys: it can use free text-to-speech, archive and stock footage, and adds generated video, voices and music when you give it keys. The final composition is rendered by Remotion, by HyperFrames or by FFmpeg, chosen when the project is proposed.</p>
+<p>oxframe sits one layer down. It is the engine that draws the animated graphics: a node tree with layout and signals, rendered natively and the same on every machine, with <code>oxframe check</code> to tell the agent what is wrong in the frames.</p>`,
+      },
+      {
+        heading: 'Using them together',
+        html: `<p>OpenMontage's render runtimes are fixed in its <code>video_compose</code> tool, so oxframe is not one of them. You can still use both: let an agent write the motion-graphics part in oxframe, run <code>oxframe check</code>, render it with <code>oxframe render</code>, and hand the MP4 to OpenMontage as a clip like any other footage. Note the licenses: OpenMontage is AGPL-3.0, oxframe is MIT or Apache-2.0.</p>`,
+      },
+    ],
+    pickThem: [
+      'You want a whole video from one prompt: script, footage, voice, music and edit.',
+      'The video is mostly footage, avatars or talking heads.',
+      'You already use Remotion or HyperFrames and want an agent to drive them.',
+    ],
+    pickOxframe: [
+      'The video is motion graphics: diagrams, charts, code, formulas, UI.',
+      'Frames must be exact and identical on every machine.',
+      'An agent should check its frames with a structured report.',
+      'You need MIT or Apache-2.0 rather than AGPL-3.0.',
+    ],
+    faq: [
+      {
+        q: 'Is OpenMontage a renderer?',
+        a: 'No. It is a production system for coding agents. Its compositions are rendered by Remotion, HyperFrames or FFmpeg.',
+      },
+      {
+        q: 'Can OpenMontage render with oxframe?',
+        a: 'Not directly: its render runtimes are built into its video_compose tool. Render the motion-graphics part with oxframe and give OpenMontage the MP4 as a clip.',
+      },
+      {
+        q: 'Does OpenMontage need paid API keys?',
+        a: 'Its README says no: a free stack of open-source voice, archive and stock footage and its renderers makes real videos, and keys for paid providers add more tools. oxframe needs no keys at all.',
+      },
+      {
+        q: 'Which license applies?',
+        a: 'OpenMontage is under AGPL-3.0; oxframe is under MIT or Apache-2.0, your choice. Check what AGPL-3.0 means for your use, for example if you offer it as a service.',
+      },
+    ],
+    sources: [
+      { label: 'OpenMontage on GitHub', url: 'https://github.com/calesthio/OpenMontage' },
+      {
+        label: 'OpenMontage architecture',
+        url: 'https://github.com/calesthio/OpenMontage/blob/main/docs/ARCHITECTURE.md',
+      },
       ...OXFRAME_SOURCES,
     ],
   },
