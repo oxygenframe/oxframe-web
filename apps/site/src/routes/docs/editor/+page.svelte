@@ -4,6 +4,20 @@
   on this site.
 </p>
 
+<figure>
+  <img
+    src="/images/editor.png"
+    width="1440"
+    height="900"
+    alt="The oxframe editor on a new project: the frame with a blue circle and the text Hello, hello in the middle, the selected Txt node's signals in the inspector on the right, and the timeline with the hello marker at the bottom"
+  />
+  <figcaption>
+    The viewport, the inspector on the right and the timeline below, on the project <code
+      >oxframe init</code
+    > creates.
+  </figcaption>
+</figure>
+
 <h2>The four areas</h2>
 <dl>
   <dt>Viewport</dt>
@@ -55,3 +69,20 @@
   <li>Several browser tabs can be connected to one <code>oxframe dev</code> at the same time.</li>
   <li>In the playground, <strong>Share</strong> puts the whole source into the link.</li>
 </ul>
+
+<style>
+  figure {
+    margin: 0 0 24px;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+</style>
