@@ -1,10 +1,6 @@
 <script lang="ts">
-  import ExampleVideo from '$lib/components/ExampleVideo.svelte';
   import LiveExample from '$lib/components/LiveExample.svelte';
-  import { mediaFor } from '$lib/media';
   import { SDK_VERSION } from '$lib/sdk';
-
-  const magnifier = mediaFor('magnifier');
 </script>
 
 <h1>Rendering video</h1>
@@ -98,9 +94,9 @@ sea.amp().to(0.12, 1.2).await;`}</code
   <code>Params</code> fails the check, and the message lists the fields. WGSL that does not compile
   fails it too, with the line in your source. Your <code>shade</code> runs on the CPU, a tile of
   pixels at a time, with the same bytes on every OS (about 0.13 s for a 1080p frame), in
-  <code>oxframe dev</code>, <code>check</code> and <code>render</code>. It cannot use textures,
-  samplers or derivatives; it reads its inputs with functions instead (below). The playground does
-  not paint a custom shader yet.
+  <code>oxframe dev</code>, <code>check</code>, <code>render</code> and the playground, where a 1080p
+  frame takes about 0.3 s and playback skips frames to keep time. It cannot use textures, samplers or
+  derivatives; it reads its inputs with functions instead (below).
 </p>
 
 <h3 id="wgsl-inputs">Your own WGSL: reading the frame, an image or a node</h3>
@@ -146,9 +142,7 @@ async fn magnifier(view: View) {
     lens.uniform("cx").to(0.73, 3.0).await;
 }`}</code
   ></pre>
-{#if magnifier}
-  <ExampleVideo media={magnifier} title="A magnifying glass written in WGSL" />
-{/if}
+<LiveExample name="magnifier" />
 <p>
   The whole scene, with a color fringe at the rim, is the
   <a href="/gallery/magnifier">magnifier example in the gallery</a>. A frame shader inside the box

@@ -1,3 +1,7 @@
+<script lang="ts">
+  import PipelineDiagram from '$lib/components/PipelineDiagram.svelte';
+</script>
+
 <h1>How oxframe works</h1>
 <p class="lead">
   You don't need any of this to make animations. Read it if you are curious why scrubbing is
@@ -52,6 +56,7 @@
     For video, frames stream to <strong>ffmpeg</strong> through a pipe while the next ones are being drawn.
   </li>
 </ol>
+<PipelineDiagram />
 <p>
   Both renderers are checked against the same reference images: the average color difference must
   stay below ΔE 1 in OKLab, which is below what the eye can see.
