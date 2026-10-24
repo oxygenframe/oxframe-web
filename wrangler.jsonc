@@ -35,6 +35,14 @@
     { "pattern": "oxframe.dev", "custom_domain": true },
     { "pattern": "www.oxframe.dev", "custom_domain": true },
   ],
+  // Preview builds of branches: the same bucket (their shares go under
+  // previews/, see worker/index.ts) and their own rate-limit counter.
+  "previews": {
+    "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "oxframe" }],
+    "ratelimits": [
+      { "name": "SHARE_LIMIT", "namespace_id": "1002", "simple": { "limit": 3, "period": 60 } },
+    ],
+  },
   "workers_dev": true,
   "preview_urls": true,
   "observability": { "enabled": true },

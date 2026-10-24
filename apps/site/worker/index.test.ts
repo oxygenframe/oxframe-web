@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { media, parseRange } from './index';
+import { media, parseRange, sharesBucket } from './index';
 
 const data = new TextEncoder().encode('0123456789');
 const bucket = {
@@ -58,4 +58,32 @@ test('a whole file, a range, and a missing file', async () => {
   );
   const head = await media(new Request(url, { method: 'HEAD' }), bucket);
   expect(head.headers.get('Content-Length')).toBe('10');
+});
+
+test('shares off oxframe.dev go under previews/', async () => {
+  const keys: string[] = [];
+  const store = {
+    ...bucket,
+    async get(key: string) {
+      keys.push(`get ${key}`);
+      return null;
+    },
+    async head(key: string) {
+      keys.push(`head ${key}`);
+      return null;
+    },
+    async put(key: string) {
+      keys.push(`put ${key}`);
+    },
+  };
+  expect(sharesBucket(store, 'oxframe.dev')).toBe(store);
+  const preview = sharesBucket(store, 'abc123-oxframe-site.example.workers.dev');
+  await preview.put('shares/x/meta.json', '{}');
+  await preview.get('shares/x/meta.json');
+  await preview.head('shares/x/video.mp4');
+  expect(keys).toEqual([
+    'put previews/shares/x/meta.json',
+    'get previews/shares/x/meta.json',
+    'head previews/shares/x/video.mp4',
+  ]);
 });
