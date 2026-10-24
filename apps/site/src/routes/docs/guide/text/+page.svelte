@@ -14,6 +14,8 @@
   <code>Txt::new().text("Hello").font_size(96.0).weight(800.0)</code> is a text shape. Two fonts are
   built in: Inter (default) and JetBrains Mono (<code>.family(MONO)</code>). Both include Cyrillic.
   Because the fonts ship with oxframe, your text looks exactly the same on every computer.
+  <code>Txt::font_size</code>, <code>Txt::weight</code> and <code>Code::font_size</code> take whole
+  numbers too: <code>.font_size(64)</code>.
 </p>
 
 <h2>Text animates too</h2>

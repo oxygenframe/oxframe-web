@@ -1,0 +1,2824 @@
+# oxframe 0.22.0
+
+Text of this version of the documentation. Code samples are the fenced blocks from the pages.
+
+Welcome to oxframe
+
+  oxframe lets you make animations by writing code. You describe what happens, step by step, and
+  oxframe turns it into a video — with a live editor to scrub through it and fine-tune the timing.
+
+ Here is a whole animation: a square slides to the right and becomes a circle.
+
+use oxframe::prelude::*;
+
+#[oxframe::scene]
+async fn intro(view: View)
+
+fn main()
+
+  If that reads like a recipe —  add a square, then move it and round its corners at the same time  — you already understand the main idea. The rest of these docs teach you the details, one small step
+  at a time.
+
+ How to read these docs
+
+     Start here  gets oxframe running. If you just want to look around first, open
+    the
+     playground : it runs in your browser, nothing to install.
+
+     Guide  is a series of short lessons. Each one adds a single idea and has a live preview
+    you can play with. Read them in order — none of them assumes more than the lessons before it.
+
+     Going further  is the reference: every node, effect, editor feature and command.
+
+    Under the hood  explains how oxframe works inside, for the curious.
+
+ What you need to know
+
+  The basics of Rust are enough:  let , functions, and calling methods. You do not need
+  to know
+   async  — lesson 1 explains the only part of it you will use. No graphics experience required.
+
+  Ready?  Install oxframe , or jump straight to
+   lesson 1  in the browser.
+
+3D scenes
+
+  Lit 3D models inside a 2D animation: every position, rotation, color and the camera are signals,
+  and the 3D view is a node like any other.
+
+ A world and a view
+ Turn on the  3d  feature of  oxframe :
+
+oxframe =
+
+let world = Scene3d::new();
+let cube = world.add(Mesh::cube().color(Accent).roughness(0.35));
+view.add(View3d::new(&world).size(640.0, 400.0));
+cube.rotation().to(Vec3::new(0.0, 360.0, 0.0), 6.0).await;
+
+   Scene3d::new()  is an empty world with a camera looking at the origin.
+   scene.add(mesh)  puts a mesh in it and returns an  Object3d .
+   View3d::new(&scene).size(640.0, 400.0)  shows the world in the 2D scene: it is a picture
+  there, so position, opacity, effects, the 2D camera and layout work as for any node. Y is up and a cube
+  is 1 unit wide.
+
+ Meshes and materials
+
+   Mesh::cube() ,  Mesh::sphere() ,  Mesh::plane()  (a floor facing
+  up) and  Mesh::cylinder()  are 1 unit across.  Mesh::glb_file  reads a
+  binary glTF model and fits it into the same 1-unit box; its base color is kept, textures are not
+  read yet.
+   Mesh::group()  draws nothing and holds children:  object.add(mesh)  adds one
+  that moves, turns and scales with its parent.
+
+  The material follows glTF:  .color()  takes a color or a theme role,
+   .metallic()  goes from paint (0) to metal (1),  .roughness()  from mirror
+  (0) to matte (1),  .emissive()  makes a surface glow and  .opacity()  makes
+  it see-through.
+   .position() ,  .rotation()  in degrees and  .scale()  place it.
+
+ Everything is a signal
+
+cube.position().to(Vec3::new(1.0, 0.0, 0.0), 1.0).await;
+cube.color().to(Success, 0.5).await;
+world.camera().position().to(Vec3::new(2.2, 1.8, 3.0), 2.0).await;
+let sun = world.light(Light::directional((-2.0, -4.0, -1.0)));
+sun.intensity().to(0.3, 1.0).await;
+
+  An  Object3d  has position, rotation (degrees around X, then Y, then Z — animate past
+  360 for more turns), orientation (a  Quat ), scale, color, metallic, roughness,
+  emissive and opacity as signals.  scene.camera()  has position, target and field of
+  view.
+   scene.light(Light::directional(..))  adds sunlight and  Light::point(..)  a bulb;
+  with no light added, a default sunlight gives each face of a box its own shade.
+
+ 2D labels on 3D points
+
+let frame = view.add(View3d::new(&world).size(760.0, 520.0));
+let to_view = frame.projector();
+let label = frame.add(Txt::new().text("top").caption());
+let (w, c) = (world.clone(), cube.clone());
+label.x().bind(move || to_view(w.world_point(&c, Vec3::new(0.0, 0.5, 0.0))).x);
+
+   view.projector()  maps a 3D point into the view's own coordinates, so a label or a
+  leader line follows a corner while the model turns.  scene.world_point(object, point)  gives
+  the point of an object after its parents' transforms.
+
+ How it renders
+
+  The renderer is a software rasterizer with a depth buffer and 2 × 2 supersampling for smooth
+  edges. The same scene gives the same pixels in a render, in  oxframe check , in CI
+  without a GPU and in the browser playground. A frame is redrawn only when something in the scene
+  changed.
+   .samples(1)  renders faster,  .resolution(2.0)  keeps the view sharp when it
+  is scaled up. Shadows are not drawn yet.
+
+  The same picture path is open to nodes of your own:  DrawCtx::image  draws a picture in
+  a
+   node you write .
+
+Working with AI agents
+
+  Coding agents like Claude Code, Codex or Cursor can write oxframe scenes for you. Every new
+  project comes with instructions that teach them how — and a way for them to see what they made.
+
+ What  oxframe init  adds
+
+        AGENTS.md
+
+        The project's rules for any agent: how scenes work, which commands to run, what never to do
+        (non-deterministic code, editing  meta.json  by hand) and fixes for the most common
+        compile errors.
+
+        CLAUDE.md
+       One line,  @AGENTS.md , so Claude Code reads the same file.
+
+        .claude/skills/oxframe/
+
+        A skill with a step-by-step workflow ( SKILL.md ) and an API cheat sheet ( reference.md ). Agents that support skills load it whenever you ask for a change to a scene.
+
+ The files are plain Markdown. Read them, edit them, add your own project conventions.
+
+ Letting the agent see its work
+
+  Animation is visual, so compiling is not enough to know a change is right. The instructions tell
+  the agent to look at the picture after every change:
+
+oxframe check                 # storyboard.png + report.json; exit 1 on errors
+# open out/check/storyboard.png and out/check/report.json, fix, run again
+oxframe inspect --at 2.5      # scene tree at that time, when a frame looks wrong
+
+  The storyboard is a grid of frames with the time under each cell. The report names the rule, the
+  node and the source line.  oxframe snapshot  is still there for one full-size still.
+  Nothing keeps running —  oxframe dev  is for you, not for the agent.
+
+     out/check/storyboard.png  of a scene with a mistake: the list sits on top of the title.
+
+ A good way to work together
+
+   Keep  oxframe dev  open in your browser.
+
+    Ask the agent for a change in plain words:  "after the title, slide three cards in from the left, one after another" .
+
+    The agent edits the code and checks it with  oxframe check ; your preview reloads by
+    itself.
+
+    Fine-tune timing yourself with markers and sliders. The agent is told to keep your
+     meta.json  values, so your adjustments survive its next edit.
+
+ Keeping the files up to date
+ After upgrading oxframe, refresh the instructions:
+
+oxframe agents          # refreshes the generated files
+oxframe agents --force  # also replaces files you made your own
+
+  Generated files carry an  oxframe-agents  marker comment. To keep your own version of a file,
+  delete that comment — files without it are left alone. Projects created with an older CLI can get the
+  files the same way.
+
+ Connecting an MCP client
+
+   oxframe mcp  speaks MCP over stdin and stdout. Point Claude Code, or any other client,
+  at that command with the project directory as its working directory. The tools are
+   check ,  storyboard ,  render_frame ,  inspect ,
+   render_graph ,  list_components ,  docs_search  and
+   render .  docs_search  looks through the docs of the CLI's own version.
+   render_graph  lists the render passes at one time, so an agent can see that a
+   lens_drops  or a  ripple  runs, or why  check  reports
+   input_cycle .
+
+{
+  "mcpServers": {
+    "oxframe":
+  }
+}
+
+  Every command also takes  --json  and then prints a single JSON object on stdout. A
+  compile error includes the compiler text and a  hints  array for the mistakes agents
+  make most often (a forgotten  .await , a builder never passed to  add , a
+  theme token used as a number, and the rest).
+
+ For tools that read the web
+
+  Each docs version has a plain-text index and a full dump, generated from the pages when the site
+  is built. The current version is   /llms.txt   and
+    /llms-full.txt  . A pinned version is
+   /docs/<series>/llms.txt  (for example
+    /docs/0.1/llms.txt  ). The current series redirects to
+  the unversioned files, so a link written for today's version keeps working after that series is
+  archived.
+
+Camera
+
+  A camera zooms, pans and turns the view of everything added to it. Show a whole diagram, move in
+  on one detail, follow something as it travels — while titles stay put.
+
+ World and screen
+
+  Add a  Camera  to the view and build the world inside it. Everything you add to the camera
+  is seen through it; everything you add to the view itself stays on screen, which is where titles, captions
+  and labels belong.
+
+let cam = view.add(Camera::new());
+let diagram = cam.add(Group::new());      // the world: seen through the camera
+diagram.add(Rect::new().width(360.0).height(160.0));
+view.add(Txt::new().text("Title").h2().to_edge(Edge::Top)); // on screen
+
+ Moving the camera
+
+  A camera has four signals, animated like any other property:  x  and
+   y  are the point it looks at,  zoom  is how close it is (2 = twice as big),
+  and  rotation  turns the view (in degrees, clockwise).
+
+cam.fit(diagram, 120.0, 0.0).await;   // all of it in the frame, 120 px to spare
+cam.center_on(api, 1.0).await;         // bring one node to the middle
+cam.zoom().to(2.5, 1.0).await;         // move in
+cam.rotation().to(15.0, 1.0).await;    // tilt
+cam.reset(1.2).await;                  // back to x = y = 0, zoom 1, no rotation
+
+   fit  measures the node when it is called, so a layout that has grown is framed at its
+  current size. A duration of  0.0  jumps there at once — handy for the first frame. To
+  move and zoom together, run both in  all :
+
+  all((cam.center_on(api, 1.2), cam.zoom().to(1.6, 1.2))).await;
+
+ Following a node
+
+  Bind the camera's position to a node and it follows it every frame. The next animation of the
+  camera's  x  or  y  releases it.
+
+let (px, py) = (packet.x(), packet.y());
+cam.x().bind(move || px.get());
+cam.y().bind(move || py.get());
+packet.x().to(900.0, 2.0).await;       // the camera rides along
+cam.fit(diagram, 120.0, 1.4).await;    // and lets go here
+
+ Sharp at any zoom
+
+  Nothing is stretched: every frame is drawn again at its final scale. Text and outlines stay crisp
+  at ×10, and blurs, shadows and glows grow with the zoom instead of turning to mush — on the GPU
+  and the CPU renderer alike.
+
+ Checking
+
+    oxframe check   does not report nodes inside a camera as out
+  of frame: when you zoom in on a detail, the rest of the world is supposed to be outside. Text overlap
+  and contrast are still checked, and nodes added to the view are checked as usual.
+
+Animated charts and plots
+
+  Axes, number lines, function plots and bars. Data coordinates map into a box, and every part
+  follows when a range animates.
+
+ Axes
+
+   Axes::new()  is a plotting box with a grid, two axes with arrows, ticks and labels.
+   .x_range(-5.0..5.0)  and  .y_range(-2.0..2.0)  set the data ranges;
+   .width()  and  .height()  set the box in pixels or  pct()  of
+  the frame (80 % by 60 % by default);  .no_grid()  drops the grid. The axes cross at 0 when
+  0 is in range. Lines and labels take their colors from the theme.
+
+let axes = view.add(Axes::new().x_range(-5.0..5.0).y_range(-2.0..2.0));
+axes.x_range().to(-10.0..10.0, 1.0).await;
+
+   axes.x_range()  is a signal of  Interval , so
+   axes.x_range().to(-10.0..10.0, 1.0)  zooms out. Ticks sit on round steps (1, 2 or 5 times
+  a power of ten), and each label keeps its value while the range slides, so nothing flickers.
+
+ Function plots
+
+   axes.plot(|x| x.sin())  draws a function and returns a  Plot . It is
+  sampled again every frame, finer where it bends, so it follows the ranges. It breaks where it
+  jumps —  tan  has no vertical line across its gaps — and it is cut at the edge of the
+  box.  .stroke(Accent)  and  .width(4.0)  style it,  .draw_on()
+  draws it like any path, and  plot.to_fn(|x| x.cos(), 1.0)  morphs it: every x moves from
+  the old value to the new one.
+
+let wave = axes.plot(|x| x.sin()).stroke(Accent);
+wave.draw_on().await;
+let x = Signal::new(-5.0);
+axes.point_on(&wave, x.clone());
+x.to(5.0, 2.0).await;
+wave.to_fn(|x| (2.0 * x).sin(), 1.0).await;
+
+   axes.point_on(&plot, x)  keeps a dot on the curve at a signal  x .
+   axes.c2p(x, y)  gives the scene point of a data point, and
+   axes.place(node, x, y)  keeps any node there while the ranges move.
+
+ Bars and data
+
+   axes.bars([3.0, 7.5])  draws a bar per value at x = 0, 1, 2… with the value above it;
+  set the x range to  -0.5..n - 0.5 . With bars the y axis sits at the left edge.
+   bars.value(0).to(9.0, 1.0)  grows one bar and its label, and
+   .labels(["a", "b"])  names the bars.  axes.line_series(..)  draws a line
+  through data points and  axes.scatter(..)  a dot per point.
+
+let bars = axes.bars([0.0, 0.0, 0.0]).labels(["rustc", "gcc", "clang"]);
+stagger(0.15, [3.2, 7.5, 5.1].into_iter().enumerate(), |(i, v)| bars.value(i).to(v, 1.0)).await;
+
+ Number lines
+
+   NumberLine::new(0.0..10.0)  is a single axis with ticks, labels and an arrow. It has
+  the same methods as the axes:  x_range ,  c2p  and  place .
+
+  There is no pie chart yet; draw slices with  Custom . Long rows of a
+   BulletList  now wrap inside the frame, so a list of results next to a chart stays readable.
+
+Check rules
+
+  What each rule in an  oxframe check  report means and how to fix it. Every issue in
+   report.json  links to its section here in its  docs  field (Rust code gets
+  the same link from  Issue::docs ).
+
+   oxframe check  plays every scene, samples frames and reports what a viewer would see
+  as a mistake. An error makes the command exit 1; a warning does not. Each issue names the rule,
+  the time range, the node and the line of code that added it. Thresholds live in
+   oxframe.toml  under  [check] .
+
+  An issue on a node comes with a close-up in  out/check/issues/ : the frame around the
+  node at full resolution, the node outlined in red. Its path is the issue's  crop  field
+  in  report.json , next to  bounds , the node's box. A node wholly outside
+  the frame gets the strip along the edge it went past.
+
+     issues/02-out_of_frame.png : a headline that runs off the right edge.
+
+         Before:
+
+         After:
+
+ Frame and layout
+
+  out_of_frame
+
+  A node stays outside the frame (error) or outside the safe area near the edges (warning). A node
+  that only passes through the edge, entering or leaving, is not reported.
+
+  Fix: move it inward, make it smaller, or place it with  pct() ,
+   to_edge(Edge::…)  or a  Layout .  --safe-inset 0  turns the warning
+  off for a frame without a safe area.
+
+  text_overflow
+
+  Text is wider than its block: its  max_width , or the  Layout  that holds it.
+
+  Fix: shorter text, a smaller type style ( .h2() ,  .body() ), or a wider
+  block.
+
+  text_overlap
+ Two pieces of text cover each other.
+
+  Fix: place one relative to the other ( next_to(other, Side::Bottom) ), put both in a
+   Layout , or fade the first out before the second comes in.
+
+  covers_text
+ A shader is drawn over text, so the text is hidden behind it.
+
+ Fix: add the shader before the text, or move the text out of its box.
+
+  low_contrast
+
+  Text is too close in color to what is behind it, below the WCAG ratio (4.5 by default,
+   --min-contrast ).
+
+  Fix: use theme roles, which are built to contrast:  Text  on  Background  or
+   Surface ,  OnAccent  on  Accent .
+
+ Timing
+
+  too_fast
+
+  Text is not on screen long enough to read at the reading speed ( --chars-per-second ),
+  or a large move is quicker than  --min-motion .
+
+  Fix: hold the text with  wait_for(…)  after it appears, or give the move a longer
+  duration. In a presentation, hold before each  slide_break : the video plays through
+  it.
+
+  dead_time
+
+  Nothing changes on screen for longer than  --max-still  (not checked with a soundtrack).
+
+ Fix: shorten the wait, or give the viewer something to look at while it lasts.
+
+ Voice
+
+  voice_cut
+ A spoken line runs past the end of its scene and is cut.
+ Fix:  line.await  before the scene ends, or shorten the line.
+
+  voice_overlap
+ Two spoken lines overlap.
+ Fix: start the second line after  first.await .
+
+ Shaders
+
+  shader_error
+
+  The WGSL of a shader does not compile, or a name or type does not match its  Params .
+
+  Fix: the message names the line in the shader; see  lesson 13 .
+
+  param_unknown
+ A parameter is set from Rust that the shader's  Params  does not have.
+ Fix: add it to  struct Params  or correct the name.
+
+  shader_slow
+ A shader takes longer per frame than the budget.
+ Fix: a smaller box, fewer loop iterations, or a preset from  shaders:: .
+
+  input_cycle
+
+  A shader that reads drawn pixels ( lens_drops , an effect) is inside a group that is
+  itself drawn as a layer (opacity below 1, blur, clip, blend, shadow, another effect). The shader
+  is skipped.
+
+ Fix: put the effect on that group instead, or take the node out of it.
+
+ Determinism and media
+
+  nondeterministic
+ Two paints of the same frame differ, so a seek or a render would not match the preview.
+
+  Fix: draw only from signals and  ctx.time() ; take randomness from
+   ctx.rng(seed)  or  random() , never from the clock.
+
+  video_unavailable
+ A video clip cannot be opened; it shows as a dark box.
+
+  Fix: check the path, build with the  video  feature and install ffmpeg. The playground cannot
+  play videos.
+
+CLI reference
+
+  Everything the  oxframe  command can do. You will use  dev  most of the time;
+  the rest are for creating, checking and exporting.
+
+ The everyday loop
+
+oxframe init my-video     # once: create a project
+cd my-video
+oxframe dev               # edit code, watch the preview update
+oxframe render            # when you are happy: out/my-video.mp4
+
+ Commands
+
+  Every command accepts  --json . It then prints one JSON object on stdout ( ok ,  exit , and on failure  error ,  diagnostics  and
+   hints ) and keeps the log on stderr.
+
+  oxframe init <name>
+
+  Creates a folder with a ready-to-run project:  Cargo.toml  (SDK version pinned),
+   src/main.rs  with one scene, its  meta.json ,  oxframe.toml ,
+   .gitignore  and instructions for AI coding agents (see
+   Working with AI agents ).
+   --template node  makes a library crate with a node of your own instead (see
+   Writing your own node ).
+
+       --sdk-path <dir>   Use a local  oxframe-sdk  checkout instead of crates.io (also
+         OXFRAME_SDK_PATH ).
+
+  oxframe dev
+
+  Builds the project, opens the editor in your browser and rebuilds every time you save. If the code
+  does not compile, the error shows over the preview and the last good build keeps playing.
+
+       --port <n>   Editor port (default 3000).
+       --open  /  --no-open   Open the browser, or don't (overrides  oxframe.toml ).
+       --release   Optimized build: slower to compile, faster to play heavy scenes.
+       --gpu   Draw the preview on the GPU (vello). The CPU is the default;  --cpu  is still accepted.
+
+  oxframe present
+
+  Builds the project like  oxframe dev  and opens it as a presentation: full screen,
+  stopping at every  slide_break  and scene end. N opens the speaker notes. Takes
+   --port ,  --no-open ,  --release  and  --gpu . See
+   Presentations from scenes .
+
+  oxframe snapshot --at <seconds>
+
+  Renders single frames as PNG without ffmpeg — handy to check a moment in the animation, to put a
+  still in a README, or for an AI agent to look at its own work.
+
+oxframe snapshot --at 1.5                       # out/snapshots/ -1.50.png
+oxframe snapshot --at 0 --at 2 --at 4           # three frames
+oxframe snapshot --at 1 --out cover.png         # exactly this file
+oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
+
+  Each written file is printed on its own line ( path frame=N t=T ), so scripts can pick
+  them up. Default size is 960×540; change it with  --size 1920x1080 .
+
+  oxframe render
+
+  Builds in release mode and renders a video. See  Rendering video  for examples.
+
+       --out <path>   Output file or folder (default  out/<project>.mp4 ).
+       --format <f>    mp4 ,  webm ,  prores  or  png ; by default
+        taken from the  --out  extension.
+       --scene <name>   Only this scene.
+       --range a..b   Only this time range, in seconds; either side can be left out ( 2.. ).
+       --size WxH   Output size, e.g.  3840x2160 .
+       --aspect <shape>    16:9 ,  9:16 ,  1:1 , or  all .
+         all  writes one file per format declared with
+         Project::aspects .
+       --gpu   Draw on the GPU (vello). The CPU (tiny-skia) is the default: faster here and byte-for-byte
+        deterministic.  --cpu  is still accepted and wins.
+       --no-audio   Leave the soundtrack out.
+
+  oxframe check
+
+  Compiles the project ( cargo check ), validates every  meta.json , compares
+  the versions of the CLI, SDK and editor, and then looks at the picture. It writes
+   out/check/storyboard.png  (a grid of frames at markers and at equal intervals, with
+  the time and marker name under each cell) and  out/check/report.json .
+
+  Each issue has a rule, a severity ( error  or  warning ), a time range, the
+  node name, the source  file:line  and a hint:
+
+     out_of_frame  — a node stays outside the frame (or inside the frame but outside the safe
+    area, which is a warning).
+
+    text_overlap  — two text blocks cover each other.
+
+     text_overflow  — text is wider than its  max_width  or its layout parent.
+
+    low_contrast  — text against its backdrop is below WCAG 4.5:1.
+
+     too_fast  — a long line flashes too briefly to read (error), or a large move is shorter
+    than 0.15s (warning).
+
+     dead_time  — nothing on screen changes for several seconds and the project has no soundtrack
+    (warning).
+
+     nondeterministic  — painting the same frame twice did not match. Draw from the time
+    and  ctx.rng(seed) , not from a counter saved in the closure.
+
+  Errors make the command exit 1; warnings do not. A project that declares
+   Project::aspects  is checked in every format; the other storyboards are
+   storyboard-9x16.png  and  storyboard-1x1.png .  --frames  also
+  writes each cell at full size under  out/check/frames/ . The check renders only the
+  frames it needs, on the CPU, at a reduced size, so a 30 second scene finishes in a few seconds.
+
+  An issue on a node also gets a close-up:  out/check/issues/01-out_of_frame.png  and so
+  on, that part of the frame at full resolution with the node outlined in red (up to 24 per check).
+  In  report.json  the issue then has  bounds , the node's box at the start of
+  the issue in scene units (as in  oxframe inspect ), and  crop , the path of
+  the picture relative to  out/check/ . An agent opens the crop instead of hunting for
+  the problem on the storyboard.
+
+  The report also lists  motion : every node that travels, with its
+   file:line , the stretches of time it visibly moves ( moves , in seconds),
+  where it starts and ends, and the length of its path. Read it to check timing without watching the
+  video.  out/check/trajectories/<scene>.png  draws those paths over the scene's
+  last frame, numbered as in  motion . A hard cut between scenes shows on the storyboard
+  as the last frame of one scene next to the first frame of the next.
+
+  To see what an edit changed, keep the frames from before it and compare with
+   oxframe check --against <dir> :
+
+oxframe check --frames --out out/before
+# edit the scene
+oxframe check --against out/before
+
+  Each frame that changed is listed with the share of its pixels that moved, and
+   out/check/diff/  holds the frame dimmed with the changed pixels in red. The report
+  gets a  comparison : changed, unchanged, added and removed frames. An edit that changed
+  frames it should not have shows up at once. The reference frames are read with
+   Image::decode_png .
+
+  Name a node with  .name("title")  so the report is readable. Without a name it is
+  labeled by the line that called  add .
+
+  oxframe inspect --at <seconds>
+
+  Prints the scene tree at that time as JSON: kind, name, source location, scene bounds, opacity,
+  text and draw order.  --scene outro  measures the time from the start of that scene.
+   --graph  adds a  passes  array: one vector pass, then a composite for each layer
+  (a group opacity, a blend, a blur, a shadow or a clip). Without the flag the JSON is unchanged.
+
+  oxframe add <block>
+
+  Copies a ready-made, checked block into  src/blocks/  and adds
+   mod blocks;  to  src/main.rs . Each block is one call that plays itself in
+  and returns its group:  blocks::stat_counter(view, 1280.0, "stars").await . With no
+  name it lists them:  logo-reveal ,  stat-counter ,
+   progress-bar ,  quote-card ,  before-after ,
+   timeline . The copied file is yours to edit;  --force  replaces it.
+
+  oxframe doctor
+
+  Checks what building and rendering need — Rust 1.95 or newer, a C linker, ffmpeg, and inside a
+  project whether it is on the SDK your CLI makes — and prints the fix for each missing piece on
+  your system. Exits 2 when something required is missing.
+
+  oxframe agents
+
+  Writes or refreshes  AGENTS.md ,  CLAUDE.md  and
+   .claude/skills/oxframe/  — run it after upgrading oxframe. Files you edited yourself
+  are left alone unless you pass  --force .
+
+  oxframe upgrade
+
+  Moves the project to the SDK version your CLI is made for: updates the  oxframe  pin in
+   Cargo.toml  (keeping your formatting), runs  cargo update  and refreshes the
+  agent files. If the project already uses a newer SDK, it tells you to update the CLI instead.
+
+  oxframe mcp
+
+  An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
+  serves  check ,  storyboard ,  render_frame ,
+   inspect ,  render_graph ,
+   list_components ,  docs_search  and  render .
+   render_graph  is  oxframe inspect --graph  without the node tree: the
+  render passes at one time, with the shader of each effect pass. Messages are newline-delimited
+  JSON-RPC; a  Content-Length  frame is accepted too. Nothing but the protocol is written to
+  stdout.
+
+ Updating
+
+cargo install oxframe-cli --force   # a new CLI
+oxframe upgrade                     # then in each project
+
+  Projects pin the SDK version, so a release never changes an existing project on its own. Once a
+  day the CLI checks crates.io in the background and mentions a newer version; set
+   OXFRAME_NO_UPDATE_CHECK=1  to turn that off.
+
+ oxframe.toml
+ Project settings for the CLI. Every key is optional.
+
+[dev]
+port = 3000
+open = true        # open the browser on "oxframe dev"
+profile = "dev"    # or "release"
+
+[render]
+ffmpeg = "/opt/ffmpeg/bin/ffmpeg"   # default: ffmpeg from PATH
+
+[theme]
+name = "dark"         # dark, light, midnight, paper, vivid
+accent = "#68abdf"    # one brand color; other colors stay readable
+
+[check]
+interval = 1.0        # seconds between storyboard frames
+safe_inset = 48       # px; 0 turns the safe-area warning off
+min_contrast = 4.5
+min_motion = 0.15
+max_still = 3.0
+chars_per_second = 20
+min_chars = 24
+cell_width = 320
+
+ Exit codes
+
+      0  Success.
+      1  Your code does not compile, the scene fails, or  oxframe check  found an error.
+      2  Environment: no ffmpeg, port in use, cannot write a file.
+      3  Version mismatch between the CLI, SDK and editor.
+
+ Add  -v  to any command for detailed logs.
+
+ Security
+
+  The editor server listens on 127.0.0.1 only, checks the  Origin  of every WebSocket connection
+  and requires a one-time token. The CLI runs nothing but cargo and your own project.
+
+Writing your own node
+
+  A struct that draws itself becomes a node: animatable fields, layout, effects and checks, like the
+  built-in ones.
+
+ A struct that draws
+
+  Turn on the  unstable-node-api  feature of  oxframe . The API may change
+  until it has outside users.
+
+oxframe =
+
+#[derive(Node)]
+pub struct Gauge
+
+impl Draw for Gauge {
+    fn draw(&self, ctx: &mut DrawCtx)
+    fn size(&self) -> (f64, f64)
+}
+
+   #[derive(Node)]  on a struct that implements  Draw  makes it a node. Each
+  field marked  #[signal]  gets a setter on the builder,  Gauge::new() , and a
+  signal on the handle,  GaugeHandle , so  gauge.value().to(0.8, 1.0)
+  animates it. Fields without the mark are set once on the builder. Every field type needs
+   Default  and  Clone .
+
+let gauge = view.add(Gauge::new().size(240.0));
+gauge.value().to(0.8, 1.0).await;
+
+ Drawing
+
+   Draw::draw  paints with the same  DrawCtx  as  Custom :
+   ctx.line ,  ctx.circle ,  ctx.rect ,  ctx.path  and
+   DrawCtx::arc  for gauges and rings, each followed by  .fill(..)  or
+   .stroke(.., width)  with a color or a theme role. Coordinates are the node's own, with the
+  origin at the center of its box.
+
+  Draw only from the fields and  ctx.time() , and take randomness from
+   ctx.rng(seed) . The frame is painted again on every seek, and
+   oxframe check  reports a node whose two paints of one frame differ.
+
+ Its box
+
+   Draw::size  gives the box that flex layout,  Camera::fit  and
+   oxframe check  use; the default is 100 by 100. Everything else comes with the node:
+  position, rotation, scale, opacity, relative placement such as  to_edge , effects, flex
+  properties and theme colors.  check  and  inspect  name it by its type, so
+  an issue reads  Gauge , not  Custom .
+
+ A crate of your own
+  oxframe init --template node my-node
+
+   oxframe init --template node my-node  makes a library crate: the node in
+   src/lib.rs , a demo scene in  examples/demo.rs
+  ( cargo run --example demo -- render ) and a reference test that renders the node on
+  the CPU and checks its pixels. Publish it like any crate; scenes add it as a dependency.
+
+ The playground has the feature on, so a node written in a scene there works too.
+
+The editor
+
+  A tour of the editor. It is the same app under  oxframe dev  on your machine and in the playground
+  on this site.
+
+    The viewport, the inspector on the right and the timeline below, on the project  oxframe init  creates.
+
+ The four areas
+
+   Viewport
+
+    The current frame. Scroll to zoom around the cursor, hold  Alt  (or the middle button) and
+    drag to pan, double-click to fit. Click a node to select it.
+
+   Timeline
+
+    Play, pause and scrub. Shows scene boundaries, markers and the soundtrack's waveform. Drag a
+    marker to retime everything that waits for it.
+
+   Inspector
+
+    The node tree, the live values of the selected node's signals, sliders for  tune!
+    values and the list of named eases.
+
+   Curve editor
+
+    Opens when you click an ease. Drag the two handles or pick a preset; a dot previews the motion.
+
+ When code does not compile
+
+  The compiler's message appears over the viewport with the file and line. The last build that
+  worked keeps playing, so you never lose your place. Fix the code and save — the error goes away by
+  itself.
+
+ Shortcuts
+
+       Space   Play / pause
+       ←   →   Previous / next frame
+       Shift + ←   →   Jump 10 frames
+       Home   End   Start / end
+       M   Move the selected marker to the playhead
+       Esc   Close dialogs, dismiss errors
+
+ Small conveniences
+
+    The frame, zoom and selection are kept in the URL — a reload or rebuild returns you to the same
+    spot.
+
+   Several browser tabs can be connected to one  oxframe dev  at the same time.
+   In the playground,  Share  puts the whole source into the link.
+
+Effects
+
+  Gradients, dashes, shadows, blur, blend modes and clipping. Every effect is a signal, so it
+  animates like any other property —  .to() ,  .ease()  and
+   .bind()
+  all work.
+
+ Paint
+
+Rect::new()
+    .fill_gradient(Gradient::linear((-100.0, 0.0), (100.0, 0.0)).stops([color!("#e13238"), color!("#f5c242")]))
+    .stroke(Color::WHITE).line_width(4.0)
+    .dash(vec![12.0, 8.0])          // animate dash_offset for marching ants
+    .line_cap(LineCap::Butt)
+
+  Gradients are in the node's own coordinates (origin at its center).  Gradient::radial(center, radius)  works the same way. Two gradients with the same number of stops interpolate.
+
+ Layers
+
+  A node is drawn into its own layer when its effect must apply to the node and its children as a
+  whole: group opacity (overlaps do not get darker), blend modes, blur and shadows. Plain shapes
+  skip the layer and stay fast.
+
+Group::new().opacity(0.5)                         // group opacity
+Circle::new().clip(true)                         // children added to it are clipped to the circle
+Circle::new().blend(BlendMode::Multiply)         // Multiply, Screen, Overlay, …
+Txt::new().blur(12.0)                            // Gaussian blur (σ, node units)
+Rect::new().shadow(Color::BLACK.with_alpha(0.6), 16.0, (0.0, 12.0))
+Circle::new().glow(color!("#68abdf"), 20.0)      // shadow without offset
+
+ Order and pivot
+
+Rect::new().z_index(-1.0)            // drawn below its siblings
+Rect::new().anchor((-1.0, -1.0))     // (x, y) is the top-left corner and the rotation pivot
+
+  Blur and shadows are rasterized by the same code on both renderers (tiny-skia), so CPU and GPU
+  output match; only the area a layer can touch is processed.
+
+Formulas
+
+  Math typeset by Typst, as nodes you color and animate glyph by glyph. The font is bundled, so no
+  TeX install is needed and a formula looks the same on every machine.
+
+    The last frame of the
+      formulas  example on GitHub .
+
+ Turn on the math feature
+
+oxframe =
+
+  The feature adds the Typst compiler and a 1.4 MB font to your binary, so it is off by default. It
+  works with  oxframe dev ,  oxframe check  and  oxframe render
+  on your machine and in CI. The browser playground does not have it: the playground's engine stays small,
+  so formulas cannot be tried there.
+
+ A formula by its source
+
+let euler = view.add(Math::new("e^(i pi) + 1 = 0").size(140.0));
+stagger(0.08, euler.paths(), |glyph| glyph.pop_in()).await;
+euler.color().to(Accent, 0.6).await;
+
+let sum = view.add(
+    Math::new("sum_(k=1)^n k = (n(n + 1)) / 2")
+        .display()
+        .size(72.0)
+        .y(220.0),
+);
+sum.fade_in().await;
+
+   Math::new("e^(i pi) + 1 = 0")  takes
+   Typst math syntax  without the dollar signs. A formula
+  Typst cannot set (an unknown symbol, a missing bracket) stops the scene with Typst's message, which
+  names the formula.
+
+     You write  You get
+
+       x^2 ,  x_i   superscript, subscript
+       (a + b) / c   a fraction
+       sqrt(x)   a square root
+       sum_(k=1)^n ,  integral_0^1   sums and integrals with limits
+       alpha pi   Greek letters by name
+       vec(1, 2) ,  mat(1, 2; 3, 4)   a vector, a matrix
+       "text"   upright words inside a formula
+
+ Size, color and display style
+
+   .size(px)  is the font size in pixels, as for  Txt ; the box is as tall as
+  a line of text, so formulas of one size line up.  .color(..)  takes a color or a theme
+  role and defaults to the theme's text color.  .display()  sets the formula on its own
+  line, as  $ … $  does in Typst: a sum gets its limits above and below and a fraction is full
+  size. Without it the formula is set inline, as in running text.
+
+ Animate it
+
+  The handle,  Math , is a node like any other:  fade_in ,
+   next_to ,  scale  and layout work on it.  color()  is a signal
+  for the whole formula, and  paths()  gives every glyph and rule (fraction bars, root
+  signs) in reading order, for  stagger . Glyphs are filled shapes, so write them on with
+   pop_in  or  fade_in  rather than  draw_on .
+
+ Run the example from a clone of the SDK:
+  cargo run -p oxframe-examples --features math --bin formulas -- preview
+
+Install and first project
+ Five minutes from nothing to an editor with your own animation in it.
+
+   Want to skip installing?  Everything in the guide also works in the
+   playground . Come back here when you want to render videos on your
+  machine.
+
+ 1. Install the tools
+ You need Rust with a C linker and, to make videos, ffmpeg.
+
+# Rust (skip if you have it)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# a C linker, if this machine has never built C or Rust
+sudo apt install build-essential   # Debian/Ubuntu
+xcode-select --install             # macOS
+
+# ffmpeg
+sudo apt install ffmpeg        # Linux
+brew install ffmpeg            # macOS
+winget install Gyan.FFmpeg     # Windows
+
+# the oxframe command, prebuilt: seconds, checksum-verified
+curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.sh | sh   # Linux, macOS
+# Windows (PowerShell):
+#   powershell -ExecutionPolicy Bypass -c "irm https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.ps1 | iex"
+# or with cargo: cargo binstall oxframe-cli (prebuilt), cargo install oxframe-cli (from source)
+
+  The installer puts  oxframe  in  ~/.local/bin
+  ( %LOCALAPPDATA%\oxframe\bin  on Windows, added to your  PATH ); set
+   OXFRAME_INSTALL_DIR  to change that. Rust is still needed either way: your scenes are
+  Rust code.  oxframe doctor  then checks that everything a build needs is there.
+
+ Requirements
+
+      System  Linux (x86_64, arm64), macOS (Intel, Apple Silicon), Windows (x86_64).
+      Rust  1.95 or newer, from  rustup .  rustup update  moves
+        an older one forward.
+      C linker  Rust links programs with it. Linux:  build-essential  (Debian, Ubuntu),
+         gcc  (Fedora),  base-devel  (Arch). macOS: the Xcode command line tools.
+        Windows: the MSVC build tools, which rustup offers to install.
+      ffmpeg  For MP4, WebM and ProRes. The editor,  oxframe check , snapshots and PNG frames
+        work without it.
+      GPU  Not needed: frames are drawn on the CPU.  --gpu  uses Vulkan, Metal or DirectX 12
+        when the machine has them.
+      Disk  A few GB per project for Rust's build cache in  target/ ; the first build fills
+        it.
+
+ 2. Create a project
+
+oxframe init hello
+cd hello
+oxframe dev --open
+
+  The first build takes a minute or two — Rust compiles the engine once. Then your browser opens the
+  editor: the animation in the middle, the timeline at the bottom. Press  Space  to play.
+
+   The new project in  oxframe dev , with the text node selected.
+
+ 3. Change something
+
+  Open  src/main.rs , find  color!("#68abdf")  and change it to
+   color!("#2ecc71") . Save. About a second later the editor shows the new color — and
+  stays on the same frame. That loop, edit → save → look, is how you will work.
+
+ 4. Make a video
+  oxframe render        # writes out/hello.mp4
+
+ What is in the project
+
+       src/main.rs   Your scene. Everything you write goes here.
+       src/intro.meta.json   Timing values you adjust in the editor (lesson 7). Commit it.
+       oxframe.toml   Settings for  oxframe dev  and  render .
+       assets/   Images and audio.
+       AGENTS.md ,  .claude/   Instructions for AI coding assistants (see  Working with AI agents ).
+
+  Next,  lesson 1  walks through that first scene line by line.
+
+14. Charts and graphs
+
+  A function on a set of axes, a dot that rides it, and a zoom that the whole chart follows.
+
+ Axes map data into a box
+
+   Axes::new().x_range(-4.0..4.0).y_range(-1.5..1.5)  puts data coordinates into a box with
+  a grid, ticks and labels. You think in data — x from -4 to 4 — and oxframe finds the pixels.
+
+ A plot is a function of x
+
+   axes.plot(|x| (x * 1.5).sin())  draws the curve. It is a path, so
+   .draw_on()  works as in lesson 9.  axes.point_on(&curve, x)  keeps a dot on
+  it; move the signal  x  and the dot rides the curve.
+
+ Everything follows the ranges
+
+   curve.to_fn(..)  morphs into another function, and
+   axes.x_range().to(-8.0..8.0, 1.0)  zooms out: the grid, the labels, the curve and the dot
+  move together, because they are drawn from the range every frame.
+
+     Plot  |x| x.tan()  and look at the gaps.
+     Add bars:  axes.bars([1.0, 0.5]).labels(["a", "b"]) .
+
+      Axes  maps data into a box; ranges are signals.
+
+       plot ,  point_on  and  to_fn  draw and move functions.
+
+       Animated charts and plots  has bars, data series and number lines.
+
+Components
+
+  An explainer is a handful of blocks. Each one takes its color and type from the theme, places
+  itself, and answers  enter ,  next  and  exit . The player is the
+  gallery example; the still under each block is the moment that block is on screen.
+
+ Title card
+
+let title = view.add(TitleCard::new("Binary search").subtitle("O(log n)"));
+title.enter().await;
+title.next().await;
+title.exit().await;
+
+  enter  fades the card and the title in.  next  reveals the subtitle.
+
+ Chapter marker
+
+let chapter = view.add(ChapterMarker::new("1  Search"));
+chapter.enter().await;
+
+ A label pinned to the top safe area, including on a vertical frame.
+
+ Bullet list
+
+let steps = view.add(BulletList::new(["Take the middle", "Compare", "Drop half"]));
+steps.enter().await;
+for _ in 0..steps.len()
+
+  enter  shows the stack. Each  next  reveals one row.
+
+ Code explainer
+
+let code = view.add(
+    CodeExplainer::new("lo + (hi - lo) / 2").step(1, 1, "the middle"),
+);
+code.enter().await;
+code.next().await;
+
+   enter  shows the source. Each  next  focuses the next line range (1-based, inclusive)
+  and sets the caption. A light theme uses a light code theme.
+
+ Flow diagram
+
+let flow = view.add(FlowDiagram::new().edge("Client", "API").edge("API", "DB"));
+flow.enter().await;
+for _ in 0..flow.len()
+
+  You name the links. The diagram lays the nodes out in layers, left to right.
+   .down()  stacks the layers.  next  highlights the next node.
+
+ Callout
+
+let card = view.add(Rect::new().size(280.0).fill(Surface));
+let call = view.add(Callout::new(card).text("the middle"));
+call.enter().await;
+call.next().await;
+
+  The caption sits above the target.  enter  draws the arrow,  next  shows the words.
+
+ Lower third
+
+let lower = view.add(LowerThird::new("Ada").role("walks the half"));
+lower.enter().await;
+lower.next().await;
+
+ Pinned to the bottom safe area.  next  reveals the role.
+
+ End card
+
+let end = view.add(EndCard::new("That's the search").note("Repeat from the top"));
+end.enter().await;
+end.next().await;
+end.exit().await;
+
+ Same rhythm as a title card. The note waits for  next .
+
+  The gallery example  components  is a full explainer in under 40 lines.
+   Project::aspects  makes  oxframe check  look at 16:9, 9:16 and 1:1.
+
+9. Drawing and morphing
+ Draw an outline as if with a pen, then turn one shape into another.
+
+ Drawing an outline on
+
+  Every outline has two properties,  start  and  end , that say which part of
+  it is drawn — as a fraction of its length.  .end(0.0)  hides it; animating
+   end
+  to 1 draws it on. Animating
+   start  to 1 afterwards erases it from the beginning.
+
+ Paths and morphing
+
+  A  Path  is any shape you can describe with lines and curves — usually written in SVG
+  path syntax ( "M0 -150 L44 -46 ..." ), which every vector tool can export. Animating
+   data  to another path morphs between them. oxframe lines up the two outlines first, so a
+  star turns into a heart without twisting.
+
+  shape.data().to(heart, 1.2).await;
+
+     Morph back to the star at the end.
+     Animate  start  to 1 to erase the outline.
+
+      start / end  control how much of an outline is drawn.
+      Path  +  data().to(other_path)  morphs shapes.
+
+4. Easing
+ Why some animations feel natural and others feel robotic — and how to choose.
+
+  All three balls travel the same distance in the same time. The difference is  easing : how the speed changes along the way.
+
+    LINEAR  moves at a constant speed. It looks mechanical.
+
+    The  default  starts slowly, speeds up, and settles in. Real objects move like this,
+    which is why it is the default.
+
+     OUT_BACK  overshoots a little and comes back — playful, good for things popping in.
+
+  ball.x().to(500.0, 1.5).ease(presets::OUT_BACK).await;
+
+   presets  has the common curves ( IN_OUT_CUBIC ,  OUT_EXPO ,
+   IN_OUT_SINE , …). There are also bouncy ones:  .ease(oxframe::bounce_out)
+  and  .ease(oxframe::elastic_out) .
+
+     Try  presets::IN_OUT_EXPO  on the middle ball.
+     Give the last ball  oxframe::bounce_out .
+
+       .ease(...)  after  .to(...)  picks the curve; the default is a smooth in-and-out.
+
+     In lesson 7 you will edit curves visually instead of picking presets.
+
+7. Tweak timing in the editor
+
+  Some things are easier to adjust by eye than by number. oxframe lets you do that without touching
+  code.
+
+  When an animation should start "on the beat" or a size "looks right", guessing numbers and
+  recompiling is slow. These three helpers move the decision into the editor:
+
+       wait_until("go").await   A  marker  on the timeline. Drag it, and everything after it moves.
+       tune!("size", 160.0)   A number with a  slider  in the inspector; 160 is the starting value.
+       .ease(ease!("move"))   An easing curve you shape in the  curve editor .
+
+ Where the values live
+
+  The first time your scene runs, oxframe writes these names and their starting values into a file
+  next to your code,
+   src/<scene>.meta.json . From then on the file wins: the editor changes the file,
+  the code only provides defaults. Commit the file — it is part of your animation.
+
+{
+  "eases":  ,
+  "markers":  ,
+  "tunables":  ,
+  "version": 1
+}
+
+      Open the lesson in the playground. Drag the  go  marker to the right on the timeline.
+
+     Move the  size  slider in the inspector.
+     Click the  move  ease in the inspector and bend the curve.
+
+     Markers, tunables and named eases are values you adjust in the editor.
+     They are saved in  meta.json ; the code only sets defaults.
+
+6. Groups and layout
+ Put shapes inside other shapes, and let a layout arrange them for you.
+
+ Children
+
+  So far everything was added to the  view . You can also add shapes to other shapes:
+   sun.add(...) . A child's position is measured from its parent, and it moves, rotates
+  and fades along with it. Rotate the sun, and the planet orbits; rotate the planet, and its moon
+  orbits the planet.
+
+  Group  is a shape that draws nothing — a container for others.
+
+ Layout
+
+  Placing ten cards by hand is tedious. A  Layout  places its children in a row (or
+   .column() ), with  .gap()  between them and  .padding()  around.
+  It works like flexbox on the web: children can  .grow(1.0)  to fill space, the row can
+   .wrap(true) , and
+   .grid(3)  makes a three-column grid.
+
+  Layout settings are animatable like everything else. Animate the gap and the cards slide apart;
+  remove a card and the others close the gap.
+
+     Add  .width(500.0)  to the row and  .grow(1.0)  to one card.
+     Add a second moon to the planet.
+
+      parent.add(child)  — children follow their parent.
+      Layout  arranges children: row, column, wrap, grid, grow.
+
+1. Your first animation
+
+  You will add a circle to the screen and move it. That is most of what animation code ever does.
+
+ A scene is a function
+
+  An animation in oxframe is called a  scene , and a scene is just a function marked
+  with
+   #[oxframe::scene] . It receives the  view  — the canvas you draw on.
+
+  The word  async  is there because the function runs  over time : it can stop,
+  let a few frames pass, and continue. You do not need to know more about  async  than that.
+
+ Adding a shape
+  let ball = view.add(Circle::new().size(160.0).x(-400.0).fill(color!("#68abdf")));
+
+   Circle::new()  starts describing a circle; each  .something(...)  sets how
+  it looks at the start — 160 pixels wide, 400 pixels left of the center, light blue.
+   view.add(...)
+  puts it on screen and gives you back  ball , a handle you use to animate it later.
+
+ The center of the screen is (0, 0). Positive x goes right, positive y goes  down .
+
+ Animating it
+
+  ball.x().to(400.0, 1.0).await;
+
+  Read it as:  take the ball's x, move it to 400 over 1 second, and wait until that is done.
+
+     ball.x()  is the ball's horizontal position. Without an argument it gives you the property;
+    with one (like in the builder) it sets the starting value.
+
+     .to(400.0, 1.0)  creates the animation: target value, then duration in seconds.
+
+     .await  plays it and waits. The next line only runs once the ball has arrived.
+
+  So the scene plays its lines from top to bottom, and every  .await  takes time. That is the
+  whole model.
+
+      Open this lesson in the playground (link under the preview) and change  1.0  to
+       3.0 .
+
+     Add  ball.fill().to(color!("#e13238"), 1.0).await;  before the last line.
+
+      What happens if you remove the  .await  at the end of a line? (The compiler will tell
+      you.)
+
+     A scene is an  async fn  with  #[oxframe::scene] .
+      view.add(Shape::new()...)  adds a shape and returns a handle.
+      handle.property().to(value, seconds).await  animates and waits.
+
+15. Vectors and matrices
+
+  An arrow on a set of axes, a matrix that stretches the whole plane, and the numbers shown beside
+  it.
+
+ A vector is an arrow on axes
+
+   axes.vector(1.0, 2.0)  draws an arrow from the origin to the data point (1, 2). It is
+  a line, so  .draw_on()  works as in lesson 9, and its tip is two signals:
+   v.to(-1.0, 1.0, 1.0)  moves it.
+
+ A matrix moves the plane
+
+   axes.apply_matrix([[2.0, 0.0], [0.0, 1.0]], 1.5)  stretches x by 2. The grid bends and the
+  vector follows, because both are drawn through the matrix every frame — the same idea as the ranges
+  in lesson 14.
+
+ Showing the numbers
+
+   Matrix::new([[2, 0], [0, 1]])  draws the values in brackets. Each cell is a text node, so
+  you can change or color it as the scene goes.
+
+     A shear:  axes.apply_matrix([[1.0, 1.0], [0.0, 1.0]], 1.5) .
+     Color a cell:  m.cell(0, 0).fill().to(Accent, 0.3).await .
+
+      axes.vector  draws an arrow; its tip is signals.
+      apply_matrix  maps the plane, and everything on the axes follows.
+
+       Matrices, vectors and tables  has row and column frames, matrix
+      multiplication step by step, and tables.
+
+ You made it
+
+  That is the whole core of oxframe. From here, browse  all nodes
+  and
+   effects , open the
+   ocean scene  to see everything working together, or
+  read
+   how oxframe works  inside.
+
+10. Randomness and background tasks
+
+  Lots of things happening on their own, while the main story continues — and still the same video
+  every time.
+
+ Random, but repeatable
+
+   random()  gives a number between 0 and 1,  random_range(a, b)  one between
+  a and b. They look random, but they come from the project's  seed  ( Project::new(..).seed(7) ), so every run — in the editor, in the final render, on another computer — produces exactly the
+  same confetti. Change the seed for a different, again repeatable, result.
+
+  Inside  Custom , use  ctx.rng(seed)  instead.  random()  only
+  runs while the scene is stepping, and paint happens after that. A spray that keeps its own motion
+  is a
+   Particles  node, not a counter in the closure.
+
+  This is a rule worth knowing: oxframe renders the same frames every time. That is why scenes must
+  not use the clock or other sources of real randomness.
+
+ Background tasks
+
+   {'spawn(async move  )'}  starts an animation that runs on its own, while the
+  scene continues with the next line. Each confetti piece is spawned, falls, and removes itself.
+   spawn
+  returns a handle you can
+   .await  later to wait for the task — here the title waits for the confetti to finish.
+
+     Change the seed.
+     Make the pieces fall slower: change  2.0  to  4.0 .
+
+       random()  and  random_range()  are seeded: same video every time.
+      Inside  Custom , use  ctx.rng(seed) .
+
+      spawn  runs animations in the background.
+
+ Next
+
+  One scene is not a whole video yet.  Lesson 11  puts several scenes
+  in a row and blends them together.
+
+11. Scenes and transitions
+
+  A video is several scenes in a row. One render plays them in order and blends one into the next.
+
+ A project is a list of scenes
+
+  Each  #[oxframe::scene]  function is one scene.  Project::new(..)  takes
+  them with  .scene(first()).scene(second())  and plays them in that order. Every scene
+  starts with an empty view, so it only holds what it needs.
+   oxframe render --scene second
+  renders one scene on its own.
+
+ Blend into the next one
+
+   transition(Transition::slide(Dir::Left)).await  at the start of a scene blends it in
+  over the one before. The call waits out the blend: nodes added before it are on screen while it
+  runs, nodes added after appear when it ends. Without  .duration(..)  the length comes from
+  the theme, and the editor can drag it afterwards.
+
+  The built-ins are  fade ,  slide(dir) ,  wipe(dir) ,
+   zoom_in  and  zoom_out . The previous scene holds its last frame;
+   .overlap()  lets it keep playing. Lesson 13 adds one painted by a shader.
+
+     Change the slide to  Transition::wipe(Dir::Up) .
+     Give the fade  .duration(2.0)  and watch the timeline.
+
+     Scenes play in the order you add them with  .scene(..) .
+
+       transition(..)  first thing in a scene blends it in; nodes added before it show during
+      the blend.
+
+13. Shaders and effects
+
+  Water, a wet lens, rings and a rising sea: presets that paint pixels, animated like any other
+  property.
+
+ A shader is a node
+
+   shaders::waves()  paints water inside its box. Place it like a rectangle, with
+   .width(pct(100)) ,  .height(..)  and  .to_edge(Edge::Bottom) .
+   .amp()  is the wave height, and it is a signal:  water.amp().to(0.12, 1.0)
+  makes the sea grow.  .deep(Accent)  takes its color from the theme.
+
+ Shaders that read the picture
+
+   shaders::lens_drops()  puts drops on the lens over everything drawn before it, so add
+  it last and make it  .fullscreen() . Start dry with  .wetness(0.0) ; a
+  splash is  lens.wetness().to(1.0, 0.5) .
+
+   node.effect(shaders::ripple())  changes one node's own pixels: rings spread from its
+  center. It returns a handle whose  .strength()  you animate. The colors move and the outline
+  stays, so use it on water, text or an image.
+
+   Transition::shader(shaders::water_wipe())  is a transition from lesson 11 painted by a shader:
+  water rises over the frame and the next scene is under it.
+
+ Make events signals
+
+  A splash at two seconds is a signal change at that moment, not a formula of time. That way the
+  editor shows it on the timeline and  oxframe check  sees it. A shader can only read
+  finished pixels: inside a fading group or a blur,  check  reports
+   input_cycle .
+   Rendering video
+  has the details.
+
+     A light drizzle:  .wetness(0.3) .
+     Taller waves on the line:  water_wipe().wave(0.1) .
+
+     Presets live in  shaders:: ; their parameters are signals.
+      lens_drops  goes last;  effect  changes one node.
+     Make events signal changes, so the timeline and check see them.
+
+ Next
+
+   Lesson 14  plots functions and data on axes that follow animated
+  ranges.
+
+3. Shapes, colors, transforms
+
+  More shapes, outlines, and the properties every shape shares: rotation, scale, color.
+
+ The shapes
+
+   Rect ,  Circle ,  Polygon ,  Star  and
+   Line
+  are all made the same way:  Shape::new() , then settings.  Rect  has
+   .radius()
+  for rounded corners,
+   Polygon  has  .sides() ,  Line  takes a list of points and can have
+  arrows.
+
+ One name, two uses
+ This is the pattern you will use everywhere, so it is worth a second look:
+
+   Before adding:  .size(140.0)   sets  the starting size.
+
+    After adding:  .size()   gives you  the size, ready to animate with
+     .to(...) .
+
+ Things every shape has
+
+     x ,  y  — position;  rotation  — degrees, clockwise;
+     scale
+    — a pair, so you can stretch ( Vec2::new(1.4, 0.7) ).
+
+     fill  — the inside color;  stroke  and  line_width  — the outline.
+
+    opacity  — 0 is invisible, 1 is solid.
+
+  Colors are written  color!("#e13238")  (checked when you compile — a typo is an error, not
+  a surprise). When a color animates, it blends through perceptually even shades instead of going muddy
+  in the middle.
+
+     Give the hexagon an outline:  .stroke(Color::WHITE).line_width(8.0) .
+     Animate  star.points()  from 5 to 9.
+
+      All shapes are built the same way and share position, rotation, scale, fill, stroke, opacity.
+
+      .name(value)  sets before adding;  .name()  animates after.
+
+ Themes
+
+  A scene with no colors and no font sizes of its own already looks finished. Nodes take those from
+  the project theme:  .fill(Accent) ,  .padding(Md) ,
+   .radius(Lg) ,
+   Txt::new().display() . Text with no fill uses the theme's text color.
+
+Project::new("explainer").theme(Theme::dark().accent(color!("#68abdf")))
+
+let title = view.add(Txt::new().text("Binary search").display());
+let note = view.add(Txt::new().text("O(log n)").caption().fill(Muted));
+title.fade_in().await;
+
+  Built-in themes:  dark  (the default),  light ,  midnight ,
+   paper  and  vivid .  .accent(color)  rebuilds the palette from
+  one brand color and keeps text at a 4.5:1 contrast. The same override can live in
+   oxframe.toml  without a recompile:
+
+[theme]
+name = "midnight"
+accent = "#68abdf"
+
+   fade_in()  and a duration of  Fast ,  Normal  or
+   Slow
+  use the theme's motion. One  .theme(...)  line changes every token in the video.
+
+ Relative position and frame shape
+
+  Place a node against another node or the safe area instead of counting pixels. The position is
+  worked out again every frame, so it follows a neighbor that moves or changes size.  pct(80)  is 80% of the frame width.
+
+let title = view.add(Txt::new().text("Binary search").h1().to_edge(Edge::Top));
+let card = view.add(Rect::new().width(pct(80)).height(300.0).fill(Surface));
+let label = view.add(Txt::new().text("mid").caption().next_to(card, Side::Bottom));
+
+   align_to(other, Edge::Top)  shares an edge.
+   center_in(other)  shares a center.
+   to_edge  stops at the safe area: a portrait frame leaves room for a vertical video's
+  status bar and buttons.  view.is_portrait()  and
+   view.safe_area()  are there when a layout really does have to branch.
+
+  Declare every shape the video should exist in.  oxframe check  looks at each of them,
+  and  oxframe render --aspect 9:16  (or
+   --aspect all ) exports them.
+
+  Project::new("explainer").aspects([Aspect::Landscape, Aspect::Portrait, Aspect::Square])
+
+ Every shape and all its settings are listed in  All nodes .
+
+8. Signals
+
+  Make one thing follow another automatically — a line that always connects two dots, a label that
+  always shows a value.
+
+ Every property is a signal
+
+   a.x()  — what you have been animating — is a  signal : a value that can
+  change over time. Besides  .to(...) , signals have  .get()  (read now),
+   .set(v)
+  (change now) and
+   .bind(...) :
+
+  label.x().bind(move || (ax.get() + bx.get()) / 2.0);
+
+  This says:  the label's x is always halfway between the two dots.  Whenever a dot moves, the
+  label follows by itself. In the preview only the two dots are animated; the line, the label and its
+  text are all bound.
+
+ About  move  and the extra lines
+
+  The formula runs later, every time something changes, so it needs its own copies of the signals it
+  reads — that is what  let (ax, bx) = (a.x(), b.x());  before it and  move  in
+  front of it are for. Copying a signal is cheap: both copies point to the same value.
+
+  Bound values are computed lazily — only when something needs them for drawing — so binding costs
+  almost nothing.
+
+     Bind  b.fill()  so the blue dot turns red when it gets close to the red one.
+     Bind the label's  font_size  to the distance.
+
+      Properties are signals:  get ,  set ,  to ,
+       bind .
+
+      bind(move || ...)  keeps a value up to date with a formula.
+
+12. Sound and voice
+
+  Sounds start on the frame where the scene starts them, so they stay in sync when the timing
+  changes.
+
+ A sound on the beat
+
+   sound("assets/click.wav").play()  starts the file at the current frame.
+   .trim(0.0, 0.18)  plays only part of it and  .volume(..)  sets its level. Put
+  the call right before the animation it belongs to: if you add a pause earlier in the scene, the click
+  moves with the picture.
+
+ A soundtrack under everything
+
+   Project::audio(Audio::track("assets/music.mp3"))  plays under the whole project.
+   .duck_under_voice()  makes it quieter while someone speaks.
+
+ A spoken line
+
+   voice("Sound follows the picture").start()  starts a line and returns a handle.
+   line.at_word("follows").await  waits for that word, and  line.await  waits
+  for the end. Without a speech provider oxframe estimates how long the line takes, which is enough
+  to time the picture;  Rendering  shows how to plug in a real
+  voice.
+
+     Wait for the word  "picture"  instead of  "follows" .
+     Turn the soundtrack up with  .volume(0.8)  and listen to it duck.
+
+      sound(..).play()  starts at the current frame.
+
+       Audio::track(..)  is the soundtrack;  .duck_under_voice()  lowers it.
+
+      line.at_word(..)  times the picture to a word.
+
+5. Text
+ Titles, typewriter effects, mixed styles and code.
+
+ Txt
+
+   Txt::new().text("Hello").font_size(96.0).weight(800.0)  is a text shape. Two fonts are
+  built in: Inter (default) and JetBrains Mono ( .family(MONO) ). Both include Cyrillic.
+  Because the fonts ship with oxframe, your text looks exactly the same on every computer.
+
+ Text animates too
+
+     title.text().to("Hello, text", 1.0)  types the new text like a typewriter.
+
+     .end()  from 0 to 1 reveals the text letter by letter (you will see  end  again
+    for shapes in lesson 9).
+
+     title.morph_to("New title", 1.0)  slides letters that both texts share into place and
+    fades the rest.
+
+ Mixed styles and code
+  Txt::new().rich([span("Mix "), span("bold").bold(), span(" and "), span("color").color(color!("#f5c242"))])
+
+   Code  shows source code with syntax highlighting, and can dim everything except the
+  lines you are talking about:  Code::new().code(src).focus(3, 4) . The
+   quicksort showcase  uses it heavily.
+
+   code.code().to(next, 1.0)  does not type the new source. Tokens that stay slide to
+  their new places, deleted ones fade, and new ones appear.
+   insert(line, col, text, seconds) ,
+   remove(((line, col), (line, col)), seconds)
+  and  replace  edit one spot; lines are counted from 1 and columns from 0.
+   .flash()  on that tween lights the inserted text for a moment. A focus on lines that
+  move rides with them. The  code steps  example writes
+  a function this way.
+
+     Replace the typewriter with  title.morph_to("Hello, world", 1.0).await;
+     Make the code bigger with  .font_size(48.0) .
+
+       Txt  for text,  .rich([span(...)])  for mixed styles,  Code  for
+      highlighted code.
+
+      Animate  text  (typewriter),  end  (reveal) or call
+       morph_to .
+
+2. In order, or all at once
+
+  In lesson 1 things happened one after another. Now you will make several things move at the same
+  time.
+
+ One after another
+
+  Two lines, each ending in  .await : the second one starts when the first is finished.
+
+a.x().to(500.0, 0.8).await;
+b.x().to(500.0, 0.8).await;
+
+ At the same time:  all
+
+  To play animations together, put them in  all((...))  — note the double parentheses, it
+  takes a group of animations — and await that once. It finishes when the  longest  one does.
+
+  all((c.x().to(500.0, 0.8), d.x().to(500.0, 1.6))).await;
+
+ Pauses and waves
+
+   wait_for(0.3).await  simply waits.  stagger(0.1, &wave, |c| ...)  runs the same
+  animation on every item of a list, each one starting 0.1 s after the previous — that is the ripple at
+  the end of the preview.
+
+  = (0..5).map(|_| view.add(Circle::new())).collect(); -->
+  stagger(0.1, &wave, |c| c.y().to(200.0, 0.4)).await;
+
+  For a list of the same animation that should all start at once,  all  takes it
+  directly:
+   all(wave.iter().map(|c| c.y().to(200.0, 0.4))) .
+
+ Ready-made entrances
+
+  Every shape has a few common moves built in. They take their length and easing from the theme, so
+  a whole video stays consistent;  .duration(seconds)  changes one of them.
+
+  title.fade_in().await;
+badge.pop_in().await;              // grows from nothing with a small overshoot
+card.slide_in(Side::Left).await;   // slides in from the left while fading in
+outline.draw_on().await;           // the outline is drawn like with a pen
+title.fade_out().duration(0.3).await;
+
+     Wrap the two red squares in  all((...))  so they move together.
+     Change the delay in  stagger  to  0.3 .
+     Replace the wave's animation with  |c| c.pop_in() .
+
+     Lines with  .await  run in order.
+      all((a, b, c)).await  runs them together and waits for all.
+
+       wait_for(seconds)  pauses;  stagger(delay, &list, |x| ...)  ripples through
+      a list.
+
+       fade_in ,  pop_in ,  slide_in ,  draw_on  are ready-made
+      entrances.
+
+How oxframe works
+
+  You don't need any of this to make animations. Read it if you are curious why scrubbing is
+  instant, why renders are reproducible, or how the playground runs Rust in your browser.
+
+ A scene is a coroutine
+
+   #[oxframe::scene]  turns your  async fn  into a future. oxframe polls it
+  with a small single-threaded executor:  one poll is one frame . Each awaited
+  animation updates its signals and returns "pending" until its time is up, so the code after it
+  runs on the right frame.
+
+  Time is virtual: each task keeps its own clock, advanced by exactly one frame per poll. A
+   .to(x, 1.0)  that ends between two frames hands the remaining fraction to the next animation,
+  so a long chain of steps never drifts from where the timeline says it should be.
+
+ Everything is deterministic
+
+  There is no wall clock and no thread pool in the scene code. Randomness comes from a ChaCha8
+  generator seeded by  Project::seed , and every  spawn ed task runs in a
+  fixed order. The same code and the same  meta.json  produce the same frames — on your laptop,
+  in CI and in the browser.
+
+  That is what makes seeking possible: to show frame 900, oxframe replays the scene from its start
+  without drawing anything, which takes milliseconds, and then draws only the frame you asked for.
+
+ Signals
+
+  Every property — position, color, text — is a  Signal . A signal is either a value or a
+  function of other signals ( .bind(…) ). Derived signals are lazy: they recompute only
+  when read and only if something they depend on changed. Cycles are detected and reported instead
+  of hanging.
+
+ From nodes to pixels
+
+    After each frame, the node tree is laid out (flexbox and grid via taffy) and flattened into a
+     display list : fills, strokes, images and layers.
+
+    A renderer draws the list.  vello  does it on the GPU through wgpu;
+     tiny-skia  on the CPU. Layers with blur, shadow or glow are rasterized only within
+    their bounds.
+
+    For video, frames stream to  ffmpeg  through a pipe while the next ones are being drawn.
+
+  Both renderers are checked against the same reference images: the average color difference must
+  stay below ΔE 1 in OKLab, which is below what the eye can see.
+
+ The editor and the engine
+
+  Your project compiles into an ordinary binary.  oxframe dev  runs it as a preview
+  server; the editor in your browser talks to it over a WebSocket with a small JSON protocol ( seek ,  play ,  set marker …) plus binary frames. When you save, the CLI rebuilds and
+  restarts the binary, and the editor reconnects to the same frame.
+
+  Edits to markers, eases and tunables go the other way: the editor sends them, the engine writes
+   meta.json  and re-runs the scene — no compilation needed.
+
+ The playground
+
+  The playground sends your code to a compile service that builds it to WebAssembly in a sandbox
+  (results are cached by the hash of the source and SDK version). The same engine then runs inside a
+  Web Worker in your page. With WebGPU it renders on your GPU through vello into an
+   OffscreenCanvas ; without it, it falls back to the CPU renderer. The editor speaks the
+  same protocol to the worker as it does to  oxframe dev , so they behave the same.
+
+ Where the code lives
+
+       oxframe-sdk   The Rust crates: core (executor, signals, easing), 2d (nodes, layout), text, render,
+        export, preview, protocol.
+       oxframe-cli   The  oxframe  command and the embedded editor build.
+       oxframe-web   The editor UI, this site, the playground and the compile service.
+
+Icons
+
+  Lucide, Tabler and Simple Icons by name, as nodes you color and animate. Only the icons a scene
+  names end up in its binary.
+
+ An icon by name
+ Turn on the  icons  feature of  oxframe :
+
+oxframe =
+
+let server = view.add(icon!("lucide:server").size(64.0).color(Accent));
+view.add(icon!("tabler:heart-filled"));
+view.add(icon!("simple:github").color(Muted));
+
+   icon!  takes the set and the name. The name is the one on the set's site:
+   lucide.dev/icons ,
+   tabler.io/icons  (add  -filled  for the filled
+  variant) and  simpleicons.org  for brand logos. A name that
+  does not exist fails to compile and the error lists the closest names, so
+   icon!("lucide:arow-right")  suggests  arrow-right .
+
+     Prefix  Set  Icons  License
+
+       lucide:   Lucide, outlines  2,171  ISC
+       tabler:   Tabler Icons, outlines and  -filled   6,238  MIT
+       simple:   Simple Icons, brand logos  3,466  CC0; the brands are trademarks of their owners
+
+ Size, color and line width
+
+  An icon is a 24 by 24 grid scaled to  .size() , 48 pixels by default. Its color is the
+  theme's text color unless you set  .color()  with a color or a theme role. Outline
+  icons take  .stroke_width()  on the 24-unit grid, 2 by default; filled icons and logos have
+  no lines.
+
+  The handle,  Icon , has  color()  and  stroke_width()  as
+  signals, so a whole icon animates at once. It is a node like any other:  fade_in ,
+   next_to ,  scale  and layout work on it.  Icon::paths  gives its
+  paths one by one, for  draw_on , and  Icon::style  tells an
+   IconStyle::Stroke  icon from an  IconStyle::Fill  one.
+
+server.color().to(Danger, 0.3).await;
+server.stroke_width().to(3.0, 0.3).await;
+for path in server.paths()
+
+ In a flow diagram
+
+   FlowDiagram  puts an icon at the start of a node's card with
+   .icon(name, icon!(..)) .  flow.icon(name)  returns its handle.
+
+let flow = view.add(
+    FlowDiagram::new()
+        .edge("api", "database")
+        .icon("api", icon!("lucide:server"))
+        .icon("database", icon!("lucide:database")),
+);
+flow.enter().await;
+if let Some(db) = flow.icon("database")
+
+ Any other SVG
+
+   Icon::from_svg(bytes, IconStyle::Stroke)  makes the same node from a 24 by 24 SVG of
+  your own. For a logo or an illustration at its own size, use
+   the  Svg  node .
+
+ The playground has the feature on, so  icon!  works in a scene there.
+
+Matrices, vectors and tables
+
+  Matrices with cells you can point at, vectors on axes, linear maps that bend the grid, and tables
+  whose rows slide into place.
+
+ Matrix
+
+let a = view.add(Matrix::new([[1, 2], [3, 4]]).font_size(64.0));
+let row = a.row_frame(0);
+row.fade_in().await;
+a.cell(0, 1).fill().to(Accent, 0.3).await;
+
+   Matrix::new  takes rows of numbers,  &str  or anything that prints, and
+  draws them in square brackets. Every cell is a  Txt :  a.cell(r, c) ,
+   a.row(r)  and  a.column(c)  give them, so  .text().set(..)
+  changes a value and  .fill()  colors it.  row_frame ,
+   column_frame  and  cell_frame  add a rounded outline, hidden until you fade
+  it in.  .cell_width(px)  keeps room for values that will be longer than the first ones,
+  such as a result filled in step by step;  .font_size(px) ,
+   .column_gap(px)  and  .row_gap(px)  set the rest.
+
+ Vectors and linear maps
+
+let axes = view.add(Axes::new().x_range(-4.0..4.0).y_range(-3.0..3.0));
+let v = axes.vector(2.0, 1.0);
+v.label("v");
+axes.apply_matrix([[1.0, 1.0], [0.0, 1.0]], 1.5).await; // a shear
+v.to(-1.0, 2.0, 1.0).await;
+axes.matrix().to(Mat2::IDENTITY, 1.0).await;
+
+   axes.vector(x, y)  draws an arrow from the origin. Its tip is two signals,
+   v.x()  and  v.y() , and  v.to(x, y, seconds)  moves both;
+   .label("v")  keeps a label past the tip.
+
+   axes.apply_matrix(m, seconds)  maps the plane through a 2 × 2 matrix, written row by
+  row, on top of what was applied before. A transformed grid is drawn over the original one, and
+  plots, series, vectors and nodes placed with  axes.place  move with it. The matrix
+  itself is
+   axes.matrix() , a  Mat2  signal that animates entry by entry; set it back
+  to
+   Mat2::IDENTITY  to undo.  Mat2::after  multiplies two matrices and
+   Mat2::det  gives the determinant. Ticks and labels stay where they were, and placed nodes
+  keep their own shape.
+
+ Table
+
+let table = view.add(
+    Table::new(["Renderer", "Frame"])
+        .row(["skia", "12 ms"])
+        .row(["vello", "4 ms"]),
+);
+table.insert_row(1, ["wgpu", "3 ms"]).await;
+table.sort_by_column(1, 0.8).await;
+table.row(0).background().fade_in().await;
+table.remove_row(2).await;
+
+   Table::new  takes the column titles and  .row(..)  adds rows. Columns fit
+  their widest value;  .widths([..])  sets them when rows added later are wider, and
+   .font_size(px)  with  .row_height(px)  sizes the text.
+
+  The rows are a list you change while the scene runs.  insert_row  and
+   push_row  slide the rows below down and fade the new one in;
+   remove_row  fades one out and closes the gap.  sort_by_column  moves every
+  row to its sorted place, comparing cells that start with a number ( "12 ms" ) as
+  numbers;
+   sort_by  takes your own comparison.  table.row(i)  is a
+   TableRow  in the current order, with its cells and a hidden background for highlights.
+
+Migrating from Manim
+
+  Manim scenes are Python classes that play animations one  self.play  at a time. oxframe
+  scenes are Rust  async fn s that do the same with  .await , with a live
+  editor, plots, matrices and morphing built in. This page maps the concepts and ports two scenes.
+
+ How the two models differ
+
+  In Manim,  construct  builds mobjects and hands animations to
+   self.play , which renders them before the next line runs. In oxframe each node has
+  signals — position, color, the path itself — and  .to(target, seconds).await  animates
+  one and waits.  all((…))  is  self.play  with several animations;
+   wait_for  is  self.wait .
+
+  Instead of rendering a file and opening it,  oxframe dev  shows the scene in an editor
+  you can scrub, and every frame can be reached instantly. The same code runs in the
+   browser playground , with no Cairo, LaTeX or Python to install.
+
+  Two habits to drop: Manim measures in units (the frame is about 14.2 wide) with y pointing up;
+  oxframe measures in pixels from the center of the frame, with y pointing down. At 1920 × 1080 one
+  Manim unit is about 135 px, and  UP  is negative y.
+
+ Concepts side by side
+
+     Manim  oxframe
+
+       class S(Scene): def construct(self)    #[oxframe::scene] async fn s(view: View)
+       self.add(m)    view.add(…)
+       self.play(Create(m))    m.draw_on().await
+       FadeIn ,  FadeOut    m.fade_in().await ,  m.fade_out().await
+       Write(text)    text.end().to(1.0, 1.0).await  reveals it letter by letter
+       Transform(a, b)    a.data().to(path, 1.0)  for shapes,  t.morph_to("new", 1.0)  for text
+       m.animate.shift(RIGHT * 2)    m.x().to(m.x().get() + 270.0, 1.0).await
+       self.play(a, b)    all((a, b)).await
+       LaggedStart(…, lag_ratio=0.1)    stagger(0.1, &items, |m| m.fade_in()).await
+       run_time=2 ,  rate_func=smooth   the seconds argument,  .ease(presets::IN_OUT_CUBIC)
+       ValueTracker ,  always_redraw , updaters   Signal::new(…) ,  .bind(move || …)
+       Axes ,  axes.plot ,  NumberLine    Axes::new() ,  axes.plot(|x| …) ,  NumberLine::new(…)  —
+         charts
+       Matrix ,  Table ,  Vector    Matrix::new ,  Table::new ,  axes.vector  —
+         matrices
+       MovingCameraScene    Camera :  zoom ,  center_on ,
+         fit
+       ThreeDScene    View3d : lit meshes and glTF models inside a 2D scene
+       MathTex ,  Tex   not yet — formulas are planned
+       manim -pql scene.py S    oxframe dev  to watch,  oxframe render  for the file
+
+ The same scenes in both
+
+  A circle is drawn, becomes a square and moves right; then a sine wave is drawn on axes and a dot
+  rides along it.
+
+     Transform  is a path morph: the shape's  data  signal animates to another path.
+    Any two paths morph, with matched start points so they do not twist.
+
+    The  ValueTracker  becomes a  Signal , and  axes.point_on  adds
+    a dot that follows it — what  always_redraw  does in Manim.
+
+    Two Manim scene classes become two scenes of one project; they play in order and a
+     transition  can join them.
+
+ What does not carry over
+
+     LaTeX.  There is no  MathTex  yet. Formulas are planned; until then, write
+    them with rich text and Unicode, or as an SVG made elsewhere.
+
+     Surfaces and 3D plots.  3D covers meshes (cube, sphere, plane, cylinder, glTF) inside
+    a 2D frame, not parametric surfaces or 3D axes.
+
+     Python.  The scenes are Rust. They are short and mostly calls like the ones
+    above; an agent with the oxframe skill writes them well, and  oxframe check  tells it what
+    went wrong.
+
+ Porting a project
+
+   One oxframe scene per Manim scene class, in the same order.
+
+    Turn units into pixels (× 135 at 1920 × 1080) and flip y. Prefer placing with
+     next_to ,  to_edge  and  Layout  over coordinates.
+
+    Each  self.play(…)  becomes one  .await , or  all((…)).await  for
+    several animations.
+
+   Run  oxframe dev  to compare, then  oxframe check .
+
+  With an agent:  npx skills add oxygenframe/oxframe-sdk  installs the
+   manim-to-oxframe skill . Then ask, for example, “Port
+  scenes.py to oxframe, one scene per class, and make oxframe check pass”.
+
+Migrating from Motion Canvas
+
+  Motion Canvas is the closest tool to oxframe: scenes are coroutines over signals in both. Porting
+  is mostly syntax —  yield*  becomes  .await , refs become handles — and this
+  page maps the rest.
+
+ How the two models differ
+
+  A Motion Canvas scene is a TypeScript generator:  yield* circle().x(300, 1)  tweens a
+  signal and waits for it. An oxframe scene is a Rust  async fn :
+   circle.x().to(300.0, 1.0).await  does the same. Both replay a scene from the start to reach
+  any frame, both keep markers and timing edits in a meta file next to the scene, and both have an editor
+  with a timeline.
+
+  The difference is around the scene. oxframe is a compiled Rust program:  oxframe render
+  writes the video headless, with no editor open, so it runs in CI, and  oxframe check
+  reviews every frame for text off screen, overlaps, low contrast and text that is gone too fast.
+
+ Concepts side by side
+
+     Motion Canvas  oxframe
+
+       makeScene2D(function* (view) &#123; … &#125;)    #[oxframe::scene] async fn name(view: View) &#123; … &#125;
+       yield* node().x(300, 1)    node.x().to(300.0, 1.0).await
+       createRef<Circle>()  and  ref=&#123;…&#125;   the handle that  view.add(…)  returns
+       createSignal(0) ,  () => …    Signal::new(0.0) ,  .bind(move || …)
+       all(…) ,  chain(…)    all((…)).await ; awaits one after another
+       sequence(0.1, …) ,  loop(3, …)    stagger(0.1, &items, …) ,  repeat(3, …)
+       yield  a task without  *    spawn(async move &#123; … &#125;)
+       waitFor(1) ,  waitUntil('event')    wait_for(1.0) ,  wait_until("event")
+       easeInOutCubic ,  easeOutBack    presets::IN_OUT_CUBIC ,  presets::OUT_BACK
+       <Layout direction="column" gap=&#123;20&#125;>    Layout::new().column().gap(20.0)
+       <Code>  with  edit  and  selection    Code  with  .code().to(next, s) ,  insert ,
+         replace ,  focus_lines
+       <Line> ,  <Spline> ,  <Ray>    Line  ( .smooth(true) ,  .end_arrow(true) ),
+         Path
+       <Img> ,  <Video> , the project's audio   Img ,  Video  (feature  video ),
+         Audio::track(…)
+       slideTransition(Direction.Left)    transition(Transition::slide(Dir::Left)).await
+       beginSlide('name')  and the presenter   slide_break().await  and  oxframe present
+       makeProject(&#123;scenes: […]&#125;)    Project::new("name").scene(a()).scene(b())
+      rendering from the editor   oxframe render , headless
+
+ The same scene in both
+ A circle moves, turns blue while it grows, and a number below counts to 100.
+
+    The refs disappear:  view.add  returns a handle, and handles are  Copy ,
+    so they can go into closures and background tasks.
+
+    The computed text  () => count().toFixed(0)  becomes a binding; it is recomputed when
+    the signal changes.
+
+     scale(1.5, 1)  sets both axes from one number; in oxframe the target is a
+     Vec2 .
+
+ What does not carry over
+
+     LaTeX.  There is no  <Latex>  node yet; formulas are planned.
+
+     Custom TSX components.  A component made of other nodes becomes a Rust function
+    that adds them to a  Group ; a node that draws itself uses the
+     node API .
+
+     Plugins for the editor.  oxframe's editor is not extensible yet.
+
+ Porting a project
+
+   Port the scenes one by one and keep their names: markers move with the same names.
+
+    Replace  yield*  with  .await , refs with handles, signals with
+     Signal ; keep the durations, they are seconds in both.
+
+    Run  oxframe dev  to scrub the result and drag the markers back into place, then
+     oxframe check .
+
+  With an agent:  npx skills add oxygenframe/oxframe-sdk  installs the
+   motion-canvas-to-oxframe skill . Then ask,
+  for example, “Port src/scenes/intro.tsx to oxframe and make oxframe check pass”.
+
+Migrating from Remotion
+
+  Remotion builds every frame from React components. oxframe runs each scene as a Rust
+   async fn  on a timeline. This page maps the concepts, ports one composition line by line,
+  and lists what has no counterpart yet.
+
+ How the two models differ
+
+  A Remotion component is a function of the frame number:  useCurrentFrame()  and
+   interpolate()  compute every value on every frame, and a  <Sequence>
+  shifts time for its children. An oxframe scene says what happens in order instead:
+   title.opacity().to(1.0, 0.5).await  animates for half a second, then the next line
+  runs. Values are signals;  all((…))  runs animations together and  spawn  runs
+  one alongside the rest.
+
+  Seeking works the same way in both: oxframe replays the scene up to the frame you ask for, so
+  every frame is deterministic and the editor scrubs freely. Rendering needs no browser. oxframe
+  draws with its own renderer, on the GPU or with  --cpu  on any machine, and encodes with
+  ffmpeg.
+
+ Concepts side by side
+
+     Remotion  oxframe
+
+       <Composition>  with fps, size, duration   Project::new("name").fps(30).size(1920, 1080).scene(main()) ; the length is
+        however long the scene runs
+       useCurrentFrame()  +  interpolate()    node.opacity().to(1.0, 0.5).await , or a  Signal  animated with
+         .to()
+       spring()   an ease:  .ease(presets::OUT_BACK)  overshoots,
+         oxframe::elastic_out
+        bounces
+       <Sequence from=&#123;30&#125;>    wait_for(1.0).await  (frames ÷ fps) before it,  spawn  to keep something
+        else going, or a scene of its own
+       <Series> ,  <TransitionSeries>   scenes in order;  transition(Transition::fade()).await  at the start of the next one
+       <AbsoluteFill> , flexbox styles  the  View ;  Layout::new().column().gap(Md)  for rows and columns;
+         to_edge ,  next_to
+      CSS colors and type  the theme:  Accent ,  Surface ,  .h1() ,
+         .radius(Lg)
+       <Img> ,  staticFile()    Img::new().file("assets/a.png") ,
+         Svg::new().file("assets/logo.svg")
+       <OffthreadVideo> ,  <Audio>    Video  (feature  video ),  sound("hit.wav").play() ,
+         Audio::track("music.mp3")
+       defaultProps , input props  ordinary Rust values; read inputs from a file or the environment before building the
+        project
+       npx remotion render    oxframe render ;  --jobs  renders 2-second segments in parallel
+      Remotion Lambda  a plain CI runner;  --cpu  needs no GPU
+
+ The same scene in both
+
+  A title rises in with a spring, and one second later a line counts up to 100. In Remotion every
+  value is computed from the frame; in oxframe the scene plays the same beats in order.
+
+     spring()  becomes an ease with overshoot. It is a curve, not a physics simulation, so
+    its length is the one you give it.
+
+     <Sequence from=&#123;30&#125;>  at 30 fps is  wait_for(1.0) . The
+    title is still moving then, so its animation runs in  spawn .
+
+    The counter is a  Signal  animated with  .to() ; the text is bound to it
+    and follows on every frame.
+
+    The styles become theme roles:  .h1()  and  .body()  for the type, the theme's
+    background and text colors for the rest.
+
+ What does not carry over
+
+     HTML and CSS.  oxframe does not render web pages, so DOM layouts, React
+    component libraries and CSS effects have to be rebuilt with nodes,  Layout  and the
+    theme. Inter and JetBrains Mono are built in; other fonts load with
+     oxframe::register_font(include_bytes!(…))  and  .family("Name") .
+
+     npm packages for visuals.  There is no Lottie player. For 3D,
+     View3d  covers lit meshes and glTF models, not a full three.js scene.
+
+     Embedding.  There is no published player component for your own web app yet; share
+    a rendered video or a playground link instead.
+
+ Porting a project
+
+   List the compositions and the sequences inside each.
+
+    Write one scene per composition, or per large sequence, and turn frame numbers into seconds
+    (frames ÷ fps).
+
+    Replace hand-built boxes with  components  where they
+    fit:
+     TitleCard ,  BulletList ,  LowerThird ,  EndCard .
+
+    Run  oxframe check  until it passes, then compare stills with
+     oxframe snapshot --at <seconds> .
+
+  With an agent:  npx skills add oxygenframe/oxframe-sdk  installs the
+   remotion-to-oxframe skill  next to the main one. Then
+  ask it to port a composition, for example “Port src/Intro.tsx to an oxframe scene and make oxframe check
+  pass”.
+
+Migrating from Revideo
+
+  Revideo is a fork of Motion Canvas built for rendering from code: scenes with variables, a render
+  function and a player. Its scenes port to oxframe the same way as Motion Canvas scenes; this page
+  covers what Revideo adds on top.
+
+ Scenes: the Motion Canvas guide applies
+
+  A Revideo scene is a Motion Canvas generator with a name:  makeScene2D('card', function* …) . Nodes, signals,  all ,  waitFor  and the rest map as in
+   Migrating from Motion Canvas :  yield*
+  becomes
+   .await , refs become the handles  view.add  returns, and the scene's name
+  is the name of the  async fn .
+
+ What Revideo adds, in oxframe
+
+     Revideo  oxframe
+
+       useScene().variables.get('name', 'Ada')   ordinary Rust: read the value from the environment or a file in the scene, or build the
+        project in  main  from it
+       renderVideo(&#123; projectFile, variables, settings &#125;)    NAME=Grace oxframe render --out welcome.mp4 ; a loop in a shell script or CI
+        renders one video per input
+      rendering in headless Chromium  no browser: oxframe draws frames itself, on the GPU or with  --cpu
+      parallel rendering in workers   oxframe render --jobs 8 : 2-second segments in parallel, the same bytes as one
+        job
+       <Audio> ,  <Video>    sound(…).play() ,  Audio::track(…) ,  Video  (feature
+         video )
+      the player for your own site  no published player package yet: share the rendered video or a playground link
+
+ The same scene in both
+ A welcome title with a name passed in from outside, rendered to a file.
+
+    The variable becomes  std::env::var("NAME")  with a default, so the scene still runs when
+    nothing is passed — in the editor and in the playground too.
+
+     renderVideo  becomes the CLI:
+     NAME=Grace oxframe render --out welcome.mp4 .
+
+ Porting a project
+
+    Port the scenes as in the  Motion Canvas guide .
+
+    Move each variable into Rust: the environment for one value, a JSON or CSV file for many (read
+    it with  std::fs  and  serde ).
+
+    Replace the render script with  oxframe render  in CI;  --cpu  runs on any runner.
+
+   Run  oxframe check  for each input you render.
+
+  With an agent: the
+   motion-canvas-to-oxframe skill  covers
+  Revideo scenes as well; install it with  npx skills add oxygenframe/oxframe-sdk .
+
+All nodes
+
+  A reference of every node and its properties. If you followed the guide, you already know the
+  pattern; this page is for looking things up.
+
+  Builders set initial values;  view.add(builder)  (or  node.add  for
+  children) returns a
+   Copy  handle whose methods of the same names return signals.
+
+     Node  Builder  Signals
+
+       Rect    .width .height .size .radius    width height radius
+       Circle    .size .start_angle .end_angle .pie    size start_angle end_angle  — arcs, pie slices
+       Polygon    .sides .size    sides size  — sides animate
+       Star    .points .size .inner    points size inner
+       Path    .data(BezPath) .svg("M0 0 …")    data  — morphs
+       Line    .points .smooth .closed .start_arrow .end_arrow    points arrow_size
+       Txt    .text .rich([span(..)]) .font_size .weight .family .italic .align .max_width    text spans font_size weight ,  morph_to
+       Code    .code .language .theme .focus(a, b) .dim    font_size focus dim ,  code().to  (a token diff),
+         insert ,  remove ,  replace ,  focus_lines
+       Img    .src(include_bytes!(..)) .file(path) .width .height    width height
+       Svg    .src(include_bytes!(..)) .file(path) .width .height    width height ,  find("id") ,  paths()
+       Layout    .row .column .wrap .grid(n) .gap .padding .align .justify .width .height    gap padding width height radius
+       Grid    .width .height .spacing    width height spacing
+       Group   —  —
+       Custom    .new(|ctx, t| …) .size .fullscreen   paints each frame;  ctx.rng(seed) ,  ctx.time()
+       Particles    .seed .gravity .life .speed .radius .toward_camera    gravity ,  burst(origin, count)
+        Camera     .zoom    zoom  (and  x y rotation ),  center_on fit reset
+
+  Every node has  x y rotation scale opacity fill stroke line_width start end , the paint
+  and compositing properties described in  Effects , and the flex
+  item properties  grow shrink basis margin align_self .  start / end
+  trim outlines — animate  end  from 0 to 1 to draw a shape on (on text it reveals glyph by
+  glyph).
+
+   Svg  reads a whole file and turns it into those nodes: groups stay groups, shapes
+  become  Path s (so  data  still morphs), and embedded PNG or JPEG images
+  become  Img .  find("id")  is the element with that id.
+   paths()  is every contour in paint order. Filters, masks and clip paths are skipped
+  with a warning.  Svg::new().width()  and  .height()  take pixels or
+   pct()  of the parent, read when the node is added; set one and the other keeps the drawing's
+  aspect.
+
+ Video
+
+   Video::new().file("assets/demo.mp4")  shows a clip as a node: a screen recording in a
+  laptop frame, a product demo next to a diagram. Turn on the  video  feature of
+   oxframe ; clips are decoded with ffmpeg, which  oxframe render  already
+  needs. Size it like an image with  .width(pct(70))  — the height follows the clip —
+  round it with  .radius(24.0) , and add effects or put it under a camera like any node.
+
+let demo = view.add(Video::new().file("assets/demo.mp4").width(pct(70)).radius(24.0));
+demo.play();
+wait_for(2.0).await;
+demo.playback_rate().to(0.25, 0.5).await;   // slow motion
+
+   demo.play()  returns at once and the clip plays alongside the scene;
+   demo.pause()  holds the frame and  demo.seek(2.0)  jumps.
+   demo.playback_rate()  and  demo.time()  are signals, so
+   demo.playback_rate().to(0.25, 0.5)  eases into slow motion and animating
+   time  scrubs. The frame shown is a function of the scene's time, so a render and a seek
+  in the editor show the same frame. MP4 (H.264), WebM (VP9, with alpha) and ProRes 4444 (with alpha)
+  are read.
+
+  The clip's sound goes into the mix while it plays at rate 1;  .muted(true)  leaves it
+  out. A clip that cannot be opened draws a dark box and fails  oxframe check  with
+   video_unavailable . The browser playground cannot read your files, so there a video is
+  always that box;  oxframe dev  plays it.
+
+ Your own geometry
+
+   Custom::new(|ctx, t| {' '})  paints the frame itself.
+   ctx.line ,  ctx.circle ,  ctx.rect  and  ctx.path
+  take
+   .fill  or  .stroke . Take numbers from  t  and
+   ctx.rng(seed) . The closure runs after the scene step, so  random()  is not
+  available there, and a counter closed over from outside fails  check  as
+   nondeterministic .
+
+   Particles  keeps a seeded spray:  .seed(7).gravity(900.0).toward_camera()
+  and  burst(origin, count).await . Seeking back replays from a checkpoint, so the dots
+  match.  toward_camera  only scales them.
+
+ Shapes and morphing
+
+  Tweening  Path::data  between any two paths aligns them first (segment counts, start points,
+  winding), so shapes morph without twisting.
+
+ Layout
+
+   Layout  is real flexbox (and CSS grid with  .grid(columns) ), computed by
+  taffy. Children take
+   .grow ,  .shrink ,  .basis ,  .margin  and
+   .align_self ;
+   LayoutAlign::Stretch  resizes rects, images and nested layouts. Layout properties are signals:
+  animate the width or the gap and everything re-flows.
+
+ Text
+
+  Inter and JetBrains Mono are embedded (OFL), so text renders identically everywhere. Strings tween
+  like a typewriter.
+
+ Rich text, code and morphing
+
+Txt::new().rich([span("Signals are "), span("lazy").bold().color(color!("#f5c242"))])
+Code::new().language("rust").code(src).focus(3, 4)   // code.focus_lines(5, 5, 0.4).await moves it
+code.code().to(next, 1.0).await                       // tokens slide; not a typewriter
+code.insert(3, 0, "    let y = x * 2;\n", 0.6).flash().await
+code.remove(((5, 0), (6, 0)), 0.5).await              // lines from 1, columns from 0
+word.morph_to("frame", 1.0).await                    // shared letters travel, the others fade
+
+  Highlighting covers Rust, JS/TS, Python, JSON, TOML and shell, with One Dark and One Light themes.
+
+Presentations
+
+  The same scenes that render to a video become a talk: the presentation stops where you mark it and
+  waits for the next click.
+
+ Stops and notes
+
+#[oxframe::scene]
+pub async fn opening(view: View) {
+    notes("Introduce yourself.");
+    let title = view.add(TitleCard::new("Video as code"));
+    title.enter().await;
+    wait_for(1.5).await;
+    slide_break().await;
+
+    notes("Each point appears on the next click.");
+    let points = view.add(BulletList::new(["Scenes are async Rust", "Every value is a signal"]));
+    points.enter().await;
+    for _ in 0..2
+}
+
+   slide_break().await  marks a stop. A render plays straight through it, so the project
+  is still a video; the presentation pauses there. The last frame of every scene is a stop too, and
+  a break at the very end of a scene is the same stop.  notes("…")  are speaker notes for the
+  part that ends at the next stop; several calls before one stop are joined.
+
+  Hold before each break with  wait_for . The video plays straight through the stops, and
+  without a hold the text is gone before anyone reads it —  oxframe check  reports that
+  as
+   too_fast . In the presentation the hold is a still frame just before the stop, so
+  nobody sees it.
+
+ Presenting
+  oxframe present
+
+   oxframe present  builds the project and opens it full screen in the browser, without the
+  editor around it. → , space, Page Down and a click go to the next stop: the scene plays up to it and
+  stops. Pressed while it plays, the next key jumps straight to the stop. ← and Page Up go back one stop,
+  Home to the start. Slide clickers send these keys, so they work as they are. F toggles full screen.
+
+  N opens the presenter window: the notes for the current part and the next one, the stop number and
+  a timer. Put it on your laptop screen and the presentation on the projector; its keys and buttons
+  move the presentation as well. Going back is safe even with  spawn  and random values: the
+  state of a scene depends only on its frame.
+
+  The presentation is the live project: saving a source file rebuilds it, as in
+   oxframe dev . The playground on this site plays the scenes straight through.
+
+ Slides as a PDF
+  oxframe render --slides talk.pdf
+
+   render --slides talk.pdf  writes one page per stop, the frame the presentation shows
+  there, for handouts or a fallback. It needs no ffmpeg;  --size  and  --cpu
+  work as for a video.
+
+Rendering video
+
+  When the animation looks right in the editor, one command turns it into a video file.
+
+  oxframe render
+
+  That's it: the project is built in release mode and every frame goes to  out/<project>.mp4 . You need  ffmpeg  installed for video formats; PNG frames
+  work without it.
+
+ Common recipes
+
+oxframe render --out film.webm             # VP9 with transparency
+oxframe render --format prores --out a.mov # ProRes 4444 with transparency, for video editors
+oxframe render --format png --out frames/  # one PNG per frame
+oxframe render --size 3840x2160            # 4K
+oxframe render --scene outro               # just one scene
+oxframe render --range 1..3                # seconds 1 to 3
+oxframe render --gpu                       # draw on the GPU (vello); the CPU is the default
+oxframe render --jobs 4                    # four segments at once
+
+  Need just one still?  oxframe snapshot --at 2.5  writes a PNG of that moment — no ffmpeg,
+  no full render.
+
+ Transitions
+
+  A scene can open by blending in over the one before it. The call waits out the blend, so nodes
+  added before it are on screen while it runs and nodes added after appear when it finishes. The
+  length comes from the theme unless you set one, and the editor can drag it afterwards.
+
+#[oxframe::scene]
+async fn outro(view: View)
+
+   fade ,  slide(Dir::Left)  ( Right ,  Up ,
+   Down ),  wipe(dir) ,  zoom_in  and  zoom_out  are
+  built in.  .ease(...)  changes the curve,  .overlap()  lets the previous
+  scene keep playing instead of holding its last frame, and  Transition::custom(|t| ...)
+  places the two layers itself with opacity, offset, scale and a wipe.
+   Transition::shader(shaders::water_wipe())  raises a wavy waterline over the frame;
+  below it is the next scene, rippled near the line, and  .wave()  sets the wave height
+  (see  shaders that read pixels ). The first scene has
+  nothing to blend from, so the call does nothing there.
+
+   oxframe render  includes every transition.  oxframe render --scene outro
+  draws that scene on its own, without the blend into it.  oxframe check  puts a frame
+  from each blend on the storyboard, and  oxframe inspect  reports the type and progress. The
+  same blend keeps its alpha on a transparent background, in 16:9, 9:16 and 1:1.
+
+ Shaders
+
+   shaders::waves()  is a node: a crest of foam over deeper water, painted inside its
+  box.
+   .amp()  is the height of that crest and a signal, so it can move.
+   .deep()  and  .foam()  take a color or a theme role such as
+   Accent . The node has no children. A title goes on the view, above the water.
+
+let sea = view.add(shaders::waves().amp(0.05).deep(Accent).foam(Surface)
+    .width(pct(100)).height(pct(40)).to_edge(Edge::Bottom));
+sea.amp().to(0.12, 1.2).await;
+
+  The preset is rasterized first and then drawn by the CPU or the GPU, so a check with no GPU still
+  shows it. Draft checks paint the layer at half resolution. That does not move the box or change
+  the timing.
+
+  Your own shader is WGSL. It defines  struct Params , the uniform  p , and
+   fn shade . oxframe adds  ox  (time, frame, resolution, the box size, seed,
+  the camera matrix, and progress) and  ShadeIn  (uv, local, world, and screen).
+   Shader::source  keeps the text in the scene.
+   Shader::file  reads a  .wgsl  file on every draw, so saving it updates the
+  picture without a rebuild.  .uniform()  sets a number. A name or a type that is not in
+   Params  fails the check, and the message lists the fields. WGSL that does not compile
+  fails it too, with the line in your source. A custom  shade  is type-checked on every draw.
+  The waves preset is what gets painted.
+
+ Shaders that read pixels
+
+  Three presets work on what is already drawn: drops on the lens, rings on a node, and water that
+  rises into the next scene.
+
+#[oxframe::scene]
+async fn sea(view: View)
+
+#[oxframe::scene]
+async fn shore(view: View)
+
+   shaders::lens_drops()  bends everything drawn before it, inside its box, so add it
+  last and make it  .fullscreen() .  .wetness()  runs from 0 (dry) to 1 and is
+  a signal:  lens.wetness().to(1.0, 0.4)  is a splash.  .seed()  places the
+  drops and  .drop_size()  scales them.  .input("scene", Input::frame())
+  names what the shader reads, and outside a layer  Input::backdrop()  is the same thing.
+
+   Node::effect  runs a shader on one node's pixels, children included, and returns an
+   Effect .  shaders::ripple()  sends rings out from the node's center;
+   .strength()  and  .speed()  are signals. The colors move and the outline stays,
+  so use it on water, text, a gradient or an image: a flat fill shows no rings. A node has one effect.
+
+  A shader can only read finished pixels.  lens_drops  or an effect inside a group with
+  opacity below 1, a blur, a clip, a blend, a shadow or another effect fails
+   oxframe check  with  input_cycle , and the shader is skipped. Put the
+  effect on that group instead.  oxframe inspect --graph  lists these shaders as
+   effect  passes, and a  Shader  handle works wherever a  Node
+  does, for example in  Camera::center_on .
+
+  Not there yet:  Input::node  (another node as a texture),  Input::image
+  (a texture file),  .offscreen() , and running your own  shade , which is
+  still only checked.
+
+ Sound
+
+  A soundtrack plays for the whole video.  Project::audio("music.mp3")  still works, and
+  it is the same as  Audio::track :
+
+Project::new("explainer")
+    .audio(Audio::track("assets/music.mp3").duck_under_voice().volume(0.8))
+    .scene(intro())
+
+   .duck_under_voice()  lowers the music while a sound marked  .priority()  is
+  playing.  .volume() ,  .fade_in()  and  .fade_out()  shape the
+  track.  .master_fade()  fades the whole mix, including the effects.
+
+   sound("click.wav")  starts at the current frame.  .play()  does not wait.
+  Awaiting the sound waits until it ends, and  .trim()  plays a slice of the file (that slice
+  is also how long the wait is):
+
+sound("assets/whoosh.wav").volume(0.6).fade_in(0.05).play();
+sound("assets/click.wav").trim(0.0, 0.2).priority().await;
+
+  Effects show up as clips on the timeline and play with the picture, including after a seek. The
+  mix is written before ffmpeg encodes it, so two renders of the same scene match.
+   --no-audio  leaves the soundtrack and the effects out.  --range  keeps only
+  the part of them that falls inside that span. Drag the waveform to shift the soundtrack; the
+  offset is saved in  meta.json .
+
+ Voice
+
+   voice("one two").start()  speaks the line and keeps going.  .at_word()
+  waits until that word. Awaiting the line waits until the end. A line is  .priority() ,
+  so it ducks a soundtrack built with  .duck_under_voice() .
+
+let line = voice("First draw a square, then rotate it").start();
+line.at_word("square").await;
+square.draw_on().await;
+line.at_word("rotate").await;
+square.rotation().to(90.0, 0.8).await;
+line.await;
+
+  oxframe does not call a speech service itself. To get real audio, implement
+   TtsProvider  and pass it to  Project::tts .  synthesize
+  receives the line and the voice name and returns mono  i16  samples plus one
+   TimedWord  per word.  .at_word()  waits on those times, not on a guess. The
+  key stays inside the provider, read from the environment.  speak  below is your function:
+  the HTTP call and the decode.
+
+  Result , Vec ), String>   -->
+
+use oxframe:: ;
+
+struct ElevenLabs;
+
+impl TtsProvider for ElevenLabs {
+    fn id(&self) -> &str
+
+    fn synthesize(&self, req: &TtsRequest) -> Result  {
+        let key = std::env::var("ELEVENLABS_API_KEY")
+            .map_err(|_| "set ELEVENLABS_API_KEY".to_string())?;
+        // Send req.text and req.voice to ElevenLabs with key.
+        // Decode the body into mono i16 samples and one TimedWord per word.
+        let (rate, samples, words) = speak(&key, req.voice, req.text)?;
+        Ok(Synthesis  )
+    }
+}
+
+Project::new("explainer")
+    .tts(ElevenLabs)
+    .speaker("Rachel")
+    .audio(Audio::track("assets/music.mp3").duck_under_voice())
+    .scene(intro())
+
+  The first render calls  synthesize  and saves  tts/&#123;hash&#125;.wav  and
+   tts/&#123;hash&#125;.json . The next render plays that file. Commit the folder to
+  render in CI without a key. A missing key or a failed call does not fail the scene: oxframe
+  estimates the length (2.5 words per second, at least 0.3s) and there is no speech audio. An
+  estimate is not cached. With no provider, a committed cache is still used when the text and voice
+  match. The playground always estimates.
+
+   oxframe render --subtitles out.srt  writes the lines. A path ending in
+   .vtt
+  writes WebVTT.  --no-audio  still writes them, and  --range  shifts the cues into
+  that part of the video. A line that runs past the scene is an error; two lines that overlap are a warning.
+
+ Transparent backgrounds
+
+  Make the background transparent with  .background(Color::TRANSPARENT)  on the project
+  and render to  webm ,  prores  or  png : those keep the alpha
+  channel, so you can lay the animation over footage in a video editor. MP4 (H.264) has no
+  transparency.
+
+ Parallel rendering
+
+  A video longer than two seconds renders in 2-second segments, several at once: each one runs in
+  its own process, is encoded on its own, and the segments are joined without encoding them again.
+  The soundtrack is added once at the end.  --jobs 4  sets how many run at a time; the default
+  is one per core, at most eight.
+
+  The segments are the same whatever  --jobs  is, so  --jobs 1  and
+   --jobs 8  write the same bytes: a render on your laptop and one in CI match. Scenes
+  that take long to draw gain the most — a 7-second 3D scene on 8 cores renders 2.7 times faster —
+  while a short or simple one gains little, because every segment first runs the scene up to where
+  it starts. Each process holds one frame at a time, so memory does not grow with the length of the
+  video. A PNG sequence is split the same way. A tool of your own that encodes segments can join
+  them the same way with  oxframe_export::concat .
+
+ GPU or CPU?
+
+  Frames are drawn on the CPU (tiny-skia) by default. It is faster than the GPU on every scene we
+  benchmark, and it needs no graphics driver, so CI and servers just work. Pass
+   --gpu  to  oxframe render ,  oxframe dev  or
+   oxframe present  to draw with vello; it falls back to the CPU when no GPU is
+  available. Before 0.21 the GPU was the default and  --cpu  opted out;
+   --cpu
+  still works and wins over  --gpu . Vector scenes match across the two: they pass the
+  same reference-frame tests within a color difference of ΔE 1, which you cannot see. The CPU
+  renderer is also byte-for-byte identical between runs, which is what you want in automated tests.
+  A  shaders::waves()  node is painted into an image before either backend, so the two
+  show the same crest. The same goes for
+   lens_drops ,  ripple  and  water_wipe : both renderers draw the
+  vectors, and the shader runs on those pixels on the CPU. A layer whose vectors did not change is
+  reused on the next frame. A scene with no effects is one vector pass;
+   oxframe inspect --graph  lists the passes.
+
+ In a container or CI
+
+   ghcr.io/oxygenframe/oxframe  has the oxframe command, Rust and ffmpeg, with the SDK
+  already compiled, so a project's first  oxframe check  or  oxframe render
+  inside it takes seconds instead of compiling the engine. Use the tag of your project's SDK version:
+
+docker run --rm -v "$PWD:/work" ghcr.io/oxygenframe/oxframe:$  oxframe render
+
+ In GitHub Actions, run the job in it:
+
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    container: ghcr.io/oxygenframe/oxframe:$
+    steps:
+      - uses: actions/checkout@v4
+      - run: oxframe check
+      - run: oxframe render
+
+ In the browser
+
+  The playground can export MP4 too (the  Export  button). It encodes with your browser's
+  WebCodecs, so it works offline but is limited to what the browser supports — use the CLI for ProRes,
+  4K or long videos.
+
+Markers, eases, tunables
+
+  The full story behind  lesson 7 : values that live outside
+  your code so you can adjust them in the editor.
+
+ The three kinds
+
+wait_until("beat").await;                    // marker: a point on the timeline
+x.to(300.0, 1.0).ease(ease!("slide")).await;   // named ease: a curve you can bend
+let speed = tune!("speed", 1.4);               // tunable: a number with a slider
+
+        Marker
+
+         wait_until(name)  pauses the current task until the marker's time. The first time
+        it runs, the marker is placed where the code reached it — so nothing changes until you drag it.
+
+        Ease
+
+         ease!(name)  is a cubic Bézier curve, like CSS  cubic-bezier() . It
+        starts as a smooth in-out; edit it in the curve editor or pick a preset there.
+
+        Tunable
+
+         tune!(name, default)  returns a number. Use it for anything you want to dial in by
+        eye: sizes, speeds, counts, delays.
+
+ The meta file
+
+  Each scene has a  src/<scene>.meta.json  next to its source. Code provides defaults;
+  the file stores what you changed. Names missing from the file are added with their defaults the first
+  time the scene runs.
+
+{
+  "eases":  ,
+  "markers":  ,
+  "tunables":  ,
+  "version": 1
+}
+
+  Keys are sorted and unknown keys are preserved, so the file is safe to edit by hand and gives
+  clean diffs. Commit it together with the code.
+
+ Good to know
+
+    Changing a value in the editor does  not  recompile — the preview updates instantly.
+
+   Names are per scene. Two scenes can each have their own  "speed" .
+
+    Renaming a marker in code creates a new one at its default position; the old entry stays in the
+    file until you delete it.
+
+    oxframe check  validates all meta files.
+
+ A bigger example
+
+  The player above is that chart. It uses a marker to sync the bars with a beat and named eases for
+  their motion.
+
+Troubleshooting
+
+  The messages people meet on a first install or a first render, what they mean, and the fix. Each
+  heading is the text you see.
+
+ Start with oxframe doctor
+
+   oxframe doctor  checks Rust, the C linker, ffmpeg and the project's SDK version, and prints
+  the fix for whatever is missing on your system. Most of the problems below show up there first.
+
+ version `GLIBC_2.39' not found (required by oxframe)
+
+  The prebuilt Linux binary of oxframe-cli 0.21.0 needs a newer glibc than Debian 12 or Ubuntu 22.04
+  have. From 0.22.0 the binaries run with glibc 2.34 or newer: install again with the installer, or
+  build the command on your machine with  cargo install oxframe-cli .
+
+ linker `cc` not found
+
+  Rust compiles your scene and then links it with the system C toolchain. A machine that has never
+  built C or Rust code has none. Install it once:
+
+sudo apt install build-essential   # Debian, Ubuntu
+sudo dnf install gcc               # Fedora
+sudo pacman -S base-devel          # Arch
+xcode-select --install             # macOS
+
+  On Windows the error is  linker `link.exe` not found : install the Visual Studio Build
+  Tools with the  Desktop development with C++  workload (rustup offers it when you install
+  Rust), then open a new terminal.
+
+ cannot be built because it requires rustc 1.95 or newer
+ Your Rust is older than the SDK needs. Update it:
+  rustup update stable
+
+ ffmpeg was not found in PATH
+
+   oxframe render  hands frames to ffmpeg to make MP4, WebM or ProRes. Install it, or
+  point oxframe at a copy with  ffmpeg = "/path/to/ffmpeg"  under  [render]
+  in
+   oxframe.toml :
+
+sudo apt install ffmpeg         # Linux (or dnf / pacman)
+brew install ffmpeg             # macOS
+winget install Gyan.FFmpeg      # Windows, then open a new terminal
+
+  Everything else works without it:  oxframe dev ,  oxframe check ,
+   oxframe snapshot  and  oxframe render --format png .
+
+ cannot listen on 127.0.0.1:3000 (another `oxframe dev`? use --port)
+
+  The editor's port is taken, usually by an  oxframe dev  still running in another
+  terminal. Stop that one, or start this one elsewhere:  oxframe dev --port 3001 .
+
+ protocol versions differ
+
+   oxframe check  stops with exit code 3 when the  oxframe  command and the project's
+  SDK speak different editor protocols. Install the newest command, then move the project to it:
+
+cargo install oxframe-cli
+oxframe upgrade
+
+  See  Versions and upgrades  for what an upgrade changes.
+
+ build failed; the previous version keeps running
+
+  In  oxframe dev  this is not a crash. Your last save does not compile, so the editor
+  keeps showing the last version that did. The compiler error is in the terminal; fix it and save,
+  and the editor picks the new build up. A scene that panics again and again stops with
+   project keeps crashing; fix the code and save to retry ; the next save starts it again.
+
+ No GPU, or a server or CI runner
+
+  Nothing to do: frames are drawn on the CPU by default, so oxframe needs no graphics driver.
+   --gpu  asks for vello on Vulkan, Metal or DirectX 12 and falls back to the CPU when the
+  machine has no usable adapter.
+
+ WSL
+
+  Install Rust and ffmpeg inside the Linux distribution, not on Windows. If  oxframe dev
+  cannot open a browser, copy the address it prints, token included, into the browser on Windows; WSL
+  2 forwards  127.0.0.1  to Windows by default. Keep projects in the Linux file system ( ~/… , not  /mnt/c/… ): builds and file watching are much faster there.
+
+ The disk fills up
+
+  Rust keeps each project's build cache in  target/ , a few gigabytes per project. Run
+   cargo clean  in a project you are not working on to get the space back; the next build starts
+  from scratch.
+
+ Works locally, not in the playground
+
+  The browser playground builds with a fixed set of features. Video clips ( video ) and
+  formulas ( math ) are not in it; scenes that use them run with  oxframe dev  on
+  your machine.
+
+ Still stuck
+
+  Open an issue on
+   GitHub  with the
+  command, its full output,  oxframe --version  and your system. Add
+   -v  to the command for detailed logs.
+
+Versions and upgrades
+
+  oxframe is before 1.0, so its API still changes. Here is how versions are numbered, how often they
+  come out, and how to move a project from one to the next.
+
+ How versions are numbered
+
+  The SDK crates and the  oxframe  command are released together under one version. Before
+  1.0, a release that breaks your code raises the minor number (0.20 → 0.21); a release that only adds
+  or fixes something raises the patch number (0.21.0 → 0.21.1).
+
+     Release  What it may do  Your code
+
+      0.21.0 → 0.21.1  Fix bugs, add new API  Builds unchanged
+      0.20.x → 0.21.0  Change or remove API, change a default  May need edits; the changelog shows them
+
+ How often
+
+  About once a week. Breaking changes wait for the next minor release and come out together, so you
+  update your scenes once instead of after every change. An urgent fix ships on its own as a patch
+  release. Every release has its own section in the  changelog , with a short
+  video of what is new.
+
+ Pin the version
+
+   oxframe init  pins the exact SDK version in  Cargo.toml , so a new release
+  never changes a project behind your back:
+
+[dependencies]
+oxframe = "=0.21.0"
+
+  Keep the  = . With a plain  "0.21" , Cargo may pick a newer patch the next
+  time the lock file is refreshed.
+
+ Upgrade a project
+
+cargo install oxframe-cli   # the newest oxframe command
+cd my-video
+oxframe upgrade             # pin this command's SDK, refresh Cargo.lock and the agent files
+oxframe check               # build, then look at what changed
+
+   oxframe upgrade  moves the project to the SDK version the installed command is made
+  for, updates  Cargo.lock , and refreshes  AGENTS.md  and the agent skill so
+  an AI agent writes code for the new version. Then read the changelog sections between your old
+  version and the new one. A breaking change is listed under  Changed  or
+   Breaking  with a before → after example, which is usually the whole edit.
+
+ Docs for your version
+
+  These docs describe the newest release. The version menu at the top of the docs switches to the
+  pages of an older one, kept as they were:  /docs/0.20.5/… ,  /docs/0.19.0/…
+  and so on. The API reference on docs.rs is per version too. For an AI agent, point it at the docs of
+  the version the project pins:  https://oxframe.dev/docs/0.20.5/llms.txt  for an older
+  project,  /llms.txt  for the newest.
