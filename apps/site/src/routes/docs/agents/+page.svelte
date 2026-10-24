@@ -46,6 +46,18 @@ oxframe inspect --at 2.5      # scene tree at that time, when a frame looks wron
   node and the source line. <code>oxframe snapshot</code> is still there for one full-size still.
   Nothing keeps running — <code>oxframe dev</code> is for you, not for the agent.
 </p>
+<figure>
+  <img
+    src="/storyboard.png"
+    width="1320"
+    height="214"
+    loading="lazy"
+    alt="A storyboard written by oxframe check: four frames at 0, 1, 2 and 2.7 seconds; at 1 and 2 seconds a bullet list is drawn over the title Binary search"
+  />
+  <figcaption>
+    <code>out/check/storyboard.png</code> of a scene with a mistake: the list sits on top of the title.
+  </figcaption>
+</figure>
 
 <h2>A good way to work together</h2>
 <ol>
@@ -112,3 +124,20 @@ oxframe agents --force  # also replaces files you made your own`}</code
   the unversioned files, so a link written for today's version keeps working after that series is
   archived.
 </p>
+
+<style>
+  figure {
+    margin: 0 0 24px;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+</style>

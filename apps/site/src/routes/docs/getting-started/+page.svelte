@@ -86,6 +86,16 @@ oxframe dev --open`}</code
   The first build takes a minute or two — Rust compiles the engine once. Then your browser opens the
   editor: the animation in the middle, the timeline at the bottom. Press <kbd>Space</kbd> to play.
 </p>
+<figure>
+  <img
+    src="/images/editor.png"
+    width="1440"
+    height="900"
+    loading="lazy"
+    alt="The oxframe editor on a new project: the frame with a blue circle and the text Hello, hello in the middle, the selected Txt node's signals in the inspector on the right, and the timeline with the hello marker at the bottom"
+  />
+  <figcaption>The new project in <code>oxframe dev</code>, with the text node selected.</figcaption>
+</figure>
 
 <h2>3. Change something</h2>
 <p>
@@ -124,6 +134,20 @@ oxframe dev --open`}</code
 <p>Next, <a href="/docs/guide/hello">lesson 1</a> walks through that first scene line by line.</p>
 
 <style>
+  figure {
+    margin: 0 0 24px;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
   td {
     padding: 6px 12px 6px 0;
     vertical-align: top;
