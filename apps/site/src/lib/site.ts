@@ -16,6 +16,12 @@ export const LOGO = `${SITE}/logo-512.png`;
 export const X_HANDLE = 'oxframe';
 export const X_URL = `https://x.com/${X_HANDLE}`;
 
+/** Where to write: questions, press, security reports, removing a shared video. */
+export const CONTACT_EMAIL = 'contact@oxframe.dev';
+
+/** The author's account on X. */
+export const AUTHOR_X_URL = 'https://x.com/hovs_io';
+
 export const ORGANIZATION = {
   '@type': 'Organization',
   '@id': `${SITE}/#organization`,
@@ -24,6 +30,13 @@ export const ORGANIZATION = {
   url: `${SITE}/`,
   logo: { '@type': 'ImageObject', url: LOGO, width: 512, height: 512 },
   description: 'Open-source motion graphics library in Rust, built for AI coding agents.',
+  email: CONTACT_EMAIL,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: CONTACT_EMAIL,
+    url: `${SITE}/about`,
+  },
   sameAs: [
     'https://github.com/oxygenframe',
     X_URL,

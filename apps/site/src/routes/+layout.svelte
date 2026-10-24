@@ -65,7 +65,10 @@
         { href: X_URL, label: 'X (Twitter)' },
         { href: '/changelog', label: 'Changelog' },
         { href: 'https://crates.io/crates/oxframe', label: 'crates.io' },
+        { href: '/about', label: 'About and contact' },
         { href: '/license', label: 'License' },
+        { href: '/privacy', label: 'Privacy' },
+        { href: '/terms', label: 'Terms' },
         {
           href: 'https://github.com/oxygenframe/release-video-action',
           label: 'Release video Action',

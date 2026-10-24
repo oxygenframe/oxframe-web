@@ -129,6 +129,21 @@
     "section": "oxframe",
     "image": "/og/license.png"
   },
+  "/about": {
+    "title": "About oxframe: who makes it and how to get in touch",
+    "section": "oxframe",
+    "image": "/og/about.png"
+  },
+  "/privacy": {
+    "title": "Privacy: what oxframe and oxframe.dev collect",
+    "section": "oxframe",
+    "image": "/og/privacy.png"
+  },
+  "/terms": {
+    "title": "Terms of use for oxframe.dev and the playground",
+    "section": "oxframe",
+    "image": "/og/terms.png"
+  },
   "/changelog": {
     "title": "Changelog: every oxframe release",
     "section": "oxframe",
