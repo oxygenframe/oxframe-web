@@ -1,4 +1,12 @@
 {
+  "0.23.3": {
+    "mp4": "/media/releases/0.23.3/release-6119e252.mp4",
+    "poster": "/media/releases/0.23.3/release-6119e252.jpg",
+    "seconds": 19.32,
+    "width": 1920,
+    "height": 1080,
+    "bytes": 1127284
+  },
   "0.23.2": {
     "mp4": "/media/releases/0.23.2/release-924e4e9d.mp4",
     "poster": "/media/releases/0.23.2/release-924e4e9d.jpg",
