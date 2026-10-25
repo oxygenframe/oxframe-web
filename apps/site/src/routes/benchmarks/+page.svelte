@@ -8,6 +8,8 @@
   import { measurements } from '$lib/measurements';
 
   const a7 = measurements.a7;
+  // measure.sh on GitHub's runners at each release (scripts/machines.ts).
+  const machines = measurements.machines ?? [];
 
   type Row = {
     name: string;
@@ -55,8 +57,8 @@
 <h2>Render speed</h2>
 <p>
   The same scene written in each tool and in oxframe, rendered at 1920 × 1080. Wall time of the
-  render command, median of three runs after a warm-up, {vs.date}, on {vs.machine}. oxframe renders
-  on the GPU by default; <code>--cpu</code> forces the software renderer so the number does not depend
+  render command, median of three runs after a warm-up, {vs.date}, on {vs.machine}. oxframe is timed
+  both on the GPU (<code>--gpu</code>) and on the CPU, its default since 0.21, which does not depend
   on the graphics card.
 </p>
 <div class="scroll">
@@ -103,6 +105,44 @@
   >.
 </p>
 
+{#if machines.length}
+  <h2>On other machines</h2>
+  <p>
+    The 30-second scene from the home page, rendered on the CPU by <code>scripts/measure.sh</code>
+    on GitHub's shared runners at each release: small virtual machines, so read these as a floor, not
+    a best case. Median of five runs; <code>check</code> is on a current dev build.
+  </p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Machine</th>
+          <th>Render, all jobs</th>
+          <th>Render, one job</th>
+          <th>oxframe check</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each machines as m (m.name)}
+          <tr>
+            <td>{m.machine} <span class="v">{m.version}, {m.date}</span></td>
+            <td>{s(m.render30Seconds)} <span class="v">{m.render30Jobs} jobs</span></td>
+            <td>{s(m.render30OneJobSeconds)}</td>
+            <td>{s(m.checkWarmSeconds)}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+  <p class="note">
+    Raw numbers: the <a href={measurements.machinesRun}>workflow run</a> keeps one JSON file per
+    machine, every run included. Workflow:
+    <a href="https://github.com/oxygenframe/oxframe-sdk/blob/main/.github/workflows/measure.yml"
+      ><code>measure.yml</code></a
+    >.
+  </p>
+{/if}
+
 <h2>Agent success</h2>
 <p>
   The harder question for an AI agent is not speed but whether it gets the scene right. The
@@ -134,11 +174,10 @@
   </article>
 </div>
 <p class="note">
-  oxframe {a7.version}, {a7.date}. The one miss is the useful part: asked to explain a line of code,
-  the agent answered in the chat instead of making a video. The same prompt was the miss in the
-  0.20.5 run too, so the agent files of the next release say that such a request means a scene. (Two
-  9:16 shorts and one video prompt first failed on bugs in the scorer itself — a vertical pixel size
-  it did not read as 9:16, and an asset a fresh project lacks — both since fixed in the eval.)
+  oxframe {a7.version}, {a7.date}. The one miss: a grid of tiles that ended at 2.9 seconds when the
+  prompt asked for at least 3. The miss of earlier runs — asked to explain a line of code, the agent
+  answered in the chat instead of making a video — passes since the agent files say that such a
+  request means a scene.
 </p>
 <p>
   Script: <a href={a7.scriptUrl}><code>evals/run.py</code></a> in oxframe-cli, with the prompts

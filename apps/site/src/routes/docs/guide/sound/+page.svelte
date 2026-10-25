@@ -34,6 +34,15 @@
   to time the picture; <a href="/docs/rendering#voice">Rendering</a> shows how to plug in a real voice.
 </p>
 
+<h3 id="captions">Captions in the picture</h3>
+<p>
+  Feeds play videos muted, so a spoken line often needs to be read too.
+  <code>voice("…").caption()</code> shows the line at the bottom of the frame while it is spoken, up
+  to seven words at a time, each part on screen while its words are said. The caption is part of the
+  video;
+  <code>oxframe render --subtitles out.srt</code> writes a separate subtitle file instead.
+</p>
+
 <Try>
   <ul>
     <li>Wait for the word <code>"picture"</code> instead of <code>"follows"</code>.</li>

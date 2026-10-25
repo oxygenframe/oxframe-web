@@ -8,7 +8,10 @@
 </p>
 
 <h2>1. Install the tools</h2>
-<p>You need Rust with a C linker and, to make videos, ffmpeg.</p>
+<p>
+  You need Rust with a C linker. ffmpeg makes the videos: install it, or let
+  <code>oxframe render</code> download a static build the first time it needs one.
+</p>
 <pre><code
     >{`# Rust (skip if you have it)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -17,7 +20,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 sudo apt install build-essential   # Debian/Ubuntu
 xcode-select --install             # macOS
 
-# ffmpeg
+# ffmpeg (optional: oxframe render downloads one if it is missing)
 sudo apt install ffmpeg        # Linux
 brew install ffmpeg            # macOS
 winget install Gyan.FFmpeg     # Windows
@@ -59,8 +62,9 @@ curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/i
     >
     <tr
       ><td>ffmpeg</td><td
-        >For MP4, WebM and ProRes. The editor, <code>oxframe check</code>, snapshots and PNG frames
-        work without it.</td
+        >For MP4, WebM, ProRes and GIF. Without one, <code>oxframe render</code> downloads a static
+        build once (about 25 MB) into the oxframe cache. The editor, <code>oxframe check</code>,
+        snapshots and PNG frames work without it.</td
       ></tr
     >
     <tr

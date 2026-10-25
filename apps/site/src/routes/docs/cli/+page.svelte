@@ -115,8 +115,8 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
     >
     <tr
       ><td><code>--format &lt;f&gt;</code></td><td
-        ><code>mp4</code>, <code>webm</code>, <code>prores</code> or <code>png</code>; by default
-        taken from the <code>--out</code> extension.</td
+        ><code>mp4</code>, <code>webm</code>, <code>prores</code>, <code>png</code> or
+        <code>gif</code>; by default taken from the <code>--out</code> extension.</td
       ></tr
     >
     <tr><td><code>--scene &lt;name&gt;</code></td><td>Only this scene.</td></tr>
@@ -125,7 +125,18 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
         >Only this time range, in seconds; either side can be left out (<code>2..</code>).</td
       ></tr
     >
-    <tr><td><code>--size WxH</code></td><td>Output size, e.g. <code>3840x2160</code>.</td></tr>
+    <tr
+      ><td><code>--size WxH</code></td><td
+        >Output size, e.g. <code>3840x2160</code>. A GIF is 720 wide at most unless set.</td
+      ></tr
+    >
+    <tr
+      ><td><code>--fps &lt;n&gt;</code></td><td
+        >Frames per second of a GIF (default 15). See <a href="/docs/rendering#gif"
+          >GIF for a README</a
+        >.</td
+      ></tr
+    >
     <tr
       ><td><code>--aspect &lt;shape&gt;</code></td><td
         ><code>16:9</code>, <code>9:16</code>, <code>1:1</code>, or <code>all</code>.
@@ -225,7 +236,9 @@ oxframe publish --range 0..30            # the first 30 seconds of a longer vide
   In <code>report.json</code> the issue then has <code>bounds</code>, the node's box at the start of
   the issue in scene units (as in <code>oxframe inspect</code>), and <code>crop</code>, the path of
   the picture relative to <code>out/check/</code>. An agent opens the crop instead of hunting for
-  the problem on the storyboard.
+  the problem on the storyboard. Most issues also carry <code>fix</code>, the change with the
+  numbers worked out: move by <code>dx</code>/<code>dy</code>, a readable color, how much wider, how
+  long to hold (<a href="/docs/check-rules#fix">the fix in each issue</a>).
 </p>
 <p>
   The report also lists <code>motion</code>: every node that travels, with its
@@ -269,8 +282,8 @@ oxframe check --against out/before`}</code
   Copies a ready-made, checked block into <code>src/blocks/</code> and adds
   <code>mod blocks;</code> to <code>src/main.rs</code>. Each block is one call that plays itself in
   and returns its group: <code>blocks::stat_counter(view, 1280.0, "stars").await</code>. With no
-  name it lists all eighteen, each passing <code>oxframe check</code>. The copied file is yours to
-  edit; <code>--force</code> replaces it.
+  name it lists all twenty-four, each passing <code>oxframe check</code>. The copied file is yours
+  to edit; <code>--force</code> replaces it.
 </p>
 <ul>
   <li>
@@ -279,17 +292,21 @@ oxframe check --against out/before`}</code
   </li>
   <li>
     Numbers and data: <code>stat-counter</code>, <code>progress-bar</code>, <code>bar-chart</code>,
-    <code>comparison</code> (a yes/no table against another product).
+    <code>comparison</code> (a yes/no table against another product), <code>metric-row</code>
+    (several numbers counting up side by side).
   </li>
   <li>
     Product and release: <code>feature-grid</code> (feature cards in a row),
     <code>release-notes</code>, <code>before-after</code>, <code>timeline</code>,
-    <code>checklist</code> (items ticked off).
+    <code>checklist</code> (items ticked off), <code>steps</code> (numbered steps filling in),
+    <code>split-screen</code> (two columns with a divider), <code>social-post</code> (a post whose likes
+    count up).
   </li>
   <li>
     Developer stories: <code>terminal</code>, <code>code-change</code>,
     <code>pull-request</code> (a PR card that gets merged), <code>chat-messages</code> (a
-    conversation in bubbles), <code>quote-card</code>.
+    conversation in bubbles), <code>quote-card</code>, <code>key-combo</code> (a keyboard shortcut
+    pressed key by key), <code>search-bar</code> (a query typed, results dropping in).
   </li>
 </ul>
 
@@ -298,6 +315,17 @@ oxframe check --against out/before`}</code
   Checks what building and rendering need — Rust 1.95 or newer, a C linker, ffmpeg, and inside a
   project whether it is on the SDK your CLI makes — and prints the fix for each missing piece on
   your system. Exits 2 when something required is missing.
+</p>
+
+<h3><code>oxframe ffmpeg</code></h3>
+<p>
+  Downloads a static ffmpeg into the oxframe cache and prints its path.
+  <code>oxframe render</code> and <code>oxframe publish</code> do the same by themselves the first
+  time they need ffmpeg and find none, so you need this only to download ahead of time: in a CI
+  image, or before going offline. The builds are the ones the <code>ffmpeg-static</code> npm package
+  uses (Linux and macOS on x64 and arm64, Windows x64), pinned and checked by SHA-256; ffmpeg is
+  under the GPL. The project, the preview and video clips get the downloaded copy when no other
+  ffmpeg is on <code>PATH</code>. Set <code>OXFRAME_NO_FFMPEG_DOWNLOAD=1</code> to never download.
 </p>
 
 <h3><code>oxframe agents</code></h3>

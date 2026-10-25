@@ -44,10 +44,12 @@ xcode-select --install             # macOS`}</code
 
 <h2>ffmpeg was not found in PATH</h2>
 <p>
-  <code>oxframe render</code> hands frames to ffmpeg to make MP4, WebM or ProRes. Install it, or
+  <code>oxframe render</code> hands frames to ffmpeg to make MP4, WebM, ProRes or GIF. When none is
+  installed it downloads a static build once into the oxframe cache; you see this error only when
+  that is turned off (<code>OXFRAME_NO_FFMPEG_DOWNLOAD=1</code>), the machine is offline, or there
+  is no build for it. <code>oxframe ffmpeg</code> downloads it ahead of time. Or install ffmpeg, or
   point oxframe at a copy with <code>ffmpeg = "/path/to/ffmpeg"</code> under <code>[render]</code>
-  in
-  <code>oxframe.toml</code>:
+  in <code>oxframe.toml</code>:
 </p>
 <pre><code
     >{`sudo apt install ffmpeg         # Linux (or dnf / pacman)
