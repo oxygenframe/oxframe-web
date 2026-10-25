@@ -5,8 +5,12 @@
   import { goto } from '$app/navigation';
   import type { Hit } from './search-worker';
 
-  /** Searches for this at once (the 404 page passes words from the missing URL). */
-  let { query = '' }: { query?: string } = $props();
+  /**
+   * `query`: searches for this at once (the 404 page passes words from the
+   * missing URL). `inline`: results are a list in the page, always shown,
+   * instead of a dropdown over it.
+   */
+  let { query = '', inline = false }: { query?: string; inline?: boolean } = $props();
   let q = $state(untrack(() => query));
   let hits: Hit[] = $state([]);
   let open = $state(false);
@@ -32,7 +36,8 @@
   }
 
   function place() {
-    const r = input!.getBoundingClientRect();
+    if (inline || !input) return;
+    const r = input.getBoundingClientRect();
     at = { top: r.bottom + 4, left: r.left };
   }
 
@@ -57,7 +62,7 @@
     } else if (e.key === 'Enter' && hits[active]) {
       e.preventDefault();
       choose(hits[active]!.url);
-    } else if (e.key === 'Escape') {
+    } else if (e.key === 'Escape' && !inline) {
       open = false;
       input?.blur();
     }
@@ -105,20 +110,21 @@
     onfocus={start}
     oninput={search}
     onkeydown={key}
-    onblur={() => setTimeout(() => (open = false), 150)}
+    onblur={() => inline || setTimeout(() => (open = false), 150)}
     data-testid="docs-search"
   />
-  <kbd aria-hidden="true">/</kbd>
-  {#if open && q.trim()}
+  {#if !inline}<kbd aria-hidden="true">/</kbd>{/if}
+  {#if (open || inline) && q.trim()}
     <ul
       id="search-results"
       class="results"
+      class:inline
       role="listbox"
       data-testid="search-results"
       style:top="{at.top}px"
       style:left="{at.left}px"
     >
-      {#each hits as h, i (h.url)}
+      {#each inline ? hits.slice(0, 6) : hits as h, i (h.url)}
         <li id="search-hit-{i}" role="option" aria-selected={i === active}>
           <a
             href={h.url}
@@ -193,6 +199,13 @@
     border-radius: 10px;
     background: var(--panel);
     box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  }
+  .results.inline {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin-top: 8px;
+    box-shadow: none;
   }
   .results a {
     display: block;

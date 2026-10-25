@@ -46,8 +46,16 @@ test('the 404 page plays its scene and helps find the page', async ({ page }) =>
   const res = await page.goto('/docs/renderng');
   expect(res?.status()).toBe(404);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
-  // The scene (lib/examples/not_found.rs) loaded in the player.
-  await expect(page.locator('.scene.played')).toBeVisible({ timeout: 120_000 });
+  // The scene (lib/examples/not_found.rs), rendered to a short loop.
+  const video = page.locator('video.scene');
+  await expect(video).toBeVisible();
+  const res2 = await page.request.get((await video.getAttribute('src'))!);
+  expect(res2.status()).toBe(200);
   await expect(page.getByTestId('docs-search')).toHaveValue('renderng');
   await expect(page.locator('.mean a').first()).toHaveAttribute('href', '/docs/rendering');
+  // Results are listed in the page; one click opens the docs page.
+  const hit = page.getByTestId('search-results').locator('a').first();
+  await expect(hit).toBeVisible();
+  await hit.click();
+  await expect(page).toHaveURL(/\/docs\/rendering/);
 });
