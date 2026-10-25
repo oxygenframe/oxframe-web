@@ -92,7 +92,9 @@ args = ["mcp"]`}</code
 <h3>Any other client</h3>
 <p>
   The command is <code>oxframe</code> with the argument <code>mcp</code>, started in the project
-  directory. Messages are newline-delimited JSON-RPC on stdin and stdout; a
+  directory. A client that starts servers somewhere else can name the project instead:
+  <code>oxframe mcp --dir /path/to/my-video</code>. Messages are newline-delimited JSON-RPC on stdin
+  and stdout; a
   <code>Content-Length</code> frame is accepted too. Logs go to stderr.
 </p>
 
@@ -214,7 +216,9 @@ curl -s https://mcp.oxframe.dev/mcp -H 'content-type: application/json' \\
 <ul>
   <li>
     <strong>"no Cargo.toml here or above"</strong>: the client started the server outside the
-    project. Open the project folder in the editor, or start the client from it.
+    project. Open the project folder in the editor, start the client from it, or add
+    <code>--dir</code> with the project path to the arguments:
+    <code>"args": ["mcp", "--dir", "/path/to/my-video"]</code>.
   </li>
   <li>
     <strong>The client cannot find <code>oxframe</code></strong>: GUI apps may not see your shell's

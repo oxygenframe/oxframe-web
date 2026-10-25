@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.4",
+    "date": "2026-10-25",
+    "html": "<h3>Added</h3>\n<ul><li><code>oxframe mcp --dir</code> (oxframe-cli): serve the project at a given path, not the current directory, for MCP clients that start servers elsewhere.</li></ul>\n<h3>Fixed</h3>\n<ul><li><code>oxframe check</code> no longer reports <code>dead_time</code> while a <code>Video</code> plays: the clip frame it shows counts as change (<code>inspect</code> lists it as the <code>frame</code> param). A paused or finished clip still counts as a still shot.</li></ul>"
+  },
+  {
     "version": "0.23.3",
     "date": "2026-10-24",
     "html": "<h3>Added</h3>\n<ul><li>Six more blocks for <code>oxframe add</code> (oxframe-cli): <code>feature-grid</code>, <code>checklist</code>, <code>comparison</code>, <code>chat-messages</code>, <code>pull-request</code> and <code>countdown</code>, eighteen in all, every one passing <code>oxframe check</code>.</li><li>The agent skill: a request to explain or show something means a scene, not an answer in chat; hints for the compile errors seen most in the 0.23.2 agent eval. No SDK code changed.</li></ul>"
