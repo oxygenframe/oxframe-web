@@ -2,7 +2,7 @@
   "date": "2026-10-22",
   "machine": "Intel(R) Core(TM) Ultra 7 255H, 16 threads, Linux",
   "script": "bench/vs/measure.sh",
-  "note": "Wall time of the render command, median of 3 after a warm-up. 1920x1080, H.264. oxframe renders on the GPU by default; --cpu forces the CPU renderer.",
+  "note": "Wall time of the render command, median of 3 after a warm-up. 1920x1080, H.264. oxframe was timed on the GPU (the default in 0.20) and with --cpu (the default since 0.21).",
   "remotion": {
     "version": "4.0.537",
     "command": "npx remotion render Hello",

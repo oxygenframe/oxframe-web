@@ -55,8 +55,8 @@
 <h2>Render speed</h2>
 <p>
   The same scene written in each tool and in oxframe, rendered at 1920 × 1080. Wall time of the
-  render command, median of three runs after a warm-up, {vs.date}, on {vs.machine}. oxframe renders
-  on the GPU by default; <code>--cpu</code> forces the software renderer so the number does not depend
+  render command, median of three runs after a warm-up, {vs.date}, on {vs.machine}. oxframe is timed
+  both on the GPU (<code>--gpu</code>) and on the CPU, its default since 0.21, which does not depend
   on the graphics card.
 </p>
 <div class="scroll">
