@@ -24,6 +24,7 @@ winget install Gyan.FFmpeg     # Windows
 
 # the oxframe command, prebuilt: seconds, checksum-verified
 curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.sh | sh   # Linux, macOS
+# or with Homebrew (brings ffmpeg too): brew install oxygenframe/tap/oxframe
 # Windows (PowerShell):
 #   powershell -ExecutionPolicy Bypass -c "irm https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.ps1 | iex"
 # or with cargo: cargo binstall oxframe-cli (prebuilt), cargo install oxframe-cli (from source)`}</code
@@ -31,8 +32,9 @@ curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/i
 <p>
   The installer puts <code>oxframe</code> in <code>~/.local/bin</code>
   (<code>%LOCALAPPDATA%\oxframe\bin</code> on Windows, added to your <code>PATH</code>); set
-  <code>OXFRAME_INSTALL_DIR</code> to change that. Rust is still needed either way: your scenes are
-  Rust code. <code>oxframe doctor</code> then checks that everything a build needs is there.
+  <code>OXFRAME_INSTALL_DIR</code> to change that. The Homebrew formula installs the same prebuilt
+  binary and updates with <code>brew upgrade</code>. Rust is still needed either way: your scenes
+  are Rust code. <code>oxframe doctor</code> then checks that everything a build needs is there.
 </p>
 
 <h3>Requirements</h3>
