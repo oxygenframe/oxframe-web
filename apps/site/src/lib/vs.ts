@@ -75,9 +75,9 @@ export const vsPages: VsPage[] = [
         'Free for individuals, non-profits and companies of up to 3 people; a company license above that',
       ],
       [
-        'Price for a team of 10',
+        'Price for a company of 10',
         '$0',
-        '$25 per seat a month on the Creators plan, or $0.01 per render with a $100 monthly minimum',
+        '$25 a month for each person who writes Remotion code or drives an agent that does (Creators), or $0.01 per render with a $100 monthly minimum (Automators)',
       ],
       [
         'Telemetry',
