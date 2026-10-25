@@ -328,6 +328,19 @@ oxframe check --against out/before`}</code
   ffmpeg is on <code>PATH</code>. Set <code>OXFRAME_NO_FFMPEG_DOWNLOAD=1</code> to never download.
 </p>
 
+<h3><code>oxframe transcribe</code></h3>
+<pre><code>oxframe transcribe vo/intro.wav vo/outro.mp3 --language en</code></pre>
+<p>
+  Times the words of a recorded voice-over and writes <code>vo/intro.words.json</code> next to each
+  file, for <a href="/docs/guide/sound#recording"><code>voice("…").recording("vo/intro.wav")</code></a
+  >. It runs whisper.cpp's <code>whisper-cli</code> on your machine, so nothing is uploaded; install
+  it first (<code>brew install whisper-cpp</code> on macOS and Linux, or build it from source) or
+  pass <code>--whisper &lt;path&gt;</code>. <code>--model</code> is <code>tiny</code>,
+  <code>base</code> (the default) or <code>small</code>, downloaded once into the oxframe cache and
+  checked by SHA-256, or the path of a ggml model. <code>--language</code> skips detection. Any
+  format ffmpeg reads works.
+</p>
+
 <h3><code>oxframe agents</code></h3>
 <p>
   Writes or refreshes <code>AGENTS.md</code>, <code>CLAUDE.md</code> and
