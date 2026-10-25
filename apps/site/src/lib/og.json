@@ -424,6 +424,11 @@
     "section": "Docs",
     "image": "/og/docs-agents.png"
   },
+  "/docs/mcp": {
+    "title": "MCP server for Claude Code, Codex, Cursor",
+    "section": "Docs",
+    "image": "/og/docs-mcp.png"
+  },
   "/docs/check-rules": {
     "title": "Check rules",
     "section": "Docs",

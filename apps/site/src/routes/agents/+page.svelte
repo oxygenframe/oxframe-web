@@ -96,7 +96,8 @@ cd my-video                         # open this folder in your agent`}</code
   Agents that cannot run commands on your machine, such as ChatGPT or a web IDE, can still read the
   docs: add <code>https://mcp.oxframe.dev/mcp</code> as a remote MCP server (Streamable HTTP, no
   sign-in). Its tools search the docs, read a page, list the components and fetch an example's
-  source. Checking and rendering need the local <code>oxframe mcp</code>.
+  source. Checking and rendering need the local <code>oxframe mcp</code>. Setup for every client:
+  <a href="/docs/mcp">MCP server</a>.
 </p>
 
 <h2 id="skills">Skills</h2>

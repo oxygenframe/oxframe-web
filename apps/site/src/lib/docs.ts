@@ -240,6 +240,12 @@ export const sections: DocSection[] = [
           'Use Claude Code, Codex or Cursor to write oxframe animations: every project ships agent instructions and a way for agents to see what they made.',
       },
       {
+        slug: 'mcp',
+        title: 'MCP server for Claude Code, Codex, Cursor',
+        description:
+          'Connect oxframe to Claude Code, Codex, Cursor, VS Code or ChatGPT over MCP: the local server checks and renders videos, the hosted one serves the docs.',
+      },
+      {
         slug: 'check-rules',
         title: 'Check rules',
         description:
