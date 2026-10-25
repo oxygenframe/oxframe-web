@@ -253,6 +253,27 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   offset is saved in <code>meta.json</code>.
 </p>
 
+<h3 id="loudness">Loudness</h3>
+<p>
+  A video that is much quieter or louder than the one before it gets turned down or skipped.
+  <code>Project::loudness</code> brings the whole mix (music, voice and effects together) to one integrated
+  loudness, measured the way YouTube and podcast apps measure it (EBU R128), and keeps peaks under -1
+  dBFS:
+</p>
+<!-- snippet-setup: #[oxframe::scene] async fn intro(view: View) {} -->
+<pre><code
+    >{`Project::new("explainer")
+    .audio("assets/music.mp3")
+    .loudness(-14.0)   // YouTube and most players; -16.0 for podcasts
+    .scene(intro())`}</code
+  ></pre>
+<p>
+  The render prints what it got, e.g. <code>sound: -14.0 LUFS (target -14.0)</code>; without
+  <code>loudness</code> it prints the level the files give. The gain is one number for the whole
+  video, so quiet and loud parts keep their difference. To measure a mix of your own, call
+  <code>oxframe_export::loudness</code>.
+</p>
+
 <h2 id="voice">Voice</h2>
 <p>
   <code>voice("one two").start()</code> speaks the line and keeps going. <code>.at_word()</code>
