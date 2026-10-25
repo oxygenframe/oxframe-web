@@ -22,7 +22,13 @@ export const DATA = [
 ];
 
 function git(args: string[]): string | null {
-  const r = spawnSync('git', args, { cwd: src, encoding: 'utf8' });
+  // TZ=UTC: dates are UTC days, like `today` (a commit after midnight in
+  // Europe is still yesterday in UTC).
+  const r = spawnSync('git', args, {
+    cwd: src,
+    encoding: 'utf8',
+    env: { ...process.env, TZ: 'UTC' },
+  });
   return r.status === 0 ? r.stdout.trim() : null;
 }
 
@@ -43,7 +49,7 @@ const today = new Date().toISOString().slice(0, 10);
 /** Day `paths` last changed (YYYY-MM-DD): today if they have uncommitted edits. */
 function lastChange(paths: string[]): string | null {
   if (git(['status', '--porcelain', '--', ...paths])) return today;
-  return git(['log', '-1', '--format=%cs', '--', ...paths]) || null;
+  return git(['log', '-1', '--format=%cd', '--date=format-local:%Y-%m-%d', '--', ...paths]) || null;
 }
 
 if (import.meta.main) {
