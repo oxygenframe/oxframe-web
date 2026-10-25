@@ -33,25 +33,36 @@
     {
       "name": "linux-arm64",
       "machine": "Neoverse-N2, 4 threads, rustc 1.97.1, Linux",
-      "version": "0.23.4",
+      "version": "0.23.6",
       "date": "2026-10-25",
-      "checkWarmSeconds": 0.4,
-      "render30Seconds": 15.77,
-      "render30OneJobSeconds": 21.84,
+      "checkWarmSeconds": 0.39,
+      "render30Seconds": 15.63,
+      "render30OneJobSeconds": 21.57,
       "render30Jobs": 4,
       "render30VideoSeconds": 27.52
     },
     {
       "name": "linux-x64",
       "machine": "AMD EPYC 7763 64-Core Processor, 4 threads, rustc 1.97.1, Linux",
-      "version": "0.23.4",
+      "version": "0.23.6",
       "date": "2026-10-25",
-      "checkWarmSeconds": 0.5,
-      "render30Seconds": 21.88,
+      "checkWarmSeconds": 0.52,
+      "render30Seconds": 21.77,
       "render30OneJobSeconds": 26.17,
       "render30Jobs": 4,
       "render30VideoSeconds": 27.52
+    },
+    {
+      "name": "macos-arm64",
+      "machine": "Apple M1 (Virtual), 3 threads, rustc 1.97.1, macOS",
+      "version": "0.23.6",
+      "date": "2026-10-25",
+      "checkWarmSeconds": 0.9,
+      "render30Seconds": 20.52,
+      "render30OneJobSeconds": 25.92,
+      "render30Jobs": 3,
+      "render30VideoSeconds": 27.52
     }
   ],
-  "machinesRun": "https://github.com/oxygenframe/oxframe-sdk/actions/runs/40198801197"
+  "machinesRun": "https://github.com/oxygenframe/oxframe-sdk/actions/runs/40206770701"
 }
