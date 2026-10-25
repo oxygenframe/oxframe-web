@@ -1,10 +1,13 @@
 <script lang="ts">
   // Search over the current docs (Pagefind index built after the site build).
   // Nothing loads until the box is focused; "/" focuses it.
+  import { onMount, untrack } from 'svelte';
   import { goto } from '$app/navigation';
   import type { Hit } from './search-worker';
 
-  let q = $state('');
+  /** Searches for this at once (the 404 page passes words from the missing URL). */
+  let { query = '' }: { query?: string } = $props();
+  let q = $state(untrack(() => query));
   let hits: Hit[] = $state([]);
   let open = $state(false);
   let active = $state(0);
@@ -66,6 +69,10 @@
     hits = [];
     void goto(url);
   }
+
+  onMount(() => {
+    if (q.trim()) search();
+  });
 
   function slash(e: KeyboardEvent) {
     const t = e.target as HTMLElement;
