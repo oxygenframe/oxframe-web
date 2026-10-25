@@ -246,6 +246,10 @@ export class OxframePlayer extends HTMLElement {
     this.started = false;
     this.ready = false;
     this.playing = false;
+    // A new scene has its own length: `duration` stays 0 until it is known.
+    this.frames = 0;
+    this.frame = 0;
+    this.holdEnd = false;
     const b = this.backend;
     this.backend = null;
     b?.close();
