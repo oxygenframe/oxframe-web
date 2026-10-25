@@ -1,6 +1,7 @@
 name: deploy-mcp
-# mcp.oxframe.dev (services/mcp): a Worker with no bindings. The docs it
-# serves come from the site at request time, so only code changes deploy.
+# mcp.oxframe.dev (services/mcp): a Worker with a service binding to
+# oxframe-compile. The docs it serves come from the site at request time, so
+# only code changes deploy.
 # Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 on:
   push:

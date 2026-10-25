@@ -77,8 +77,11 @@
 
   <h2>mcp.oxframe.dev</h2>
   <p>
-    The documentation server for agents answers searches over the public docs. It keeps nothing
-    about you or your project; requests are logged by Cloudflare like any other.
+    The server for agents answers searches over the public docs and keeps nothing about you. Its
+    scene tools (<code>check_scene</code>, <code>render_frame</code>, <code>inspect_scene</code>)
+    send the scene's code to <code>compile.oxframe.dev</code>, which builds and keeps it as it does
+    for the playground, together with the answer (the check report and images). Requests are logged
+    by Cloudflare like any other.
   </p>
 
   <h2>Logs</h2>

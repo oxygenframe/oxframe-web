@@ -91,12 +91,14 @@ cd my-video                         # open this folder in your agent`}</code
   <code>~/.cursor/plugins/local/oxframe</code>.
 </p>
 
-<h2 id="remote-mcp">The docs over MCP, without the CLI</h2>
+<h2 id="remote-mcp">Docs and checks over MCP, without the CLI</h2>
 <p>
   Agents that cannot run commands on your machine, such as ChatGPT or a web IDE, can still read the
-  docs: add <code>https://mcp.oxframe.dev/mcp</code> as a remote MCP server (Streamable HTTP, no
-  sign-in). Its tools search the docs, read a page, list the components and fetch an example's
-  source. Checking and rendering need the local <code>oxframe mcp</code>. Setup for every client:
+  docs and check their work: add <code>https://mcp.oxframe.dev/mcp</code> as a remote MCP server
+  (Streamable HTTP, no sign-in). Its tools search the docs, read a page, list the components and
+  fetch an example's source; <code>check_scene</code> builds a scene file on oxframe's servers and
+  returns the check report with the storyboard, and <code>render_frame</code> shows one moment.
+  Rendering the video file needs the local <code>oxframe mcp</code>. Setup for every client:
   <a href="/docs/mcp">MCP server</a>.
 </p>
 

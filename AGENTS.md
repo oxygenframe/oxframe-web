@@ -42,10 +42,14 @@ metadata") enforces most of this; extend it when you add a rule.
 
 ## mcp.oxframe.dev
 
-`services/mcp` is a read-only MCP server (Streamable HTTP, stateless, no
-auth) for agents that cannot run the CLI, such as ChatGPT and the Codex
-plugin directory: `docs_search`, `get_page`, `list_components`,
-`get_example`. It reads `https://oxframe.dev/docs-index.json`, which
+`services/mcp` is an MCP server (Streamable HTTP, stateless, no auth) for
+agents that cannot run the CLI, such as ChatGPT and the Codex plugin
+directory: `docs_search`, `get_page`, `list_components`, `get_example`, and
+`check_scene`, `render_frame`, `inspect_scene`, which build one scene file
+through a service binding to compile.oxframe.dev and run the build there
+(`POST /api/run`: the build's wasm in a child process of the build
+container, `services/compile/src/scene-run.ts`, with a time limit; answers
+are cached in R2 next to the build). It reads `https://oxframe.dev/docs-index.json`, which
 `scripts/markdown-pages.ts` writes on every site build, so it follows the
 docs without a redeploy. Deployed by `.github/workflows/deploy-mcp.yml` on
 changes to `services/mcp`.

@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -175,6 +175,47 @@ export function createApp(
       });
   };
 
+  // Runs a built scene for mcp.oxframe.dev: `check`, `frame` or `inspect`.
+  // The caller sends the build's bundle.js and bundle.wasm (compile-cf keeps
+  // them in R2), so this works on a machine that did not build them. The
+  // scene runs as wasm in its own process with a time limit.
+  let running = 0;
+  app.post('/api/run', async (c) => {
+    let form: FormData;
+    try {
+      form = await c.req.formData();
+    } catch {
+      return c.json({ error: 'expected multipart {op, at, js, wasm}' }, 400);
+    }
+    const op = form.get('op');
+    const at = Number(form.get('at') ?? 0);
+    const js = form.get('js');
+    const wasm = form.get('wasm');
+    if (op !== 'check' && op !== 'frame' && op !== 'inspect')
+      return c.json({ error: '`op` is check, frame or inspect' }, 400);
+    if (!Number.isFinite(at) || at < 0) return c.json({ error: '`at` is seconds, ≥ 0' }, 400);
+    if (!(js instanceof Blob) || !(wasm instanceof Blob))
+      return c.json({ error: '`js` and `wasm` are the build files' }, 400);
+    if (js.size + wasm.size > cfg.maxArtifactBytes * 2)
+      return c.json({ error: 'build files too large' }, 413);
+    if (running >= cfg.workers) {
+      metrics.inc('oxframe_rejected_total', { reason: 'run_busy' });
+      return c.json({ error: 'busy; try again in a moment' }, 429, { 'Retry-After': '5' });
+    }
+    running++;
+    const dir = mkdtempSync(join(cfg.dataDir, 'run-'));
+    try {
+      writeFileSync(join(dir, 'bundle.js'), new Uint8Array(await js.arrayBuffer()));
+      writeFileSync(join(dir, 'bundle.wasm'), new Uint8Array(await wasm.arrayBuffer()));
+      metrics.inc('oxframe_runs_total', { op });
+      const out = await runOp(dir, op, at, cfg.runTimeoutMs);
+      return c.json(out.body, out.status as 200);
+    } finally {
+      running--;
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   app.get('/api/examples', (c) => c.json(examples()));
   app.get('/healthz', (c) => c.text('ok'));
   app.get('/metrics', (c) =>
@@ -191,4 +232,43 @@ export function createApp(
   }
 
   return { app, store, queue, metrics, prebuildExamples };
+}
+
+/** Runs scene-run.ts on `dir` in a child process; kills it after `timeoutMs`. */
+async function runOp(
+  dir: string,
+  op: string,
+  at: number,
+  timeoutMs: number,
+): Promise<{ status: number; body: unknown }> {
+  const proc = Bun.spawn(
+    [process.execPath, join(import.meta.dir, 'scene-run.ts'), dir, op, String(at)],
+    {
+      cwd: dir,
+      env: { PATH: process.env.PATH ?? '' },
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+  );
+  const timer = setTimeout(() => proc.kill(9), timeoutMs);
+  const [stdout, stderr, code] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+    proc.exited,
+  ]);
+  clearTimeout(timer);
+  if (proc.signalCode)
+    return {
+      status: 200,
+      body: { error: `the scene did not finish within ${timeoutMs / 1000} s` },
+    };
+  let body: Record<string, unknown>;
+  try {
+    body = JSON.parse(stdout) as Record<string, unknown>;
+  } catch {
+    return { status: 500, body: { error: `run failed (exit ${code}): ${stderr.slice(-1000)}` } };
+  }
+  // A panic: its message is on stderr ("panicked at src/scene.rs:…").
+  if (body.error && stderr.trim()) body.log = stderr.trim().slice(-2000);
+  return { status: 200, body };
 }

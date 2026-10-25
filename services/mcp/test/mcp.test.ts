@@ -1,8 +1,8 @@
 // The MCP server against fixed sources: the protocol, every tool, and the
 // errors a client can cause.
 import { describe, expect, it } from 'bun:test';
-import { handle, PROTOCOL_VERSIONS, webSources } from '../src/index';
-import { search, type Page, type Sources } from '../src/tools';
+import { compileScenes, handle, PROTOCOL_VERSIONS, webSources } from '../src/index';
+import { type Scenes, search, type Page, type Sources } from '../src/tools';
 
 const PAGES: Page[] = [
   {
@@ -18,9 +18,38 @@ const PAGES: Page[] = [
   },
 ];
 
+const REPORT = {
+  duration: 1.45,
+  issues: [
+    {
+      rule: 'out_of_frame',
+      severity: 'error',
+      time: [0.1, 1.45],
+      source: 'src/scene.rs:5',
+      hint: 'Move it 661 px to the left.',
+      docs: 'https://oxframe.dev/docs/check-rules#out_of_frame',
+    },
+  ],
+};
+
+/** A compile service that fails on `fail!` and runs everything else. */
+const scenes: Scenes = {
+  build: async (source) =>
+    source.includes('fail!')
+      ? { ok: false, errors: [{ line: 2, column: 5, message: 'cannot find macro `fail`' }] }
+      : { ok: true, id: 'a'.repeat(32) },
+  run: async (_id, op, at) =>
+    op === 'check'
+      ? { report: REPORT, storyboard_png: 'U1RPUlk=' }
+      : op === 'frame'
+        ? { frame: 30, seconds: at, duration: 1.45, size: [1920, 1080], png: 'RlJBTUU=' }
+        : { inspect: { frame: 30, nodes: [] } },
+};
+
 const src: Sources = {
   pages: async () => PAGES,
   example: async (name) => (name === 'release' ? 'use oxframe::prelude::*;\n' : null),
+  scenes,
 };
 
 /** The parts of a JSON-RPC answer these tests read. */
@@ -30,7 +59,7 @@ interface Answer {
     capabilities: { tools?: object };
     serverInfo: { name: string };
     tools: { name: string; annotations: { readOnlyHint: boolean } }[];
-    content: { text: string }[];
+    content: { type: string; text?: string; data?: string; mimeType?: string }[];
     isError: boolean;
   };
   error: { code: number };
@@ -72,10 +101,18 @@ describe('protocol', () => {
     expect((await rpc('notifications/initialized', undefined, null)).status).toBe(202);
   });
 
-  it('lists read-only tools', async () => {
+  it('lists tools that change nothing on the client', async () => {
     const { body } = await rpc('tools/list');
     const names = body.result.tools.map((t: { name: string }) => t.name);
-    expect(names).toEqual(['docs_search', 'get_page', 'list_components', 'get_example']);
+    expect(names).toEqual([
+      'docs_search',
+      'get_page',
+      'list_components',
+      'get_example',
+      'check_scene',
+      'render_frame',
+      'inspect_scene',
+    ]);
     for (const t of body.result.tools) expect(t.annotations.readOnlyHint).toBe(true);
   });
 
@@ -185,5 +222,88 @@ describe('web sources', () => {
     expect((await s.pages()).length).toBe(2);
     await s.pages();
     expect(calls).toBe(2);
+  });
+});
+
+describe('scene tools', () => {
+  it('check_scene lists the issues and shows the storyboard', async () => {
+    const r = await call('check_scene', { source: 'use oxframe::prelude::*;' });
+    expect(r.isError).toBe(false);
+    expect(r.content[0]!.text).toContain(
+      '- error out_of_frame at 0.10–1.45 s, src/scene.rs:5: Move it 661 px to the left.',
+    );
+    expect(r.content[1]).toEqual({ type: 'image', data: 'U1RPUlk=', mimeType: 'image/png' });
+  });
+
+  it('render_frame returns the PNG and inspect_scene the tree', async () => {
+    const frame = await call('render_frame', { source: 'x', at: 0.5 });
+    expect(frame.content[0]!.text).toBe('Frame 30 at 0.50 s of 1.45 s, 1920×1080.');
+    expect(frame.content[1]!.data).toBe('RlJBTUU=');
+    const tree = await call('inspect_scene', { source: 'x', at: 0.5 });
+    expect(JSON.parse(tree.content[0]!.text!)).toEqual({ frame: 30, nodes: [] });
+  });
+
+  it('shows the panic message of a scene that panics', async () => {
+    const panicking: Sources = {
+      ...src,
+      scenes: {
+        build: async () => ({ ok: true, id: 'c'.repeat(32) }),
+        run: async () => ({
+          error: 'RuntimeError: unreachable',
+          log: 'panicked at src/scene.rs:6:24:\nboom\n\nStack:\n\nError\n    at x',
+        }),
+      },
+    };
+    const r = await handle(
+      new Request('https://mcp.oxframe.dev/mcp', {
+        method: 'POST',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'tools/call',
+          params: { name: 'check_scene', arguments: { source: 'x' } },
+        }),
+      }),
+      panicking,
+    );
+    const { result } = (await r.json()) as Answer;
+    expect(result.content[0]!.text).toBe(
+      'The scene panicked while running: panicked at src/scene.rs:6:24:\nboom',
+    );
+  });
+
+  it('reports compile errors with their line, and missing arguments', async () => {
+    const r = await call('check_scene', { source: 'fn f() { fail!() }' });
+    expect(r.isError).toBe(true);
+    expect(r.content[0]!.text).toContain('scene.rs:2:5: cannot find macro `fail`');
+    expect((await call('render_frame', { source: 'x' })).isError).toBe(false);
+    expect((await call('render_frame', { source: 'x', at: -1 })).isError).toBe(true);
+    expect((await call('check_scene', {})).isError).toBe(true);
+  });
+
+  it('polls a long build and forwards the client address', async () => {
+    const seen: string[] = [];
+    let polls = 0;
+    const fetcher = {
+      fetch: (async (url: string, init?: RequestInit) => {
+        seen.push(
+          `${init?.method ?? 'GET'} ${url} ${new Headers(init?.headers).get('CF-Connecting-IP')}`,
+        );
+        if (url.endsWith('/api/compile'))
+          return Response.json({ id: 'b'.repeat(32), status: 'building', errors: [] });
+        if (url.includes('/api/compile/'))
+          return Response.json({
+            id: 'b'.repeat(32),
+            status: ++polls < 2 ? 'building' : 'done',
+            errors: [],
+          });
+        return Response.json({ error: 'too many requests' }, { status: 429 });
+      }) as typeof fetch,
+    };
+    const s = compileScenes(fetcher, '203.0.113.7', async () => {});
+    expect(await s.build('x')).toEqual({ ok: true, id: 'b'.repeat(32) });
+    expect(seen[0]).toBe('POST https://compile.oxframe.dev/api/compile 203.0.113.7');
+    expect(polls).toBe(2);
+    expect((await s.run('b'.repeat(32), 'check', 0)).error).toBe('too many requests');
   });
 });

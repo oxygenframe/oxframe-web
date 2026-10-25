@@ -1,12 +1,13 @@
 // mcp.oxframe.dev: MCP over Streamable HTTP, stateless. Every POST carries
 // one JSON-RPC message and gets a JSON answer; there are no sessions and no
-// server-sent events, which the read-only tools do not need.
-import { callTool, type Page, type Sources, TOOLS } from './tools';
+// server-sent events. The scene tools wait for compile.oxframe.dev, reached
+// through a service binding.
+import { type Built, callTool, type Page, type Scenes, type Sources, TOOLS } from './tools';
 
 export const PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
-const SERVER = { name: 'oxframe-docs', title: 'oxframe docs', version: '0.1.0' };
+const SERVER = { name: 'oxframe-docs', title: 'oxframe', version: '0.2.0' };
 const INSTRUCTIONS =
-  'Reference for oxframe, a Rust library for motion graphics and videos from code. Search the docs before writing a scene; get_page reads a whole page. To build, check and render a project, use the local `oxframe mcp` from the oxframe CLI (cargo install oxframe-cli).';
+  'oxframe is a Rust library for motion graphics and videos from code. Search the docs before writing a scene; get_page reads a whole page. check_scene builds one scene file and reports what is wrong in its frames, with a storyboard; render_frame shows one moment. Write the scene as the playground does (`pub fn project() -> Project`). To render the video file and work on a project on disk, use the local `oxframe mcp` from the oxframe CLI (cargo install oxframe-cli).';
 
 const INDEX_URL = 'https://oxframe.dev/docs-index.json';
 const EXAMPLE_URL = (name: string) =>
@@ -33,6 +34,65 @@ export function webSources(fetcher: typeof fetch = fetch): Sources {
       if (r.status === 404) return null;
       if (!r.ok) throw new Error(`example ${name}: ${r.status}`);
       return r.text();
+    },
+  };
+}
+
+/** The compile service's answers, as far as these tools read them. */
+interface Compiled {
+  id: string;
+  status: 'queued' | 'building' | 'done' | 'error';
+  errors: { line: number; column: number; message: string }[];
+  log?: string;
+  error?: string;
+}
+
+/**
+ * compile.oxframe.dev through `fetcher` (a service binding). `ip` is the
+ * MCP client's address, so the compile service's rate limit counts each
+ * client, not this Worker.
+ */
+export function compileScenes(
+  fetcher: { fetch: typeof fetch },
+  ip: string,
+  sleep = (ms: number) => new Promise((ok) => setTimeout(ok, ms)),
+): Scenes {
+  const base = 'https://compile.oxframe.dev';
+  const headers = { 'Content-Type': 'application/json', 'CF-Connecting-IP': ip };
+  return {
+    async build(source): Promise<Built> {
+      const r = await fetcher.fetch(`${base}/api/compile`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ source }),
+      });
+      let c = (await r.json()) as Compiled;
+      if (!r.ok)
+        return { ok: false, errors: [], message: c.error ?? `compile service: ${r.status}` };
+      // A long build answers before it ends; poll it for up to two minutes.
+      for (let i = 0; (c.status === 'queued' || c.status === 'building') && i < 40; i++) {
+        await sleep(3000);
+        c = (await (
+          await fetcher.fetch(`${base}/api/compile/${c.id}`, { headers })
+        ).json()) as Compiled;
+      }
+      if (c.status === 'done') return { ok: true, id: c.id };
+      if (c.status === 'error') return { ok: false, errors: c.errors, log: c.log };
+      return {
+        ok: false,
+        errors: [],
+        message: 'The build did not finish in two minutes. Try again.',
+      };
+    },
+    async run(id, op, at) {
+      const r = await fetcher.fetch(`${base}/api/run`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ id, op, at }),
+      });
+      const body = (await r.json()) as Record<string, unknown>;
+      if (!r.ok && !body.error) body.error = `compile service: ${r.status}`;
+      return body;
     },
   };
 }
@@ -112,7 +172,10 @@ export async function handle(req: Request, src: Sources): Promise<Response> {
       try {
         const r = await callTool(name, args, src);
         return reply(msg.id, {
-          content: [{ type: 'text', text: r.text }],
+          content: [
+            { type: 'text', text: r.text },
+            ...(r.images ?? []).map((data) => ({ type: 'image', data, mimeType: 'image/png' })),
+          ],
           isError: r.isError ?? false,
         });
       } catch (e) {
@@ -134,6 +197,15 @@ export async function handle(req: Request, src: Sources): Promise<Response> {
 
 const sources = webSources();
 
+interface Env {
+  /** Service binding to the oxframe-compile Worker. */
+  COMPILE: { fetch: typeof fetch };
+}
+
 export default {
-  fetch: (req: Request) => handle(req, sources),
+  fetch: (req: Request, env: Env) =>
+    handle(req, {
+      ...sources,
+      scenes: compileScenes(env.COMPILE, req.headers.get('CF-Connecting-IP') ?? 'unknown'),
+    }),
 };

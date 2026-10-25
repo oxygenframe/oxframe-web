@@ -1,8 +1,9 @@
 <h1>MCP server</h1>
 <p class="lead">
   oxframe has two MCP servers. <code>oxframe mcp</code> runs on your machine and lets an agent
-  check, inspect and render the video it is writing. <code>https://mcp.oxframe.dev/mcp</code> is hosted,
-  needs no install and serves the documentation to agents that cannot run commands.
+  check, inspect and render the video it is writing. <code>https://mcp.oxframe.dev/mcp</code> is hosted
+  and needs no install: it serves the documentation, and checks and renders frames of a scene for agents
+  that cannot run commands.
 </p>
 
 <table>
@@ -19,12 +20,13 @@
     <tr><td>Sign-in</td><td>None</td><td>None</td></tr>
     <tr
       ><td>Tools</td><td>Check, storyboard, frames, inspector, render, docs</td><td
-        >Docs search, pages, components, examples</td
+        >Docs search, pages, components, examples; check, a frame and the inspector for one scene
+        file</td
       ></tr
     >
     <tr
       ><td>Good for</td><td>Claude Code, Codex, Cursor, VS Code: agents that edit files</td><td
-        >ChatGPT, Claude.ai, web IDEs: agents that only read</td
+        >ChatGPT, Claude.ai, web IDEs: agents that cannot run commands</td
       ></tr
     >
     <tr><td>MCP Registry</td><td><code>io.github.oxygenframe/oxframe</code></td><td>—</td></tr>
@@ -154,10 +156,16 @@ args = ["mcp"]`}</code
   <code>render</code>. <a href="/docs/check-rules">Check rules</a> lists what the check looks for.
 </p>
 
-<h2 id="hosted">The hosted docs server</h2>
+<h2 id="hosted">The hosted server</h2>
 <p>
-  <code>https://mcp.oxframe.dev/mcp</code> speaks Streamable HTTP, needs no sign-in and only reads. It
-  follows the current docs on every site deploy.
+  <code>https://mcp.oxframe.dev/mcp</code> speaks Streamable HTTP and needs no sign-in. Its docs
+  tools follow the current docs on every site deploy. Its scene tools take one scene file, written
+  as in the <a href="/playground">playground</a> (<code>pub fn project() -> Project</code>), build
+  it on
+  <code>compile.oxframe.dev</code> and run it there as WebAssembly: the agent sees the
+  <a href="/docs/check-rules">check report</a> and the storyboard without installing anything. The first
+  build of a scene takes 15 to 60 seconds; the same source again answers at once. Video clips and formulas
+  are not available there, and the video file itself is rendered by the local server.
 </p>
 <table>
   <tbody>
@@ -181,6 +189,21 @@ args = ["mcp"]`}</code
         >The Rust source of an example from the <a href="/gallery">gallery</a>, by name.</td
       ></tr
     >
+    <tr
+      ><td><code>check_scene</code></td><td
+        >Builds a scene file and runs <code>oxframe check</code> on it: compile errors with their line,
+        or the issues in its frames with hints, and the storyboard as an image.</td
+      ></tr
+    >
+    <tr
+      ><td><code>render_frame</code></td><td>One frame at a time in seconds, as a full-size PNG.</td
+      ></tr
+    >
+    <tr
+      ><td><code>inspect_scene</code></td><td
+        >The scene tree at a time as JSON: each node's kind, name, bounds, text and source line.</td
+      ></tr
+    >
   </tbody>
 </table>
 <pre><code
@@ -195,8 +218,9 @@ codex mcp add oxframe-docs --url https://mcp.oxframe.dev/mcp
   ></pre>
 <p>
   In ChatGPT and Claude.ai, add it as a custom connector with the URL
-  <code>https://mcp.oxframe.dev/mcp</code> and no authentication. It keeps nothing about you or your
-  project; requests are logged by Cloudflare like any other (<a href="/privacy">Privacy</a>).
+  <code>https://mcp.oxframe.dev/mcp</code> and no authentication. It keeps nothing about you; a
+  scene sent to the scene tools is built and cached like one run in the playground, and requests are
+  logged by Cloudflare like any other (<a href="/privacy">Privacy</a>).
 </p>
 
 <h2 id="try">Try it by hand</h2>

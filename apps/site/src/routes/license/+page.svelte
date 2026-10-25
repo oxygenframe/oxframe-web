@@ -77,8 +77,8 @@
     </li>
     <li>
       <strong>This site</strong> counts visits with Plausible, which sets no cookies.
-      <code>mcp.oxframe.dev</code> is a read-only documentation server for agents — it serves docs and
-      keeps nothing about your project.
+      <code>mcp.oxframe.dev</code> is a server for agents: it serves the docs, and its scene tools send
+      a scene to the compile service like the playground does.
     </li>
   </ul>
 
