@@ -1,6 +1,7 @@
-// The tools of mcp.oxframe.dev. All of them read; none runs code. Building,
-// checking and rendering a scene stay in the local `oxframe mcp`, which has
-// the project on disk.
+// The tools of mcp.oxframe.dev. The docs tools read; check_scene,
+// render_frame and inspect_scene build one scene file with
+// compile.oxframe.dev and run it there as wasm, in the build machine's
+// sandbox. A whole project on disk stays with the local `oxframe mcp`.
 
 export interface Page {
   url: string;
@@ -13,14 +14,44 @@ export interface Sources {
   pages(): Promise<Page[]>;
   /** The source of an SDK example, or null when there is none. */
   example(name: string): Promise<string | null>;
+  /** compile.oxframe.dev, absent where there is none (tests of the docs tools). */
+  scenes?: Scenes;
+}
+
+/** One error from the compiler, in the user's scene. */
+export interface BuildError {
+  line: number;
+  column: number;
+  message: string;
+}
+
+export type Built =
+  { ok: true; id: string } | { ok: false; errors: BuildError[]; log?: string; message?: string };
+
+/** compile.oxframe.dev: build a scene file, then run the build. */
+export interface Scenes {
+  build(source: string): Promise<Built>;
+  /** The JSON of POST /api/run: an `error`, or the answer for `op`. */
+  run(id: string, op: 'check' | 'frame' | 'inspect', at: number): Promise<Record<string, unknown>>;
 }
 
 export interface ToolResult {
   text: string;
+  /** PNGs, base64, shown after the text. */
+  images?: string[];
   isError?: boolean;
 }
 
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false };
+// Builds and runs on oxframe's servers; nothing on the client changes, and
+// the same source gives the same answer.
+const RUNS = { ...READ_ONLY, idempotentHint: true, openWorldHint: true };
+
+const SOURCE = {
+  type: 'string',
+  description:
+    'The whole scene file, as in the playground at https://oxframe.dev/playground: `use oxframe::prelude::*;`, the scenes, and `pub fn project() -> Project` instead of `fn main()`. Only the oxframe crate is available (features icons and 3d; no video files or formulas).',
+} as const;
 
 export const TOOLS = [
   {
@@ -70,6 +101,48 @@ export const TOOLS = [
       required: ['name'],
     },
     annotations: { ...READ_ONLY, openWorldHint: true },
+  },
+  {
+    name: 'check_scene',
+    title: 'Check an oxframe scene',
+    description:
+      'Builds a scene file and runs `oxframe check` on it, without a local install: compiler errors with their line, or the visual lint report (text outside the frame, overlaps, low contrast, too fast to read; each with the source line, a hint and often a fix) and a storyboard image of the whole video. Run it after every change and fix what it reports. The first build of a scene takes about 15 to 60 seconds.',
+    inputSchema: {
+      type: 'object',
+      properties: { source: SOURCE },
+      required: ['source'],
+    },
+    annotations: RUNS,
+  },
+  {
+    name: 'render_frame',
+    title: 'Render one frame of an oxframe scene',
+    description:
+      'Builds a scene file and renders the frame at `at` seconds as a full-size PNG, to look at one moment closely. check_scene gives the whole video as a storyboard.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source: SOURCE,
+        at: { type: 'number', description: 'Time in seconds from the start of the video.' },
+      },
+      required: ['source', 'at'],
+    },
+    annotations: RUNS,
+  },
+  {
+    name: 'inspect_scene',
+    title: 'Inspect the scene tree at a time',
+    description:
+      'Builds a scene file and returns the scene tree at `at` seconds as JSON, as `oxframe inspect --at` prints it: every node with its kind, name, bounds, opacity, text and source line.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source: SOURCE,
+        at: { type: 'number', description: 'Time in seconds from the start of the video.' },
+      },
+      required: ['source', 'at'],
+    },
+    annotations: RUNS,
   },
 ] as const;
 
@@ -203,7 +276,74 @@ export async function callTool(
         text: `https://github.com/oxygenframe/oxframe-sdk/blob/main/examples/src/${example}.rs\n\n\`\`\`rust\n${source}\`\`\``,
       };
     }
+    case 'check_scene':
+    case 'render_frame':
+    case 'inspect_scene': {
+      const source = typeof args.source === 'string' ? args.source : '';
+      if (!source.trim())
+        return { text: `${name} needs the scene file as \`source\`.`, isError: true };
+      const at = Number(args.at ?? 0);
+      if (name !== 'check_scene' && (!Number.isFinite(at) || at < 0))
+        return { text: `${name} needs \`at\`, seconds from the start (0 or more).`, isError: true };
+      if (!src.scenes) return { text: 'Building scenes is not available here.', isError: true };
+      const built = await src.scenes.build(source);
+      if (!built.ok) return { text: buildFailure(built), isError: true };
+      const op = name === 'check_scene' ? 'check' : name === 'render_frame' ? 'frame' : 'inspect';
+      const out = await src.scenes.run(built.id, op, at);
+      if (typeof out.error === 'string') {
+        // A panic: the message is in the log, before the JS stack.
+        const log = typeof out.log === 'string' ? out.log : '';
+        const panic = /panicked at [^]*?(?=\n\s*Stack:|$)/.exec(log);
+        return {
+          text: panic
+            ? `The scene panicked while running: ${panic[0].trim()}`
+            : `The scene built but failed while running: ${out.error}${log ? `\n\n${log}` : ''}`,
+          isError: true,
+        };
+      }
+      if (op === 'check') return checkResult(out);
+      if (op === 'frame')
+        return {
+          text: `Frame ${out.frame} at ${Number(out.seconds).toFixed(2)} s of ${Number(out.duration).toFixed(2)} s, ${(out.size as number[]).join('×')}.`,
+          images: [String(out.png)],
+        };
+      return { text: JSON.stringify(out.inspect, null, 1) };
+    }
     default:
       return { text: `Unknown tool ${JSON.stringify(name)}.`, isError: true };
   }
+}
+
+function buildFailure(b: Extract<Built, { ok: false }>): string {
+  if (b.message) return b.message;
+  const lines = b.errors.map((e) => `scene.rs:${e.line}:${e.column}: ${e.message}`);
+  const log = b.log ? `\n\n${b.log.slice(-3000)}` : '';
+  return `The scene does not compile:\n${lines.join('\n')}${log}`;
+}
+
+interface Issue {
+  rule: string;
+  severity: string;
+  time: [number, number];
+  source?: string;
+  node?: string;
+  hint: string;
+  docs?: string;
+}
+
+/** The report, an issue per line first, then the JSON, then the storyboard. */
+function checkResult(out: Record<string, unknown>): ToolResult {
+  const report = out.report as { duration: number; issues: Issue[] };
+  const errors = report.issues.filter((i) => i.severity === 'error').length;
+  const head = report.issues.length
+    ? `${report.issues.length} issue(s), ${errors} error(s), in ${report.duration.toFixed(2)} s of video:`
+    : `No issues in ${report.duration.toFixed(2)} s of video. Look at the storyboard to judge the result.`;
+  const lines = report.issues.map(
+    (i) =>
+      `- ${i.severity} ${i.rule} at ${i.time[0].toFixed(2)}–${i.time[1].toFixed(2)} s, ${i.source ?? i.node ?? ''}: ${i.hint}${i.docs ? ` (${i.docs})` : ''}`,
+  );
+  return {
+    text: [head, ...lines, '', 'report.json:', JSON.stringify(report)].join('\n'),
+    images: [String(out.storyboard_png)],
+  };
 }

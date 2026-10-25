@@ -25,6 +25,7 @@ function cfg(over: Partial<Config> = {}): Config {
     queueLimit: 4,
     ratePerMinute: 10,
     timeoutMs: 5_000,
+    runTimeoutMs: 2_000,
     maxSourceBytes: 64 * 1024,
     maxArtifactBytes: 16 * 1024 * 1024,
     corsOrigins: ['http://site.test'],
@@ -296,5 +297,51 @@ describe('transient failures', () => {
     await post(app, { source: GOOD });
     await post(app, { source: GOOD });
     expect(calls).toBe(2);
+  });
+});
+
+describe('run', () => {
+  // A stand-in for a wasm-bindgen bundle: the same exports, plain JS.
+  const bundle = (check: string) =>
+    `export default async function () {}
+export function check() { ${check} }
+export function inspect(_c, t) { return JSON.stringify({ at: t }); }
+export function init() {
+  return { info: () => JSON.stringify({ fps: 10, frames: 20, size: [4, 2] }), render_png: (f) => new Uint8Array([f]) };
+}`;
+  const run = (app: ReturnType<typeof createApp>['app'], js: string, op: string, at = 0) => {
+    const form = new FormData();
+    form.set('op', op);
+    form.set('at', String(at));
+    form.set('js', new Blob([js]));
+    form.set('wasm', new Blob([new Uint8Array([0])]));
+    return app.fetch(new Request('http://x/api/run', { method: 'POST', body: form }));
+  };
+
+  it('checks, renders a frame and inspects a built scene', async () => {
+    const { app } = createApp(cfg(), new FakeRunner());
+    const js = bundle(`return { report: '{"issues":[]}', storyboard: new Uint8Array([1, 2]) };`);
+    const checked = await (await run(app, js, 'check')).json();
+    expect(checked).toEqual({ report: { issues: [] }, storyboard_png: 'AQI=' });
+    const frame = await (await run(app, js, 'frame', 5)).json();
+    expect(frame).toMatchObject({ frame: 19, seconds: 1.9, size: [4, 2], png: 'Ew==' });
+    expect((await (await run(app, js, 'inspect', 1.5)).json()).inspect).toEqual({ at: 1.5 });
+  });
+
+  it('stops a scene that never ends and reports a panic', async () => {
+    const { app } = createApp(cfg(), new FakeRunner());
+    const loop = await (await run(app, bundle('for (;;) {}'), 'check')).json();
+    expect(loop.error).toContain('did not finish');
+    const panic = bundle(
+      `console.error('panicked at src/scene.rs:3:5'); throw new Error('unreachable');`,
+    );
+    const failed = await (await run(app, panic, 'check')).json();
+    expect(failed.error).toContain('unreachable');
+    expect(failed.log).toContain('src/scene.rs:3:5');
+  });
+
+  it('rejects an unknown op', async () => {
+    const { app } = createApp(cfg(), new FakeRunner());
+    expect((await run(app, bundle(''), 'render')).status).toBe(400);
   });
 });

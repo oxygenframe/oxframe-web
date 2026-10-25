@@ -24,6 +24,8 @@ export interface Config {
   queueLimit: number;
   ratePerMinute: number;
   timeoutMs: number;
+  /** Longest a scene may run for /api/run. */
+  runTimeoutMs: number;
   maxSourceBytes: number;
   maxArtifactBytes: number;
   corsOrigins: string[];
@@ -49,6 +51,7 @@ export function loadConfig(): Config {
     queueLimit: num('QUEUE_LIMIT', 32),
     ratePerMinute: num('RATE_PER_MINUTE', 10),
     timeoutMs: num('BUILD_TIMEOUT_MS', 60_000),
+    runTimeoutMs: num('RUN_TIMEOUT_MS', 30_000),
     maxSourceBytes: 64 * 1024,
     maxArtifactBytes: 16 * 1024 * 1024,
     corsOrigins: env(

@@ -287,6 +287,60 @@ export function createService(d: Deps) {
     return built;
   }
 
+  /**
+   * Runs a finished build for mcp.oxframe.dev: `check`, `frame` (at
+   * seconds) or `inspect`. The container gets the build files from R2, so
+   * any machine can run it. A scene is deterministic, so the answer is kept
+   * in R2 next to the build.
+   */
+  async function run(req: Request): Promise<Response> {
+    let body: { id?: unknown; op?: unknown; at?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return json({ error: 'expected JSON {id, op, at}' }, 400);
+    }
+    const id = typeof body.id === 'string' ? body.id : '';
+    const op = body.op;
+    if (op !== 'check' && op !== 'frame' && op !== 'inspect')
+      return json({ error: '`op` is check, frame or inspect' }, 400);
+    const at = op === 'check' ? 0 : Number(body.at ?? 0);
+    if (!Number.isFinite(at) || at < 0 || at > 3600)
+      return json({ error: '`at` is seconds, 0 to 3600' }, 400);
+    if (!isJobId(id)) return json({ error: 'unknown id' }, 404);
+    const rec = await cached(id);
+    if (rec?.status !== 'done')
+      return json({ error: 'no finished build with this id: POST /api/compile first' }, 404);
+    const resultKey = key(id, `run-${op}${op === 'check' ? '' : `-${at.toFixed(3)}`}.json`);
+    const hit = await d.bucket.get(resultKey);
+    if (hit) return new Response(hit.body, { headers: { 'Content-Type': 'application/json' } });
+    const ip = req.headers.get('CF-Connecting-IP') ?? 'unknown';
+    if (!(await d.allowBuild(ip)))
+      return json({ error: 'too many requests; try again in a minute' }, 429, {
+        'Retry-After': '60',
+      });
+    const [js, wasm] = await Promise.all([
+      d.bucket.get(key(id, 'bundle.js')),
+      d.bucket.get(key(id, 'bundle.wasm')),
+    ]);
+    if (!js || !wasm) return json({ error: 'the build files are missing' }, 404);
+    const form = new FormData();
+    form.set('op', op);
+    form.set('at', String(at));
+    form.set('js', new Blob([await new Response(js.body).arrayBuffer()]));
+    form.set('wasm', new Blob([await new Response(wasm.body).arrayBuffer()]));
+    const r = await toContainer(
+      id,
+      new Request('http://container/api/run', { method: 'POST', body: form }),
+    );
+    if (!r.ok) return r;
+    const text = await r.text();
+    // Keep answers, not failures: a timeout may pass on a quieter machine.
+    if (!(JSON.parse(text) as { error?: unknown }).error)
+      await d.bucket.put(resultKey, text, { httpMetadata: { contentType: 'application/json' } });
+    return new Response(text, { headers: { 'Content-Type': 'application/json' } });
+  }
+
   function cors(req: Request, res: Response): Response {
     const origin = req.headers.get('Origin');
     if (!origin || !(d.corsOrigins.includes('*') || d.corsOrigins.includes(origin))) return res;
@@ -311,6 +365,7 @@ export function createService(d: Deps) {
       const [id = '', file = ''] = p.slice('/api/artifact/'.length).split('/');
       res = await artifact(id, file, req);
     } else if (p === '/api/examples' && req.method === 'GET') res = await examples(url.origin);
+    else if (p === '/api/run' && req.method === 'POST') res = await run(req);
     else res = new Response('not found', { status: 404 });
     return cors(req, res);
   }

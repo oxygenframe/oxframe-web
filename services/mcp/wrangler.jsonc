@@ -8,5 +8,7 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "routes": [{ "pattern": "mcp.oxframe.dev", "custom_domain": true }],
+  // check_scene, render_frame and inspect_scene build and run scenes there.
+  "services": [{ "binding": "COMPILE", "service": "oxframe-compile" }],
   "observability": { "enabled": true },
 }

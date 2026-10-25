@@ -36,7 +36,12 @@ class FakeRunner implements Runner {
     }
     mkdirSync(outDir, { recursive: true });
     writeFileSync(join(outDir, 'bundle.wasm'), new Uint8Array([0, 97, 115, 109]));
-    writeFileSync(join(outDir, 'bundle.js'), 'export default async () => {}');
+    // The exports scene-run.ts calls, in plain JS.
+    writeFileSync(
+      join(outDir, 'bundle.js'),
+      `export default async () => {};
+export const check = () => ({ report: '{"issues":[]}', storyboard: new Uint8Array([1]) });`,
+    );
     return {
       ok: true,
       errors: [],
@@ -79,6 +84,7 @@ function setup(over: { examples?: Example[]; allow?: boolean; staleMachine?: boo
     queueLimit: 4,
     ratePerMinute: 1000,
     timeoutMs: 5_000,
+    runTimeoutMs: 5_000,
     maxSourceBytes: 64 * 1024,
     maxArtifactBytes: 16 * 1024 * 1024,
     corsOrigins: ['*'],
@@ -245,6 +251,35 @@ describe('compile worker', () => {
       (await svc.fetch(new Request(`https://c.dev/api/artifact/${id}/secret.txt`))).status,
     ).toBe(404);
     expect((await svc.fetch(new Request('https://c.dev/api/compile/nope'))).status).toBe(404);
+  });
+});
+
+describe('run', () => {
+  const run = (svc: ReturnType<typeof setup>['svc'], id: string, op = 'check') =>
+    svc.fetch(
+      new Request('https://compile.oxframe.dev/api/run', {
+        method: 'POST',
+        body: JSON.stringify({ id, op }),
+      }),
+    );
+
+  it('runs a build from R2 once, then answers from R2', async () => {
+    const { svc, bucket, calls } = setup();
+    const { id } = await body(compile(svc, GOOD));
+    calls.length = 0;
+    expect(await body(run(svc, id))).toEqual({ report: { issues: [] }, storyboard_png: 'AQ==' });
+    expect(calls).toEqual(['POST /api/run']);
+    expect(bucket.objects.has(`compile/v1/${id}/run-check.json`)).toBe(true);
+    calls.length = 0;
+    expect((await body(run(svc, id))).storyboard_png).toBe('AQ==');
+    expect(calls).toEqual([]);
+  });
+
+  it('needs a finished build and a known op', async () => {
+    const { svc } = setup();
+    expect((await run(svc, 'f'.repeat(32))).status).toBe(404);
+    const { id } = await body(compile(svc, GOOD));
+    expect((await run(svc, id, 'render')).status).toBe(400);
   });
 });
 
