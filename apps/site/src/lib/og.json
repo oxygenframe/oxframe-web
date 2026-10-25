@@ -14,6 +14,11 @@
     "section": "Compare",
     "image": "/og/compare.png"
   },
+  "/compare/manim-vs-remotion": {
+    "title": "Manim vs Remotion: math animation or React video?",
+    "section": "oxframe",
+    "image": "/og/compare-manim-vs-remotion.png"
+  },
   "/benchmarks": {
     "title": "Open benchmarks: render speed and agent success",
     "section": "oxframe",

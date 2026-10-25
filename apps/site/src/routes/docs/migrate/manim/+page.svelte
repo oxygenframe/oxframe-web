@@ -98,7 +98,11 @@
         ><a href="/docs/3d">View3d</a>: lit meshes and glTF models inside a 2D scene</td
       ></tr
     >
-    <tr><td><code>MathTex</code>, <code>Tex</code></td><td>not yet — formulas are planned</td></tr>
+    <tr
+      ><td><code>MathTex</code>, <code>Tex</code></td><td
+        ><a href="/docs/formulas"><code>Math::new(…)</code></a> in Typst syntax</td
+      ></tr
+    >
     <tr
       ><td><code>manim -pql scene.py S</code></td><td
         ><code>oxframe dev</code> to watch, <code>oxframe render</code> for the file</td
@@ -131,8 +135,11 @@
 <h2>What does not carry over</h2>
 <ul>
   <li>
-    <strong>LaTeX.</strong> There is no <code>MathTex</code> yet. Formulas are planned; until then, write
-    them with rich text and Unicode, or as an SVG made elsewhere.
+    <strong>LaTeX source.</strong> <a href="/docs/formulas"><code>Math</code></a> reads Typst math
+    syntax, not LaTeX, so a <code>MathTex</code> string is rewritten:
+    <code>\frac&#123;a&#125;&#123;b&#125;</code>
+    becomes <code>a / b</code>, <code>\alpha</code> becomes <code>alpha</code>. It needs the
+    <code>math</code> feature, which the browser playground does not have.
   </li>
   <li>
     <strong>Surfaces and 3D plots.</strong> 3D covers meshes (cube, sphere, plane, cylinder, glTF) inside

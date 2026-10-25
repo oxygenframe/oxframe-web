@@ -136,7 +136,9 @@
 <h2>What does not carry over</h2>
 <ul>
   <li>
-    <strong>LaTeX.</strong> There is no <code>&lt;Latex&gt;</code> node yet; formulas are planned.
+    <strong>LaTeX.</strong> <a href="/docs/formulas"><code>Math</code></a> sets formulas with Typst,
+    so a <code>&lt;Latex&gt;</code> node's source is rewritten in Typst syntax. It needs the
+    <code>math</code> feature, which the browser playground does not have.
   </li>
   <li>
     <strong>Custom TSX components.</strong> A component made of other nodes becomes a Rust function
