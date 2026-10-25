@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.8",
+    "date": "2026-10-25",
+    "html": "<h3>Added</h3>\n<ul><li>The browser build of a project can run the checks: the wasm module exports <code>check</code> (the report and the storyboard PNG), <code>inspect</code> and a frame as PNG. The remote MCP server at mcp.oxframe.dev uses them to check a scene without a local install.</li></ul>"
+  },
+  {
     "version": "0.23.7",
     "date": "2026-10-25",
     "html": "<h3>Added</h3>\n<ul><li>Voice-overs you recorded yourself: <code>voice(&quot;…&quot;).recording(&quot;vo/intro.wav&quot;)</code> plays the file instead of calling a speech provider, and the line lasts as long as the file. <code>oxframe transcribe vo/intro.wav</code> (oxframe-cli) times its words with whisper.cpp on your machine and writes <code>vo/intro.words.json</code>, so <code>line.at_word(&quot;…&quot;)</code> and <code>.caption()</code> follow the recording. Without that file the words are spread over its length.</li></ul>"
