@@ -50,8 +50,8 @@
   <code>oxframe transcribe vo/intro.wav</code> once: it times every word with
   <a href="https://github.com/ggml-org/whisper.cpp">whisper.cpp</a> on your machine and writes
   <code>vo/intro.words.json</code> next to the file. Then <code>line.at_word("…")</code> and
-  <code>.caption()</code> follow the recording. Write the line's text as it is spoken, since the
-  captions show it. The playground cannot play files and estimates the length from the text.
+  <code>.caption()</code> follow the recording. Write the line's text as it is spoken, since the captions
+  show it. The playground cannot play files and estimates the length from the text.
 </p>
 
 <Try>
