@@ -18,8 +18,8 @@
     "prompts": 47,
     "passed": 46,
     "passRate": 0.979,
-    "buildRate": 1.0,
-    "meanTurns": 20.0,
+    "buildRate": 1,
+    "meanTurns": 20,
     "meanMinutes": 1.61,
     "scriptUrl": "https://github.com/oxygenframe/oxframe-cli/blob/main/evals/run.py"
   },
@@ -28,5 +28,30 @@
     "oxframe check with a current dev build: 0.37s",
     "oxframe check immediately after an edit, including cargo check: 0.83s",
     "render of the 27.5-second video on the CPU, 8 jobs: 8.41s; one job: 34.02s"
-  ]
+  ],
+  "machines": [
+    {
+      "name": "linux-arm64",
+      "machine": "Neoverse-N2, 4 threads, rustc 1.97.1, Linux",
+      "version": "0.23.4",
+      "date": "2026-10-25",
+      "checkWarmSeconds": 0.4,
+      "render30Seconds": 15.77,
+      "render30OneJobSeconds": 21.84,
+      "render30Jobs": 4,
+      "render30VideoSeconds": 27.52
+    },
+    {
+      "name": "linux-x64",
+      "machine": "AMD EPYC 7763 64-Core Processor, 4 threads, rustc 1.97.1, Linux",
+      "version": "0.23.4",
+      "date": "2026-10-25",
+      "checkWarmSeconds": 0.5,
+      "render30Seconds": 21.88,
+      "render30OneJobSeconds": 26.17,
+      "render30Jobs": 4,
+      "render30VideoSeconds": 27.52
+    }
+  ],
+  "machinesRun": "https://github.com/oxygenframe/oxframe-sdk/actions/runs/40198801197"
 }
