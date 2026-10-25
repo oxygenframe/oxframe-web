@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.7",
+    "date": "2026-10-25",
+    "html": "<h3>Added</h3>\n<ul><li>Voice-overs you recorded yourself: <code>voice(&quot;…&quot;).recording(&quot;vo/intro.wav&quot;)</code> plays the file instead of calling a speech provider, and the line lasts as long as the file. <code>oxframe transcribe vo/intro.wav</code> (oxframe-cli) times its words with whisper.cpp on your machine and writes <code>vo/intro.words.json</code>, so <code>line.at_word(&quot;…&quot;)</code> and <code>.caption()</code> follow the recording. Without that file the words are spread over its length.</li></ul>"
+  },
+  {
     "version": "0.23.6",
     "date": "2026-10-25",
     "html": "<h3>Fixed</h3>\n<ul><li>Projects on oxframe 0.23.0–0.23.4 build again. 0.23.5 added a field to <code>oxframe_export::MixRequest</code>, and since a project's <code>oxframe-export</code> resolves to the newest 0.23.x, the older <code>oxframe</code> stopped compiling. The target loudness is now an argument: <code>oxframe_export::mix_with_loudness</code>. 0.23.5 is yanked; <code>oxframe upgrade</code> moves a project to 0.23.6.</li></ul>"

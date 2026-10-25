@@ -43,6 +43,17 @@
   <code>oxframe render --subtitles out.srt</code> writes a separate subtitle file instead.
 </p>
 
+<h3 id="recording">A voice-over you recorded</h3>
+<p>
+  <code>voice("…").recording("vo/intro.wav")</code> plays your own recording instead of a speech
+  provider, and the line lasts as long as the file. To wait for its words, run
+  <code>oxframe transcribe vo/intro.wav</code> once: it times every word with
+  <a href="https://github.com/ggml-org/whisper.cpp">whisper.cpp</a> on your machine and writes
+  <code>vo/intro.words.json</code> next to the file. Then <code>line.at_word("…")</code> and
+  <code>.caption()</code> follow the recording. Write the line's text as it is spoken, since the captions
+  show it. The playground cannot play files and estimates the length from the text.
+</p>
+
 <Try>
   <ul>
     <li>Wait for the word <code>"picture"</code> instead of <code>"follows"</code>.</li>
