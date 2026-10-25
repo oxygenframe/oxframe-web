@@ -91,6 +91,9 @@ oxframe agents --force  # also replaces files you made your own`}</code
 
 <h2>Connecting an MCP client</h2>
 <p>
+  Setup for each client, the hosted docs server and every tool: <a href="/docs/mcp">MCP server</a>.
+</p>
+<p>
   <code>oxframe mcp</code> speaks MCP over stdin and stdout. Point Claude Code, or any other client,
   at that command with the project directory as its working directory. The tools are
   <code>check</code>, <code>storyboard</code>, <code>render_frame</code>, <code>inspect</code>,
