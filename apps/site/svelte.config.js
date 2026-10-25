@@ -32,14 +32,15 @@ export default {
       directives: {
         'default-src': ['self'],
         // Plausible analytics (routes/+layout.svelte) loads its script and
-        // posts events to its own origin.
-        'script-src': ['self', 'https://plausible.io'],
+        // posts events to its own origin. Cloudflare Web Analytics (turned
+        // on in the Cloudflare dashboard) injects its beacon the same way.
+        'script-src': ['self', 'https://plausible.io', 'https://static.cloudflareinsights.com'],
         'style-src': ['self', 'unsafe-inline'],
         'img-src': ['self', 'data:', 'blob:'],
         // A shared video's poster is taken from its MP4 in a <video>.
         'media-src': ['self', 'blob:'],
         'font-src': ['self', 'data:'],
-        'connect-src': ['self', compile, 'https://plausible.io'],
+        'connect-src': ['self', compile, 'https://plausible.io', 'https://cloudflareinsights.com'],
         'worker-src': ['self', 'blob:'],
         'object-src': ['none'],
         'base-uri': ['self'],
