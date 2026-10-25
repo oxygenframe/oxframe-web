@@ -115,8 +115,8 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
     >
     <tr
       ><td><code>--format &lt;f&gt;</code></td><td
-        ><code>mp4</code>, <code>webm</code>, <code>prores</code> or <code>png</code>; by default
-        taken from the <code>--out</code> extension.</td
+        ><code>mp4</code>, <code>webm</code>, <code>prores</code>, <code>png</code> or
+        <code>gif</code>; by default taken from the <code>--out</code> extension.</td
       ></tr
     >
     <tr><td><code>--scene &lt;name&gt;</code></td><td>Only this scene.</td></tr>
@@ -125,7 +125,18 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
         >Only this time range, in seconds; either side can be left out (<code>2..</code>).</td
       ></tr
     >
-    <tr><td><code>--size WxH</code></td><td>Output size, e.g. <code>3840x2160</code>.</td></tr>
+    <tr
+      ><td><code>--size WxH</code></td><td
+        >Output size, e.g. <code>3840x2160</code>. A GIF is 720 wide at most unless set.</td
+      ></tr
+    >
+    <tr
+      ><td><code>--fps &lt;n&gt;</code></td><td
+        >Frames per second of a GIF (default 15). See <a href="/docs/rendering#gif"
+          >GIF for a README</a
+        >.</td
+      ></tr
+    >
     <tr
       ><td><code>--aspect &lt;shape&gt;</code></td><td
         ><code>16:9</code>, <code>9:16</code>, <code>1:1</code>, or <code>all</code>.
@@ -225,7 +236,9 @@ oxframe publish --range 0..30            # the first 30 seconds of a longer vide
   In <code>report.json</code> the issue then has <code>bounds</code>, the node's box at the start of
   the issue in scene units (as in <code>oxframe inspect</code>), and <code>crop</code>, the path of
   the picture relative to <code>out/check/</code>. An agent opens the crop instead of hunting for
-  the problem on the storyboard.
+  the problem on the storyboard. Most issues also carry <code>fix</code>, the change with the
+  numbers worked out: move by <code>dx</code>/<code>dy</code>, a readable color, how much wider, how
+  long to hold (<a href="/docs/check-rules#fix">the fix in each issue</a>).
 </p>
 <p>
   The report also lists <code>motion</code>: every node that travels, with its

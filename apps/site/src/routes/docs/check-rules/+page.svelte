@@ -47,6 +47,66 @@
   in <code>report.json</code>, next to <code>bounds</code>, the node's box. A node wholly outside
   the frame gets the strip along the edge it went past.
 </p>
+<h2 id="fix">The fix in each issue</h2>
+<p>
+  Most issues carry <code>fix</code>: the change that clears them, with the numbers worked out, so
+  neither you nor an agent has to measure the frame. The hint says the same in words.
+</p>
+<div class="scroll">
+  <table>
+    <thead><tr><th><code>action</code></th><th>Fields</th><th>From</th></tr></thead>
+    <tbody>
+      <tr
+        ><td><code>move</code></td><td
+          ><code>dx</code>, <code>dy</code>: pixels, x to the right, y down</td
+        ><td><code>out_of_frame</code>, <code>text_overlap</code></td></tr
+      >
+      <tr
+        ><td><code>shrink</code></td><td
+          ><code>width</code>, <code>height</code>: the most that fits</td
+        ><td><code>out_of_frame</code> on a node bigger than the frame</td></tr
+      >
+      <tr
+        ><td><code>color</code></td><td
+          ><code>color</code> (<code>#rrggbb</code>, the same hue lightened or darkened) and the
+          <code>contrast</code> it reaches</td
+        ><td><code>low_contrast</code> over a fill</td></tr
+      >
+      <tr
+        ><td><code>widen</code></td><td
+          ><code>by</code>: pixels of extra width, or <code>font_scale</code> for the font size</td
+        ><td><code>text_overflow</code></td></tr
+      >
+      <tr
+        ><td><code>hold</code></td><td><code>seconds</code> the text must stay on screen</td><td
+          ><code>too_fast</code> text</td
+        ></tr
+      >
+      <tr
+        ><td><code>slow</code></td><td><code>seconds</code> the move should last at least</td><td
+          ><code>too_fast</code> motion</td
+        ></tr
+      >
+    </tbody>
+  </table>
+</div>
+<pre><code
+    >{`{
+  "rule": "out_of_frame",
+  "node": "headline",
+  "source": "src/main.rs:24",
+  "hint": "The node reaches outside the frame. Move it 140 px to the left (or make it smaller).",
+  "fix": { "action": "move", "dx": -140.0, "dy": 0.0 }
+}`}</code
+  ></pre>
+<p>
+  A fix clears the issue it belongs to; it does not know your design. Moving a headline 140 px may
+  call for moving what sits next to it too, and a smaller font may read better as a shorter line.
+  Text over a shader or an image has no single color behind it, so its <code>low_contrast</code>
+  issue comes without a color. <code>dead_time</code> and <code>covers_text</code> have no fix: what to
+  add, or where the shader goes, is a choice.
+</p>
+
 <figure class="crop">
   <img
     src="/rules/crop-out_of_frame.png"
@@ -215,6 +275,9 @@
   }
   figure {
     margin: 0;
+  }
+  .scroll {
+    overflow-x: auto;
   }
   .crop {
     margin: 0 0 16px;

@@ -20,6 +20,7 @@
 <pre><code
     >{`oxframe render --out film.webm             # VP9 with transparency
 oxframe render --format prores --out a.mov # ProRes 4444 with transparency, for video editors
+oxframe render --out demo.gif              # a GIF for a README or a pull request
 oxframe render --format png --out frames/  # one PNG per frame
 oxframe render --size 3840x2160            # 4K
 oxframe render --scene outro               # just one scene
@@ -317,6 +318,33 @@ Project::new("explainer")
   <code>.vtt</code>
   writes WebVTT. <code>--no-audio</code> still writes them, and <code>--range</code> shifts the cues into
   that part of the video. A line that runs past the scene is an error; two lines that overlap are a warning.
+</p>
+
+<h2 id="gif">GIF for a README or a pull request</h2>
+<p>
+  GitHub, GitLab and most chats play a GIF in place where an MP4 needs a click, so a GIF is the way
+  to show a feature in a README, a pull request or an issue.
+</p>
+<pre><code
+    >{`oxframe render --out demo.gif                     # 720 wide, 15 fps
+oxframe render --format gif --scene intro          # one scene, out/<project>.gif
+oxframe render --out demo.gif --fps 10 --size 480x270   # smaller file`}</code
+  ></pre>
+<p>
+  A GIF is 720 pixels wide and 15 frames per second unless <code>--size</code> and
+  <code>--fps</code> say otherwise. Only the frames the GIF shows are rendered, from the project's
+  own frame rate, so the timing is the same as in the MP4. The whole clip shares one palette of 256
+  colors with an ordered dither, which keeps flat colors flat and does not shimmer from frame to
+  frame; each frame stores only the rectangle that changed. A GIF has no sound, and
+  <code>--fps</code> works only with it. A tool of your own writes one with <code>Format::Gif</code>
+  in
+  <code>oxframe_export</code>.
+</p>
+<p>
+  Flat backgrounds, text and charts compress well: the 7-second chart example is 137 KB. Photos,
+  gradients and video clips do not, and a GIF of them is large and banded; keep those as MP4 (on
+  GitHub, drop the MP4 into the description and it plays there too). Under 10 seconds and at most
+  720 wide is a good size for a README.
 </p>
 
 <h2>Transparent backgrounds</h2>
