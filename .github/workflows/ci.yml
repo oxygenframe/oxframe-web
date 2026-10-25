@@ -80,9 +80,31 @@ jobs:
           curl -sf localhost:8787/api/examples | grep -q '"name":"intro"'
           docker logs site; docker logs compile
 
+  # Links to other sites, nightly only (they change without a commit here).
+  # Links inside the site are checked by e2e; archived docs and sites that
+  # refuse bots are left out.
+  links:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version-file: .bun-version }
+      - run: bun install --frozen-lockfile && bun run build
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          args: >-
+            --no-progress --root-dir ${{ github.workspace }}/apps/site/build --exclude '^file://'
+            --exclude-path 'apps/site/build/docs/0\.'
+            --accept '200..=299,429' --max-concurrency 16
+            --exclude '^https?://(localhost|127\.0\.0\.1)' --exclude '^https://oxframe\.dev'
+            --exclude '^https://(www\.)?(x|twitter|linkedin|npmjs)\.com'
+            'apps/site/build/**/*.html'
+
   nightly-issue:
     if: failure() && github.event_name == 'schedule'
-    needs: [web, integration]
+    needs: [web, integration, links]
     runs-on: ubuntu-latest
     permissions: { issues: write }
     steps:

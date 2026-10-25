@@ -27,6 +27,8 @@
         height: m.height,
       };
     });
+  // Published to crates.io before releases were tagged on GitHub.
+  const UNTAGGED = new Set(['0.1.0', '0.2.2', '0.2.3', '0.2.4', '0.2.5']);
 </script>
 
 <Seo
@@ -60,11 +62,14 @@
       <!-- eslint-disable-next-line svelte/no-at-html-tags -- converted at sync time from the SDK's own CHANGELOG.md -->
       {@html r.html}
       <p class="links">
-        <a
-          href="https://github.com/oxygenframe/oxframe-sdk/releases/tag/v{r.version}"
-          rel="external">Release on GitHub</a
-        >
-        · <a href="https://docs.rs/oxframe/{r.version}/oxframe/" rel="external">API on docs.rs</a>
+        {#if !UNTAGGED.has(r.version)}
+          <a
+            href="https://github.com/oxygenframe/oxframe-sdk/releases/tag/v{r.version}"
+            rel="external">Release on GitHub</a
+          >
+          ·
+        {/if}
+        <a href="https://docs.rs/oxframe/{r.version}/oxframe/" rel="external">API on docs.rs</a>
       </p>
     </section>
   {/each}
