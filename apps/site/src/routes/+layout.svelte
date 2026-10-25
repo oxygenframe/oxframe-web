@@ -40,6 +40,7 @@
       title: 'Agents',
       links: [
         { href: '/agents', label: 'Agents and skills' },
+        { href: '/docs/mcp', label: 'MCP server' },
         { href: '/agents/claude-code', label: 'Claude Code' },
         { href: '/agents/cursor', label: 'Cursor' },
         { href: '/agents/codex', label: 'Codex' },
