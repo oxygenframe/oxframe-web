@@ -68,7 +68,7 @@ export const useCases: UseCase[] = [
       '<code>Axes</code> plots any function of x and samples it every frame, so plots follow animated ranges and morph with <code>to_fn</code> (<a href="/docs/charts">charts</a>).',
       '<code>axes.apply_matrix</code> moves the grid, the vectors and every placed node; <code>Matrix</code> frames rows, columns and cells (<a href="/docs/matrices">matrices</a>).',
       'Any path morphs into any other, and outlines draw on (<a href="/docs/guide/drawing">drawing and morphing</a>).',
-      'Formulas in LaTeX or Typst are not there yet; rich text and Unicode cover short ones.',
+      'Formulas are set by Typst with a bundled font and animate glyph by glyph (<a href="/docs/formulas">formulas</a>, the <code>math</code> feature; not in the browser playground).',
     ],
     skill: 'math-explainer',
     prompt:

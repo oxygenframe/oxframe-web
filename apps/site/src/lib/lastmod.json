@@ -10,7 +10,8 @@
   "/alternatives/remotion": "2026-10-22",
   "/benchmarks": "2026-10-25",
   "/changelog": "2026-10-25",
-  "/compare": "2026-10-23",
+  "/compare": "2026-10-25",
+  "/compare/manim-vs-remotion": "2026-10-25",
   "/docs": "2026-10-23",
   "/docs/3d": "2026-10-23",
   "/docs/agents": "2026-10-25",
@@ -43,8 +44,8 @@
   "/docs/icons": "2026-10-23",
   "/docs/matrices": "2026-10-24",
   "/docs/mcp": "2026-10-25",
-  "/docs/migrate/manim": "2026-10-22",
-  "/docs/migrate/motion-canvas": "2026-10-22",
+  "/docs/migrate/manim": "2026-10-25",
+  "/docs/migrate/motion-canvas": "2026-10-25",
   "/docs/migrate/remotion": "2026-10-22",
   "/docs/migrate/revideo": "2026-10-22",
   "/docs/nodes": "2026-10-23",
@@ -118,5 +119,5 @@
   "lib/gallery.ts": "2026-10-24",
   "lib/media.json": "2026-10-24",
   "lib/skills.json": "2026-10-25",
-  "lib/use-cases.ts": "2026-10-22"
+  "lib/use-cases.ts": "2026-10-25"
 }

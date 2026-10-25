@@ -399,10 +399,11 @@ cd my-video && oxframe dev</code></pre>
   {
     slug: 'manim',
     name: 'Manim',
+    checked: '2026-10-25',
     title: 'oxframe vs Manim: math animation with a live editor',
     description:
       'oxframe vs Manim Community, checked October 2026: install, editor, plots and transforms, formulas, agent checks, and one scene timed in both tools.',
-    lead: 'Pick oxframe when you want a live editor with a timeline, a browser playground with nothing to install, and video, sound and charts in one scene. Pick Manim when the video is a math lecture with typeset formulas, or the Python ecosystem around it is the point.',
+    lead: 'Pick oxframe when you want a live editor with a timeline, a browser playground with nothing to install, and video, sound and charts in one scene. Pick Manim when the video is a math lecture already written in LaTeX, or the Python ecosystem around it is the point.',
     rows: [
       ['Language', 'Rust', 'Python'],
       ['Renderer', 'Own renderer, CPU or GPU', 'Cairo, or OpenGL'],
@@ -411,7 +412,11 @@ cd my-video && oxframe dev</code></pre>
         'Rust and ffmpeg; or nothing, in the browser playground',
         'Python with Cairo and Pango; LaTeX for formulas',
       ],
-      ['Formulas', 'Not yet: no LaTeX or Typst', 'LaTeX, and Typst as an optional extra'],
+      [
+        'Formulas',
+        '<code>Math</code>: Typst syntax, bundled font, no TeX install (<code>math</code> feature, not in the playground)',
+        'LaTeX, and Typst as an optional extra',
+      ],
       [
         'Plots and axes',
         '<code>Axes</code>, <code>plot</code>, <code>point_on</code>, bars, scatter',
@@ -447,7 +452,7 @@ cd my-video && oxframe dev</code></pre>
     sections: [
       {
         heading: 'Where each one is strong',
-        html: `<p>Manim is the tool behind the 3Blue1Brown style, and its community has years of scenes, plugins and answers. If the video is about equations, Manim's LaTeX and Typst support is the reason to use it: oxframe does not typeset formulas yet.</p>
+        html: `<p>Manim is the tool behind the 3Blue1Brown style, and its community has years of scenes, plugins and answers. If the formulas are already written in LaTeX, or need LaTeX packages, Manim is the reason to stay. oxframe sets formulas with Typst (<code>Math::new("e^(i pi) + 1 = 0")</code>), glyph by glyph as nodes you animate, with the font bundled so nothing else is installed; see <a href="/docs/formulas">Formulas</a>.</p>
 <p>oxframe's case is the workflow around the scene. <code>oxframe dev</code> shows the video with a timeline, markers you drag to retime it, and tunables you change without rebuilding; the <a href="/playground">playground</a> runs the same scene in a browser with nothing to install. One scene can hold a plot, a code block, a video clip and a voice line, and render 16:9, 9:16 and 1:1. And <code>oxframe check</code> tells an agent what is wrong in a frame before you watch it.</p>
 <p>Cairo is quick on simple scenes; most of the gap below is start-up and encoding. Manim's real cost is its install, which the playground avoids altogether.</p>`,
       },
@@ -467,7 +472,7 @@ cd my-video && oxframe dev</code></pre>
 <tr><td><code>Axes</code>, <code>axes.plot</code>, <code>NumberLine</code></td><td><code>Axes::new()</code>, <code>axes.plot(|x| …)</code>, <code>NumberLine::new(…)</code></td></tr>
 <tr><td><code>Matrix</code>, <code>Vector</code>, <code>ApplyMatrix</code></td><td><code>Matrix::new</code>, <code>axes.vector</code>, <code>axes.apply_matrix</code></td></tr>
 <tr><td><code>MovingCameraScene</code></td><td><code>Camera</code>: zoom, <code>center_on</code>, <code>fit</code></td></tr>
-<tr><td><code>MathTex</code>, <code>Tex</code></td><td>not yet</td></tr>
+<tr><td><code>MathTex</code>, <code>Tex</code></td><td><code>Math::new(…)</code> in Typst syntax (<code>math</code> feature)</td></tr>
 </tbody>
 </table>`,
       },
@@ -482,7 +487,7 @@ cd my-video && oxframe dev</code></pre>
       playground: 'essence',
     },
     pickThem: [
-      'The video is about formulas and needs LaTeX or Typst.',
+      'The formulas are written in LaTeX, or need LaTeX packages.',
       'You write Python and want its scientific libraries in the scene.',
       'You want the 3Blue1Brown look and the largest set of examples to learn from.',
     ],
@@ -493,11 +498,11 @@ cd my-video && oxframe dev</code></pre>
       'You need vertical and square versions of the same scene.',
     ],
     migrate:
-      'The <a href="/docs/migrate/manim">Manim migration guide</a> maps <code>Scene</code>, <code>self.play</code>, <code>Transform</code>, <code>Axes</code> and <code>ValueTracker</code> to oxframe and ports both scenes above. Formulas do not carry over yet.',
+      'The <a href="/docs/migrate/manim">Manim migration guide</a> maps <code>Scene</code>, <code>self.play</code>, <code>Transform</code>, <code>Axes</code> and <code>ValueTracker</code> to oxframe and ports both scenes above. Formulas carry over by rewriting LaTeX into Typst syntax: <code>\\frac{a}{b}</code> becomes <code>a / b</code>.',
     faq: [
       {
-        q: 'Can oxframe render LaTeX formulas?',
-        a: 'Not yet. Typst formulas are planned but postponed while their cost to the browser playground is weighed. For formula-heavy videos, Manim is the better fit today.',
+        q: 'Can oxframe render math formulas?',
+        a: 'Yes, since 0.21: Math::new takes Typst math syntax and sets it with a bundled font, so no TeX is installed. Each glyph is a path you can stagger in or recolor. It is behind the math feature, so the browser playground does not have it. LaTeX source is not read directly; it has to be rewritten in Typst syntax.',
       },
       {
         q: 'Do I need to install anything to try oxframe?',
@@ -517,7 +522,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'Can I make a 3Blue1Brown-style video in oxframe?',
-        a: 'The parts are there: axes, plots, morphing paths, a moving camera, transforms of the plane. Typeset formulas are the missing piece.',
+        a: 'Yes: axes, plots, morphing paths, a moving camera, transforms of the plane, and formulas set by Typst. The example above is chapter 3 of Essence of linear algebra.',
       },
     ],
     sources: [
@@ -596,7 +601,7 @@ cd my-video && oxframe dev</code></pre>
       {
         heading: 'What does not carry over',
         html: `<ul>
-<li><strong>LaTeX.</strong> There is no formula node in oxframe yet.</li>
+<li><strong>LaTeX.</strong> oxframe sets formulas with Typst (<code>Math</code>, behind the <code>math</code> feature), so a <code>Latex</code> node's source is rewritten in Typst syntax.</li>
 <li><strong>Custom TSX components.</strong> A component made of other nodes becomes a Rust function that adds them to a <code>Group</code>; a node that draws itself uses the <a href="/docs/custom-nodes">node API</a>.</li>
 <li><strong>Editor plugins.</strong> oxframe's editor is not extensible yet.</li>
 </ul>

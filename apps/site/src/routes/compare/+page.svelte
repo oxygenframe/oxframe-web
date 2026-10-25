@@ -69,6 +69,7 @@
     <li><a href="/vs/{p.slug}">oxframe vs {p.name}</a></li>
   {/each}
   <li><a href="/alternatives/remotion">Remotion alternatives in 2026</a></li>
+  <li><a href="/compare/manim-vs-remotion">Manim vs Remotion</a></li>
 </ul>
 
 <style>
