@@ -97,6 +97,7 @@
   "lib/examples/magnifier.rs": "2026-10-24",
   "lib/examples/matrix_multiply.rs": "2026-10-24",
   "lib/examples/morph.rs": "2026-10-19",
+  "lib/examples/not_found.rs": "2026-10-25",
   "lib/examples/ocean.rs": "2026-10-21",
   "lib/examples/one_shot.rs": "2026-10-22",
   "lib/examples/particles.rs": "2026-10-19",

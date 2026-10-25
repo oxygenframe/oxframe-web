@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Seo from '$lib/components/Seo.svelte';
-  import { COMPILE_URL } from '$lib/config';
   import DocsSearch from '$lib/search/DocsSearch.svelte';
 
   const missing = $derived(page.status === 404);
@@ -13,7 +12,6 @@
       .filter((w) => w && !/^(docs|html|md|\d+)$/.test(w))
       .join(' '),
   );
-  const compile = COMPILE_URL === 'https://compile.oxframe.dev' ? undefined : COMPILE_URL;
 
   /** Edit distance, for "did you mean". */
   function distance(a: string, b: string): number {
@@ -32,14 +30,16 @@
   }
 
   let suggestions = $state<string[]>([]);
-  // The scene is drawn by oxframe itself (lib/examples/not_found.rs). If it
-  // cannot load, the plain heading stays.
-  let played = $state(false);
+  // The scene (lib/examples/not_found.rs) rendered by `oxframe render` to a
+  // 90 kB loop. With reduced motion only the finished frame (the poster) shows.
+  let video = $state<HTMLVideoElement>();
 
   onMount(() => {
     if (!missing) return;
-    const src = '/player.js';
-    void import(/* @vite-ignore */ src);
+    if (video && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video.pause();
+      video.currentTime = 4.5;
+    }
     const wanted = page.url.pathname.toLowerCase().replace(/\/+$/, '');
     void fetch('/sitemap.xml')
       .then((r) => r.text())
@@ -70,29 +70,32 @@
 
 <div class="lost">
   {#if missing}
-    <div class="scene" class:played aria-hidden="true">
-      <oxframe-player
-        example="not_found"
-        {compile}
-        autoplay
-        loop
-        at="4.5"
-        onready={() => (played = true)}
-      ></oxframe-player>
-    </div>
+    <video
+      bind:this={video}
+      class="scene"
+      src="/images/404/not-found.mp4"
+      poster="/images/404/not-found.webp"
+      width="960"
+      height="540"
+      autoplay
+      muted
+      loop
+      playsinline
+      aria-hidden="true"
+    ></video>
   {/if}
   <h1>{missing ? 'Page not found' : 'Something went wrong'}</h1>
   {#if missing}
     <p class="lead">
-      Nothing lives at <code>{page.url.pathname}</code>. Search the docs, or try one of these:
+      Nothing lives at <code>{page.url.pathname}</code>.
     </p>
-    <div class="find"><DocsSearch query={words} /></div>
     {#if suggestions.length}
       <p class="mean">
         Did you mean
         {#each suggestions as s, i (s)}{i ? ', ' : ' '}<a href={s}>{s}</a>{/each}?
       </p>
     {/if}
+    <div class="find"><DocsSearch query={words} inline /></div>
   {/if}
   <p>
     Or start from the <a href="/docs">docs</a>, the <a href="/playground">playground</a> or the
@@ -100,7 +103,7 @@
   </p>
   {#if missing}
     <p class="made">
-      The animation above is oxframe, running in your browser: under 80 lines of Rust.
+      The animation above was made with oxframe in under 80 lines of Rust.
       <a href="/playground?ex=not_found">Open it in the playground</a>.
     </p>
   {/if}
@@ -113,20 +116,13 @@
     padding: 24px 0 48px;
   }
   .scene {
+    display: block;
+    width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     margin-bottom: 8px;
     border-radius: 12px;
-    overflow: hidden;
     background: #141414;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .scene.played {
-    opacity: 1;
-  }
-  oxframe-player {
-    width: 100%;
-    border-radius: 0;
   }
   .lead {
     color: var(--muted);
