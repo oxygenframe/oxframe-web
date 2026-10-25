@@ -343,7 +343,10 @@ export function createService(d: Deps) {
 
   function cors(req: Request, res: Response): Response {
     const origin = req.headers.get('Origin');
-    if (!origin || !(d.corsOrigins.includes('*') || d.corsOrigins.includes(origin))) return res;
+    // The examples list is public: <oxframe-player example="…"> reads it from any site.
+    const open = new URL(req.url).pathname === '/api/examples' && req.method !== 'POST';
+    if (!origin || !(open || d.corsOrigins.includes('*') || d.corsOrigins.includes(origin)))
+      return res;
     const out = new Response(res.body, res);
     out.headers.set('Access-Control-Allow-Origin', origin);
     out.headers.set('Access-Control-Allow-Methods', 'GET, POST');

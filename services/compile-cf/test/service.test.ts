@@ -241,6 +241,14 @@ describe('compile worker', () => {
     expect(pre.headers.get('Access-Control-Allow-Methods')).toContain('POST');
   });
 
+  it('lets any site read the examples list (<oxframe-player example>)', async () => {
+    const { svc } = setup();
+    const res = await svc.fetch(
+      new Request('https://c.dev/api/examples', { headers: { Origin: 'https://blog.example' } }),
+    );
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://blog.example');
+  });
+
   it('404s for unknown artifacts and ids', async () => {
     const { svc } = setup();
     const id = 'a'.repeat(32);

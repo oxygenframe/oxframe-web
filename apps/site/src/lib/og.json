@@ -419,6 +419,11 @@
     "section": "Docs",
     "image": "/og/docs-rendering.png"
   },
+  "/docs/embed": {
+    "title": "Embed an animation in a web page",
+    "section": "Docs",
+    "image": "/og/docs-embed.png"
+  },
   "/docs/cli": {
     "title": "CLI reference",
     "section": "Docs",

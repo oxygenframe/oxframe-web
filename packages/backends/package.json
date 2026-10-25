@@ -5,7 +5,8 @@
   "description": "Transports between editor-ui and an engine: LocalWs (oxframe dev), InPageWasm (playground), Mock (tests)",
   "exports": {
     ".": "./src/index.ts",
-    "./engine-worker": "./src/engine-worker.ts"
+    "./engine-worker": "./src/engine-worker.ts",
+    "./player-worker": "./src/player-worker.ts"
   },
   "scripts": {
     "test": "vitest run"

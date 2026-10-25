@@ -7,7 +7,7 @@
   import CodeEditor from '$lib/components/CodeEditor.svelte';
   import Player from '$lib/components/Player.svelte';
   import { compile, type CompileError } from '$lib/compile';
-  import { SDK_VERSION } from '$lib/config';
+  import { COMPILE_URL, SDK_VERSION } from '$lib/config';
   import { CURRENT } from '$lib/versions';
   import { exampleByName, lessonExamples, localExamples, showcaseExamples } from '$lib/examples';
   import { decodeShare, encodeShare } from '$lib/share';
@@ -34,6 +34,8 @@
   let firstFrameMs = $state<number | null>(null);
   let compileMs = $state<number | null>(null);
   let copied = $state(false);
+  let buildId = $state<string | null>(null);
+  let embedCopied = $state(false);
   let player = $state<{
     exportMp4: (p?: (d: number, t: number) => void, bitrate?: number) => Promise<Blob>;
     restart: () => void;
@@ -78,6 +80,7 @@
       if (r.status === 'done' && r.wasm_url && r.js_url) {
         status = 'ok';
         artifact = { wasm: r.wasm_url, js: r.js_url };
+        buildId = r.id;
         trackOnce('Playground compiled', { example: example || 'shared' });
       } else {
         status = 'error';
@@ -154,6 +157,25 @@
     }
   }
 
+  /** Copies an `<oxframe-player>` snippet that plays this build on any page. */
+  async function embed() {
+    if (!buildId) return;
+    const compileAttr =
+      COMPILE_URL === 'https://compile.oxframe.dev' ? '' : ` compile="${COMPILE_URL}"`;
+    // Split so the closing tag does not end this component's own <script>.
+    const close = '</' + 'script>';
+    const snippet = `<script type="module" src="${location.origin}/player.js">${close}
+<oxframe-player build="${buildId}"${compileAttr} controls loop></oxframe-player>`;
+    track('Copy embed', { example: example || 'shared' });
+    try {
+      await navigator.clipboard.writeText(snippet);
+      embedCopied = true;
+      setTimeout(() => (embedCopied = false), 2000);
+    } catch {
+      prompt('Copy this snippet:', snippet);
+    }
+  }
+
   onMount(() => {
     if (decodeShare(location.hash)) track('Open shared code');
     void run();
@@ -188,6 +210,15 @@
       <button class="btn primary" onclick={run} title="Ctrl+Enter" data-testid="run">Run</button>
       <button class="btn" onclick={share} title="Anyone with the link can see this code">
         {copied ? 'Link copied' : 'Share'}
+      </button>
+      <button
+        class="btn"
+        onclick={embed}
+        disabled={!buildId || status !== 'ok'}
+        title="Copies HTML that plays this scene on any web page"
+        data-testid="embed"
+      >
+        {embedCopied ? 'Embed copied' : 'Embed'}
       </button>
       <button
         class="btn"
@@ -281,6 +312,7 @@
   }
   .bar {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: center;
     padding: 8px 10px;
@@ -331,9 +363,6 @@
     .code {
       border-right: 0;
       border-bottom: 1px solid var(--border);
-    }
-    .bar {
-      flex-wrap: wrap;
     }
   }
   .preview {

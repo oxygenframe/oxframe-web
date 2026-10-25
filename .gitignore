@@ -9,3 +9,6 @@ playwright-report
 .tools
 .wrangler
 apps/site/.media/
+# Built by packages/player.
+apps/site/static/player.js
+apps/site/static/player-worker.js
