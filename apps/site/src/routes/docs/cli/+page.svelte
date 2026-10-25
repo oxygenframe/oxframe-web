@@ -282,8 +282,8 @@ oxframe check --against out/before`}</code
   Copies a ready-made, checked block into <code>src/blocks/</code> and adds
   <code>mod blocks;</code> to <code>src/main.rs</code>. Each block is one call that plays itself in
   and returns its group: <code>blocks::stat_counter(view, 1280.0, "stars").await</code>. With no
-  name it lists all eighteen, each passing <code>oxframe check</code>. The copied file is yours to
-  edit; <code>--force</code> replaces it.
+  name it lists all twenty-four, each passing <code>oxframe check</code>. The copied file is yours
+  to edit; <code>--force</code> replaces it.
 </p>
 <ul>
   <li>
@@ -292,17 +292,21 @@ oxframe check --against out/before`}</code
   </li>
   <li>
     Numbers and data: <code>stat-counter</code>, <code>progress-bar</code>, <code>bar-chart</code>,
-    <code>comparison</code> (a yes/no table against another product).
+    <code>comparison</code> (a yes/no table against another product), <code>metric-row</code>
+    (several numbers counting up side by side).
   </li>
   <li>
     Product and release: <code>feature-grid</code> (feature cards in a row),
     <code>release-notes</code>, <code>before-after</code>, <code>timeline</code>,
-    <code>checklist</code> (items ticked off).
+    <code>checklist</code> (items ticked off), <code>steps</code> (numbered steps filling in),
+    <code>split-screen</code> (two columns with a divider), <code>social-post</code> (a post whose likes
+    count up).
   </li>
   <li>
     Developer stories: <code>terminal</code>, <code>code-change</code>,
     <code>pull-request</code> (a PR card that gets merged), <code>chat-messages</code> (a
-    conversation in bubbles), <code>quote-card</code>.
+    conversation in bubbles), <code>quote-card</code>, <code>key-combo</code> (a keyboard shortcut
+    pressed key by key), <code>search-bar</code> (a query typed, results dropping in).
   </li>
 </ul>
 
