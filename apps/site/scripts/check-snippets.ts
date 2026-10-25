@@ -88,7 +88,7 @@ function unEntity(s: string): string {
 export function isRust(code: string): boolean {
   const first = code.trimStart().split('\n')[0] ?? '';
   if (
-    /^(\$\{|\$ |docker |podman |oxframe |cargo |npm |npx |bun |curl |git |brew |cd |\/plugin|codex |claude |sh |#!|winget |scoop )/.test(
+    /^(\$\{|\$ |docker |podman |oxframe |cargo |npm |npx |bun |curl |git |brew |cd |\/plugin|codex |claude |sh |#!|# |winget |scoop )/.test(
       first,
     )
   )

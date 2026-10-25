@@ -322,8 +322,9 @@ oxframe check --against out/before`}</code
   <code>list_components</code>, <code>docs_search</code> and <code>render</code>.
   <code>render_graph</code> is <code>oxframe inspect --graph</code> without the node tree: the
   render passes at one time, with the shader of each effect pass. Messages are newline-delimited
-  JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the protocol is written to
-  stdout.
+  JSON-RPC; a <code>Content-Length</code> frame is accepted too. Nothing but the protocol is written
+  to stdout. <code>--dir &lt;path&gt;</code> serves that project instead of the current directory.
+  Setup for each client: <a href="/docs/mcp">MCP server</a>.
 </p>
 
 <h2>Updating</h2>
