@@ -1,0 +1,17 @@
+{
+  "name": "@oxframe/player",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "<oxframe-player>: plays a scene compiled to wasm on any web page. Built to apps/site/static/player.js and player-worker.js.",
+  "exports": {
+    ".": "./src/element.ts"
+  },
+  "scripts": {
+    "build": "bun build src/element.ts --outdir ../../apps/site/static --entry-naming player.js --target browser --format esm --minify && bun build ../backends/src/player-worker.ts --outdir ../../apps/site/static --entry-naming player-worker.js --target browser --format esm --minify"
+  },
+  "dependencies": {
+    "@oxframe/backends": "workspace:*",
+    "@oxframe/protocol": "workspace:*"
+  },
+  "license": "MIT"
+}

@@ -10,6 +10,9 @@ if (!existsSync(join(tools, 'wasm-bindgen')) || !existsSync(join(tools, 'wasm-op
   process.exit(1);
 }
 
+// /player.js and /player-worker.js for /docs/embed (rebuild after editing packages/player).
+Bun.spawnSync(['bun', 'run', 'build'], { cwd: join(root, 'packages/player'), stdout: 'ignore' });
+
 const procs = [
   {
     name: 'compile',

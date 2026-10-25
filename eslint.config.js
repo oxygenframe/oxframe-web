@@ -14,6 +14,8 @@ export default ts.config(
       '.tools',
       '**/.data',
       '**/.wrangler',
+      // Built by packages/player.
+      'apps/site/static/player*.js',
       'bench',
       'apps/site/og/target',
       '**/*.gen.ts',

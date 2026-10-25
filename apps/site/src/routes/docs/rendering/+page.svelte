@@ -16,6 +16,11 @@
   work without it.
 </p>
 
+<p>
+  For a web page you may not need a file at all: <a href="/docs/embed">embed the animation</a> with
+  <code>&lt;oxframe-player&gt;</code> and it plays live, sharp at any size.
+</p>
+
 <h2>Common recipes</h2>
 <pre><code
     >{`oxframe render --out film.webm             # VP9 with transparency

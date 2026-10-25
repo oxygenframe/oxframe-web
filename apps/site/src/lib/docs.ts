@@ -228,6 +228,12 @@ export const sections: DocSection[] = [
           'Render oxframe animations to MP4, WebM with alpha, ProRes 4444, an animated GIF or PNG frames with one command, with audio, voice and scene transitions.',
       },
       {
+        slug: 'embed',
+        title: 'Embed an animation in a web page',
+        description:
+          'Play an oxframe animation on any website with the <oxframe-player> element: one script tag, no video file, sharp at every size, with controls and a JS API.',
+      },
+      {
         slug: 'cli',
         title: 'CLI reference',
         description:

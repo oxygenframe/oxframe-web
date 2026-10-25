@@ -73,6 +73,14 @@
         "svelte": "^5.40.0",
       },
     },
+    "packages/player": {
+      "name": "@oxframe/player",
+      "version": "0.1.0",
+      "dependencies": {
+        "@oxframe/backends": "workspace:*",
+        "@oxframe/protocol": "workspace:*",
+      },
+    },
     "packages/protocol": {
       "name": "@oxframe/protocol",
       "version": "0.1.0",
@@ -310,6 +318,8 @@
     "@oxframe/editor-ui": ["@oxframe/editor-ui@workspace:packages/editor-ui"],
 
     "@oxframe/mcp": ["@oxframe/mcp@workspace:services/mcp"],
+
+    "@oxframe/player": ["@oxframe/player@workspace:packages/player"],
 
     "@oxframe/protocol": ["@oxframe/protocol@workspace:packages/protocol"],
 

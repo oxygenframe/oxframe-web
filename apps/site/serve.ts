@@ -37,12 +37,17 @@ Bun.serve({
     const headers: Record<string, string> = {
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Content-Security-Policy': /engine-worker/.test(path)
+      'Content-Security-Policy': /engine-worker|^\/player-worker\.js$/.test(path)
         ? workerCsp
         : /search-worker/.test(path)
           ? searchCsp
           : pageCsp,
     };
+    // <oxframe-player> is embedded on other sites.
+    if (path === '/player.js' || path === '/player-worker.js') {
+      headers['Access-Control-Allow-Origin'] = '*';
+      headers['Cache-Control'] = 'public, max-age=3600';
+    }
     if (path.includes('/_app/immutable/'))
       headers['Cache-Control'] = 'public, max-age=31536000, immutable';
     return new Response(Bun.file(file), { headers });

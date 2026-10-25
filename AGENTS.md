@@ -54,6 +54,20 @@ are cached in R2 next to the build). It reads `https://oxframe.dev/docs-index.js
 docs without a redeploy. Deployed by `.github/workflows/deploy-mcp.yml` on
 changes to `services/mcp`.
 
+## <oxframe-player>
+
+`packages/player` is the embeddable player (`/docs/embed`): a custom
+element bundled by `bun run build` to `apps/site/static/player.js` and
+`player-worker.js` (not in git; any origin may load them, see
+`scripts/cf-headers.ts`). It plays a build from compile.oxframe.dev
+(`build=<id>`, which the playground's Embed button copies; `compile/` builds
+in R2 never expire, so embeds keep working), an example by name
+(`/api/examples` answers CORS for any origin), or self-hosted `js`/`wasm`.
+The engine always loops playback; the element turns the wrap into `ended`
+and, without `loop`, stops on the last frame. The engine worker is shared
+with the editor through `packages/backends/src/engine-host.ts`; only the
+editor's worker carries MP4 export (mediabunny).
+
 ## Shared videos
 
 The playground's "Share video" renders the scene in the browser and posts

@@ -3,7 +3,8 @@
 // Pages carry their CSP in a <meta> tag (SvelteKit hashes); the header adds
 // only what meta cannot express. The engine worker is the one script allowed
 // to compile wasm, so it gets its own CSP with 'wasm-unsafe-eval'; so does the
-// docs search worker (Pagefind).
+// docs search worker (Pagefind) and the <oxframe-player> worker. player.js and
+// player-worker.js are loaded by other sites, so they allow any origin.
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { compileUrl } from '../compile-url.js';
@@ -44,6 +45,16 @@ const headers = `/*
 /_app/immutable/workers/${search[0]}
   ! Content-Security-Policy
   Content-Security-Policy: ${searchCsp}
+
+/player.js
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
+
+/player-worker.js
+  ! Content-Security-Policy
+  Content-Security-Policy: ${workerCsp}
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
 `;
 writeFileSync(join(build, '_headers'), headers);
 // Cloudflare counts every rule after the first splat as dynamic and allows
