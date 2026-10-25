@@ -329,6 +329,7 @@ oxframe check --against out/before`}</code
 <h2>Updating</h2>
 <pre><code
     >{`cargo install oxframe-cli --force   # a new CLI
+brew upgrade oxframe                # or, if Homebrew installed it
 oxframe upgrade                     # then in each project`}</code
   ></pre>
 <p>
