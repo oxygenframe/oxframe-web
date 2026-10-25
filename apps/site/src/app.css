@@ -145,6 +145,13 @@ select {
 :not(pre) > code {
   overflow-wrap: anywhere;
 }
+/* In a table `anywhere` lets the column shrink to one letter (a table sizes
+   columns by their narrowest content); keep names whole there. Wide tables
+   scroll on phones instead (below). */
+td > code,
+th > code {
+  overflow-wrap: break-word;
+}
 /* A bare URL is one long word. */
 p,
 li,
