@@ -313,6 +313,17 @@ oxframe check --against out/before`}</code
   your system. Exits 2 when something required is missing.
 </p>
 
+<h3><code>oxframe ffmpeg</code></h3>
+<p>
+  Downloads a static ffmpeg into the oxframe cache and prints its path.
+  <code>oxframe render</code> and <code>oxframe publish</code> do the same by themselves the first
+  time they need ffmpeg and find none, so you need this only to download ahead of time: in a CI
+  image, or before going offline. The builds are the ones the <code>ffmpeg-static</code> npm package
+  uses (Linux and macOS on x64 and arm64, Windows x64), pinned and checked by SHA-256; ffmpeg is
+  under the GPL. The project, the preview and video clips get the downloaded copy when no other
+  ffmpeg is on <code>PATH</code>. Set <code>OXFRAME_NO_FFMPEG_DOWNLOAD=1</code> to never download.
+</p>
+
 <h3><code>oxframe agents</code></h3>
 <p>
   Writes or refreshes <code>AGENTS.md</code>, <code>CLAUDE.md</code> and
