@@ -103,8 +103,9 @@
   A fix clears the issue it belongs to; it does not know your design. Moving a headline 140 px may
   call for moving what sits next to it too, and a smaller font may read better as a shorter line.
   Text over a shader or an image has no single color behind it, so its <code>low_contrast</code>
-  issue comes without a color. <code>dead_time</code> and <code>covers_text</code> have no fix: what to
-  add, or where the shader goes, is a choice.
+  issue comes without a color. <code>dead_time</code> and <code>covers_text</code> have no fix: what
+  to add, or where the shader goes, is a choice. In Rust the field is an
+  <code>Option&lt;lint::Fix&gt;</code> on <code>lint::Issue</code>.
 </p>
 
 <figure class="crop">
