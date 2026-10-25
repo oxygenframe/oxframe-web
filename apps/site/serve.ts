@@ -30,9 +30,12 @@ Bun.serve({
     // adapter-static writes /docs as docs.html next to the docs/ directory.
     if (existsSync(`${file}.html`)) file = `${file}.html`;
     else if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
+    let status = 200;
     if (!file.startsWith(root) || !existsSync(file)) {
       file = join(root, '404.html');
       path = '/404';
+      // Like Cloudflare's `not_found_handling: "404-page"`.
+      status = 404;
     }
     const headers: Record<string, string> = {
       'X-Content-Type-Options': 'nosniff',
@@ -50,7 +53,7 @@ Bun.serve({
     }
     if (path.includes('/_app/immutable/'))
       headers['Cache-Control'] = 'public, max-age=31536000, immutable';
-    return new Response(Bun.file(file), { headers });
+    return new Response(Bun.file(file), { status, headers });
   },
 });
 console.log(`site on http://127.0.0.1:${port}`);

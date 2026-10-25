@@ -41,3 +41,13 @@ test('the playground copies an embed snippet for the current build', async ({ pa
   expect(snippet).toMatch(/<script type="module" src="http:\/\/127\.0\.0\.1:4173\/player\.js">/);
   expect(snippet).toMatch(/<oxframe-player build="[0-9a-f]{32}" compile="[^"]+" controls loop>/);
 });
+
+test('the 404 page plays its scene and helps find the page', async ({ page }) => {
+  const res = await page.goto('/docs/renderng');
+  expect(res?.status()).toBe(404);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+  // The scene (lib/examples/not_found.rs) loaded in the player.
+  await expect(page.locator('.scene.played')).toBeVisible({ timeout: 120_000 });
+  await expect(page.getByTestId('docs-search')).toHaveValue('renderng');
+  await expect(page.locator('.mean a').first()).toHaveAttribute('href', '/docs/rendering');
+});
