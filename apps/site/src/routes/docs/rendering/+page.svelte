@@ -271,8 +271,8 @@ sound("assets/click.wav").trim(0.0, 0.2).priority().await;`}</code
   The render prints what it got, e.g. <code>sound: -14.0 LUFS (target -14.0)</code>; without
   <code>loudness</code> it prints the level the files give. The gain is one number for the whole
   video, so quiet and loud parts keep their difference. To measure a mix of your own, call
-  <code>oxframe_export::loudness</code>; to mix an <code>oxframe_export::MixRequest</code> to a target
-  yourself, <code>oxframe_export::mix_with_loudness</code>.
+  <code>oxframe_export::loudness</code>; to mix an <code>oxframe_export::MixRequest</code> to a
+  target yourself, <code>oxframe_export::mix_with_loudness</code>.
 </p>
 
 <h2 id="voice">Voice</h2>
