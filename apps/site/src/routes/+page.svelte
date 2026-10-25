@@ -496,7 +496,11 @@ fn main() {
     </article>
     <article>
       <h3>MCP</h3>
-      <p>Any client that speaks MCP can run <code>oxframe mcp</code> from the project directory.</p>
+      <p>
+        Any client that speaks MCP can run <code>oxframe mcp</code> from the project directory; the
+        docs are also hosted at <code>mcp.oxframe.dev</code>.
+        <a href="/docs/mcp">Setting up the MCP server</a>.
+      </p>
       <pre><code>oxframe mcp</code></pre>
     </article>
     <article>
