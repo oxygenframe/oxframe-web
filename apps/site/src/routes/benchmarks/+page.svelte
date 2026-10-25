@@ -109,8 +109,8 @@
   <h2>On other machines</h2>
   <p>
     The 30-second scene from the home page, rendered on the CPU by <code>scripts/measure.sh</code>
-    on GitHub's shared runners at each release: small virtual machines, so read these as a floor,
-    not a best case. Median of five runs; <code>check</code> is on a current dev build.
+    on GitHub's shared runners at each release: small virtual machines, so read these as a floor, not
+    a best case. Median of five runs; <code>check</code> is on a current dev build.
   </p>
   <div class="scroll">
     <table>
