@@ -13,7 +13,7 @@
   <p class="lead">
     oxframe is a library you run yourself. The SDK and the <code>oxframe</code> CLI collect nothing and
     send nothing to us unless you publish a video. This page lists everything that does reach a server:
-    the website, the playground and the documentation server for agents. Last updated 24 October 2026.
+    the website, the playground and the documentation server for agents. Last updated 25 October 2026.
   </p>
 
   <h2>The SDK and the CLI</h2>
@@ -37,7 +37,8 @@
       the referrer, the browser, the operating system and the country. Plausible sets no cookies,
       keeps no IP addresses and builds no profile of a visitor. A few actions are counted the same
       way, with no details about you: opening the playground, the first build, sharing, exporting an
-      MP4 and copying the install command.
+      MP4 and copying the install command. Cloudflare Web Analytics measures page load speed the
+      same way, also with no cookies and no profile.
     </li>
     <li>
       <strong>No cookies.</strong> The site sets none, so there is no cookie banner. Your browser keeps
