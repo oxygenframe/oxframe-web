@@ -100,8 +100,15 @@
       case 'M':
         editor.markerAtPlayhead();
         break;
+      case 'c':
+      case 'C':
+        if (editor.notes === null || e.ctrlKey || e.metaKey) return;
+        editor.toggleCommenting();
+        break;
       case 'Escape':
-        if (editor.editingEase) editor.editingEase = null;
+        if (editor.draft) editor.draft = null;
+        else if (editor.commenting) editor.toggleCommenting();
+        else if (editor.editingEase) editor.editingEase = null;
         else if (editor.error) editor.dismissError();
         else editor.selectedMarker = null;
         break;

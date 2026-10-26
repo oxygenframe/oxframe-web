@@ -71,6 +71,46 @@
 </script>
 
 <aside class="inspector">
+  {#if editor.notes !== null}
+    <section data-testid="notes">
+      <h2>Notes for the agent</h2>
+      {#if editor.notes.length === 0}
+        <p class="dim">
+          Press <kbd>C</kbd>, then click or drag in the frame. <code>oxframe check</code> gives open notes
+          to the agent first.
+        </p>
+      {:else}
+        <ol class="notes">
+          {#each editor.notes as n (n.id)}
+            {@const crop = editor.noteCropUrl(n)}
+            <li class:done={n.status === 'done'} data-testid="note-{n.id}">
+              <button class="note-go" onclick={() => editor.goToNote(n)} title="Go to the note">
+                <span class="note-id">#{n.id}</span>
+                {n.time[0].toFixed(2)}{n.time[1] > n.time[0] ? `–${n.time[1].toFixed(2)}` : ''} s
+                {#if n.node}· {n.node}{/if}
+              </button>
+              <p class="note-text">{n.text}</p>
+              {#if crop}<img src={crop} alt="The marked area of note {n.id}" loading="lazy" />{/if}
+              {#if n.reply}<p class="note-reply" data-testid="note-reply-{n.id}">
+                  ↳ {n.reply}
+                </p>{/if}
+              <div class="note-row">
+                {#if n.status === 'open'}
+                  <button onclick={() => editor.setNoteStatus(n.id, 'done')}>Resolve</button>
+                {:else}
+                  <span class="dim">done</span>
+                  <button onclick={() => editor.setNoteStatus(n.id, 'open')}>Reopen</button>
+                {/if}
+                <button onclick={() => editor.deleteNote(n.id)} aria-label="Delete note {n.id}"
+                  >Delete</button
+                >
+              </div>
+            </li>
+          {/each}
+        </ol>
+      {/if}
+    </section>
+  {/if}
   <section>
     <h2>{t('inspector.tree')}</h2>
     <ul class="tree" role="tree" data-testid="tree">
@@ -165,6 +205,48 @@
 </aside>
 
 <style>
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .notes li {
+    border-left: 3px solid #ff3b6b;
+    padding-left: 6px;
+  }
+  .notes li.done {
+    border-left-color: var(--m-border);
+    opacity: 0.7;
+  }
+  .note-go {
+    all: unset;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--m-text-dim);
+  }
+  .note-id {
+    color: #ff3b6b;
+    font-weight: 600;
+  }
+  .note-text,
+  .note-reply {
+    margin: 2px 0;
+    white-space: pre-wrap;
+  }
+  .note-reply {
+    color: var(--m-text-dim);
+  }
+  .notes img {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  .note-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
   .inspector {
     background: var(--m-panel);
     border-left: 1px solid var(--m-border);

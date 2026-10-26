@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { EditorState } from '../state.svelte';
   import { toFrame, toScreen, viewTransform, zoomAround } from '../view';
+  import { rectOf, showsAt, toPixels } from '../notes';
 
   let { editor }: { editor: EditorState } = $props();
 
@@ -86,6 +87,36 @@
 
   // --- interaction: click = pick, wheel = zoom, alt/middle drag = pan ---
   let drag: { x: number; y: number; px: number; py: number; moved: boolean } | null = null;
+  /** Comment mode: the area being dragged out, in frame pixels. */
+  let marking = $state<[number, number, number, number] | null>(null);
+
+  /** A frame-pixel rectangle on screen, as CSS. */
+  function box4(r: [number, number, number, number]) {
+    const [x0, y0] = toScreen(view, r[0], r[1]);
+    const [x1, y1] = toScreen(view, r[2], r[3]);
+    return { left: x0, top: y0, width: Math.max(2, x1 - x0), height: Math.max(2, y1 - y0) };
+  }
+
+  const shownNotes = $derived(
+    (editor.notes ?? []).filter(
+      (n) => n.status === 'open' && n.bounds && showsAt(n, editor.time, editor.fps),
+    ),
+  );
+
+  let noteInput = $state<HTMLTextAreaElement | null>(null);
+  $effect(() => {
+    if (editor.draft) noteInput?.focus();
+  });
+
+  function onNoteKey(e: KeyboardEvent) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      void editor.saveDraft();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      editor.draft = null;
+    }
+  }
 
   function local(e: MouseEvent): [number, number] {
     const r = canvas.getBoundingClientRect();
@@ -103,14 +134,28 @@
     const dx = e.clientX - drag.x;
     const dy = e.clientY - drag.y;
     if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
-    if (drag.moved && (e.altKey || e.buttons === 4 || e.buttons === 2)) {
+    const pan = e.altKey || e.buttons === 4 || e.buttons === 2;
+    if (drag.moved && pan) {
       editor.setZoom(editor.zoom, drag.px + dx, drag.py + dy);
+    } else if (drag.moved && editor.commenting) {
+      const r = canvas.getBoundingClientRect();
+      const [ax, ay] = toFrame(view, drag.x - r.left, drag.y - r.top);
+      const [bx, by] = toFrame(view, e.clientX - r.left, e.clientY - r.top);
+      const [W, H] = editor.size;
+      const c = (v: number, m: number) => Math.max(0, Math.min(m, v));
+      marking = rectOf(c(ax, W), c(ay, H), c(bx, W), c(by, H));
     }
   }
 
   function onPointerUp(e: PointerEvent) {
     const d = drag;
     drag = null;
+    const area = marking;
+    marking = null;
+    if (editor.commenting && area && e.button === 0) {
+      if (area[2] - area[0] > 8 && area[3] - area[1] > 8) editor.startDraft(area);
+      return;
+    }
     if (!d || d.moved || e.button !== 0) return;
     const [sx, sy] = local(e);
     const [fx, fy] = toFrame(view, sx, sy);
@@ -119,7 +164,8 @@
       editor.select(null);
       return;
     }
-    editor.pick(fx, fy);
+    if (editor.commenting) editor.startDraftAt(fx, fy);
+    else editor.pick(fx, fy);
   }
 
   function onWheel(e: WheelEvent) {
@@ -132,7 +178,7 @@
   }
 </script>
 
-<div class="viewport" bind:this={box} data-testid="viewport">
+<div class="viewport" class:commenting={editor.commenting} bind:this={box} data-testid="viewport">
   <canvas
     bind:this={canvas}
     onpointerdown={onPointerDown}
@@ -144,7 +190,79 @@
     data-frame={editor.imageFrame}
     aria-label="frame {editor.imageFrame}"
   ></canvas>
-  {#if editor.ready && editor.frames > 0}
+  {#each shownNotes as n (n.id)}
+    {@const r = box4(toPixels(n.bounds!, editor.size))}
+    <div
+      class="note-area"
+      style:left="{r.left}px"
+      style:top="{r.top}px"
+      style:width="{r.width}px"
+      style:height="{r.height}px"
+      data-testid="note-area-{n.id}"
+    >
+      <span class="note-badge" title={n.text}>{n.id}</span>
+    </div>
+  {/each}
+  {#if marking}
+    {@const r = box4(marking)}
+    <div
+      class="note-area drafting"
+      style:left="{r.left}px"
+      style:top="{r.top}px"
+      style:width="{r.width}px"
+      style:height="{r.height}px"
+    ></div>
+  {/if}
+  {#if editor.draft}
+    {@const d = editor.draft}
+    {@const r = box4(d.rect)}
+    <div
+      class="note-area drafting"
+      style:left="{r.left}px"
+      style:top="{r.top}px"
+      style:width="{r.width}px"
+      style:height="{r.height}px"
+    ></div>
+    <form
+      class="note-form"
+      style:left="{Math.max(8, Math.min(container.w - 328, r.left))}px"
+      style:top="{Math.min(container.h - 170, r.top + r.height + 8)}px"
+      data-testid="note-form"
+      onsubmit={(e) => {
+        e.preventDefault();
+        void editor.saveDraft();
+      }}
+    >
+      <div class="note-meta">
+        {d.node ? d.node.label : 'Area'} · {d.time[0].toFixed(2)}{d.time[1] > d.time[0]
+          ? `–${d.time[1].toFixed(2)}`
+          : ''} s
+        {#if d.node?.source}<span class="dim">{d.node.source}</span>{/if}
+      </div>
+      <textarea
+        bind:this={noteInput}
+        bind:value={d.text}
+        onkeydown={onNoteKey}
+        rows="3"
+        placeholder="What should change? (Ctrl+Enter to send)"
+        aria-label="Note for the agent"
+        data-testid="note-text"
+      ></textarea>
+      <div class="note-actions">
+        <button
+          type="button"
+          onclick={() => editor.draftUntilPlayhead()}
+          title="Move the playhead, then press to cover the time up to it">Until playhead</button
+        >
+        <span class="spacer"></span>
+        <button type="button" onclick={() => (editor.draft = null)}>Cancel</button>
+        <button type="submit" class="primary" disabled={!d.text.trim()} data-testid="note-save"
+          >Add note</button
+        >
+      </div>
+    </form>
+  {/if}
+  {#if editor.ready && editor.frames > 0 && !editor.commenting}
     <button
       class="center-play"
       class:shown={!editor.playing || stirred}
@@ -189,6 +307,72 @@
     height: 100%;
     touch-action: none;
     cursor: crosshair;
+  }
+  .viewport.commenting canvas {
+    cursor: cell;
+  }
+  .note-area {
+    position: absolute;
+    border: 2px solid #ff3b6b;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .note-area.drafting {
+    border-style: dashed;
+  }
+  .note-badge {
+    position: absolute;
+    top: -11px;
+    left: -11px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 4px;
+    border-radius: 10px;
+    background: #ff3b6b;
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    pointer-events: auto;
+  }
+  .note-form {
+    position: absolute;
+    width: 320px;
+    display: grid;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--m-panel);
+    color: var(--m-text);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.35);
+    z-index: 2;
+  }
+  .note-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    font: inherit;
+  }
+  .note-meta {
+    font-size: 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .note-meta .dim {
+    color: var(--m-text-dim);
+  }
+  .note-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .note-actions .spacer {
+    flex: 1;
+  }
+  .note-actions .primary {
+    background: #ff3b6b;
+    color: #fff;
+    border-color: transparent;
   }
   .center-play {
     position: absolute;

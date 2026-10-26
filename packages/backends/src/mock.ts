@@ -15,6 +15,8 @@ export class MockBackend implements Backend {
   private viewport = { w: 640, h: 360 };
   private selected: number | null = null;
   readonly sent: Command[] = [];
+  /** Review notes, as `oxframe dev` keeps them (out/notes/notes.json). */
+  notes: Record<string, unknown>[] = [];
   readonly fps = 30;
   readonly size: [number, number] = [1920, 1080];
   readonly scenes = [
@@ -38,11 +40,43 @@ export class MockBackend implements Backend {
   connect(h: BackendHandlers): void {
     this.h = h;
     h.status({ state: 'connecting' });
-    queueMicrotask(() => h.status({ state: 'open' }));
+    queueMicrotask(() => {
+      h.status({ state: 'open' });
+      this.emitNotes();
+    });
   }
 
   private emit(e: Event): void {
     this.h?.event(e);
+  }
+
+  /** The CLI's handling of the editor's review notes. */
+  private noteEdit(m: Record<string, unknown>): boolean {
+    if (m.type === 'NoteAdd') {
+      const id = this.notes.reduce((a, n) => Math.max(a, n.id as number), 0) + 1;
+      const { crop_png, ...rest } = m;
+      delete rest.type;
+      this.notes.push({
+        ...rest,
+        id,
+        status: 'open',
+        crop: crop_png ? `${id}.png` : undefined,
+        created: 0,
+      });
+    } else if (m.type === 'NoteSet') {
+      const n = this.notes.find((n) => n.id === m.id);
+      if (n && m.status) n.status = m.status;
+    } else if (m.type === 'NoteDelete') {
+      this.notes = this.notes.filter((n) => n.id !== m.id);
+    } else {
+      return false;
+    }
+    this.emitNotes();
+    return true;
+  }
+
+  private emitNotes(): void {
+    this.emit({ type: 'Notes', notes: this.notes } as unknown as Event);
   }
 
   /** Simulate CLI-side events (Building, Error, Reloaded) in tests. */
@@ -124,6 +158,7 @@ export class MockBackend implements Backend {
 
   send(cmd: Command): void {
     this.sent.push(cmd);
+    if (this.noteEdit(cmd as unknown as Record<string, unknown>)) return;
     switch (cmd.type) {
       case 'Hello':
         if (cmd.protocol_version !== PROTOCOL_VERSION) {

@@ -228,3 +228,55 @@ test('light theme toggles', async ({ page }) => {
   await page.getByRole('button', { name: 'Toggle light/dark theme' }).click();
   await expect(page.getByTestId('editor')).toHaveAttribute('data-theme', /light|dark/);
 });
+
+test('review notes: mark an area or a node, write, resolve', async ({ page }) => {
+  await open(page);
+  await expect(page.getByTestId('notes')).toContainText('Press C');
+  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('c');
+  await expect(page.getByTestId('comment-mode')).toHaveAttribute('aria-pressed', 'true');
+
+  // Drag out an area.
+  const box = (await page.getByTestId('viewport').boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.4, box.y + box.height * 0.45, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.getByTestId('note-form')).toContainText('Area · 0.33 s');
+  await page.keyboard.type('Too fast here');
+  // Typing does not drive the player (Space, C, arrows are text).
+  await page.keyboard.type(' c ');
+  await expect(page.getByTestId('frame')).toHaveText('10 / 119');
+  await page.keyboard.press('Control+Enter');
+  await expect(page.getByTestId('note-form')).toHaveCount(0);
+  await expect(page.getByTestId('note-1')).toContainText('Too fast here c');
+  await expect(page.getByTestId('note-area-1')).toBeVisible();
+  await expect(page.getByTestId('note-tick-1')).toBeVisible();
+  const add = (await sent(page)).find((c) => c.type === 'NoteAdd')!;
+  expect(add.time).toEqual([0.333, 0.333]);
+  const b = add.bounds as number[];
+  expect(b[0]).toBeLessThan(b[2]);
+  expect(b[0]).toBeLessThan(0); // scene units: origin at the center
+
+  // A click on a node marks that node, then the time runs to the playhead.
+  // The mock's square is at x = 200 + f / 120 * 1400 frame pixels, y = 540.
+  const k = Math.min(box.width / 1920, box.height / 1080);
+  const ox = box.x + (box.width - 1920 * k) / 2;
+  const oy = box.y + (box.height - 1080 * k) / 2;
+  await page.mouse.click(ox + (200 + (10 / 120) * 1400) * k, oy + 540 * k);
+  await expect(page.getByTestId('note-form')).toContainText('square · 0.33 s');
+  await page.getByTestId('note-text').fill('Make it red');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('note-form')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('comment-mode')).toHaveAttribute('aria-pressed', 'false');
+
+  // Elsewhere in time the area is not drawn; the list takes you back.
+  await page.keyboard.press('End');
+  await expect(page.getByTestId('note-area-1')).toHaveCount(0);
+  await page.getByTestId('note-1').getByTitle('Go to the note').click();
+  await expect(page.getByTestId('frame')).toHaveText('10 / 119');
+  await page.getByTestId('note-1').getByRole('button', { name: 'Resolve' }).click();
+  await expect(page.getByTestId('note-1')).toContainText('done');
+  await expect(page.getByTestId('note-area-1')).toHaveCount(0);
+});

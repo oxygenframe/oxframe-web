@@ -20,4 +20,9 @@ export type NodeInfo = {
    * Name set with `.name(..)`.
    */
   name: string | null;
+  /**
+   * `file:line` of the `add` call, as in `check` (an engine before 0.24
+   * leaves it out).
+   */
+  source?: string;
 };

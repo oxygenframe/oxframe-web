@@ -53,6 +53,15 @@
       >engine {editor.engineVersion} · {editor.size[0]}×{editor.size[1]} · {editor.fps} fps</span
     >
   {/if}
+  {#if editor.notes !== null}
+    <button
+      class="comment"
+      aria-pressed={editor.commenting}
+      onclick={() => editor.toggleCommenting()}
+      title="Mark something in the frame and write a note for the agent (C)"
+      data-testid="comment-mode">Comment</button
+    >
+  {/if}
   <button
     aria-pressed={editor.showAxes}
     onclick={() => (editor.showAxes = !editor.showAxes)}
