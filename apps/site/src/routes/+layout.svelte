@@ -5,6 +5,7 @@
   import starsFile from '$lib/stars.json';
   import { currentTheme, setTheme } from '$lib/theme';
   import { DISCORD_URL, X_URL } from '$lib/site';
+  import SearchDialog from '$lib/search/SearchDialog.svelte';
   let { children } = $props();
   const links = [
     { href: '/docs', label: 'Docs' },
@@ -127,6 +128,8 @@
       {/each}
     </nav>
     <!-- On the right, apart from the site's own sections. -->
+    <!-- On docs pages "/" belongs to the sidebar's search box. -->
+    <SearchDialog slashKey={!docs} />
     <button
       class="theme"
       type="button"
@@ -243,7 +246,7 @@
     place-items: center;
     width: 30px;
     height: 30px;
-    margin-left: auto;
+    margin-left: -14px;
     padding: 0;
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -331,8 +334,9 @@
     width: 100%;
     padding: 0;
   }
-  /* Phones: the header fits without sideways scrolling. */
-  @media (max-width: 520px) {
+  /* Phones and small tablets: the menu takes its own row, so the header
+     fits without sideways scrolling (one row overflowed below ~800 px). */
+  @media (max-width: 820px) {
     .nav {
       flex-wrap: wrap;
       gap: 6px 14px;
@@ -343,8 +347,12 @@
       gap: 4px 12px;
     }
     /* Next to the logo, an icon is enough. */
+    .nav :global(.search-open),
     .theme {
       order: 1;
+    }
+    .theme {
+      margin-left: -6px;
     }
     .star-top {
       order: 1;
