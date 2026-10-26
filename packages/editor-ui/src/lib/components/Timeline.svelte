@@ -33,6 +33,9 @@
 
   // --- scrubbing (rAF-throttled: one Seek per frame of the UI) ---
   let scrubbing = false;
+  // Playback pauses while the playhead is dragged (the sound would stutter)
+  // and goes on from where it is let go.
+  let resume = false;
   let pending: number | null = null;
   function scrubTo(f: number) {
     pending = f;
@@ -46,14 +49,21 @@
     if (el.dataset.marker || el.closest('[data-transition]')) return;
     scrubbing = true;
     track.setPointerCapture(e.pointerId);
-    if (editor.playing) editor.pause();
+    resume = editor.playing;
+    if (resume) editor.pause();
     scrubTo(frameAt(e.clientX));
   }
   function onTrackMove(e: PointerEvent) {
     if (scrubbing) scrubTo(frameAt(e.clientX));
   }
   function onTrackUp() {
+    if (!scrubbing) return;
     scrubbing = false;
+    if (resume) {
+      resume = false;
+      // After the last Seek of the drag, which waits for the next UI frame.
+      requestAnimationFrame(() => editor.play());
+    }
   }
 
   // --- markers ---
@@ -175,6 +185,7 @@
     onpointerdown={onTrackDown}
     onpointermove={onTrackMove}
     onpointerup={onTrackUp}
+    onpointercancel={onTrackUp}
     role="slider"
     tabindex="0"
     aria-label={t('timeline.label')}
