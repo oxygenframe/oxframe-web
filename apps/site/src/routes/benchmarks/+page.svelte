@@ -49,9 +49,9 @@
 <h1>Benchmarks</h1>
 <p class="lead">
   Two things decide whether video-as-code is worth it: how fast a render is, and how often an agent
-  gets the scene right without a human. Both are measured here on one machine, each with a date and
-  a script you can run. The scripts are open; if you maintain another engine and the numbers are
-  stale or unfair, send a pull request.
+  gets the scene right without a human. Both are measured here, mainly on one machine, each with a
+  date and a script you can run. The scripts are open; if you maintain another engine and the
+  numbers are stale or unfair, send a pull request.
 </p>
 
 <h2>Render speed</h2>
@@ -108,7 +108,7 @@
 {#if machines.length}
   <h2>On other machines</h2>
   <p>
-    The 30-second scene from the home page, rendered on the CPU by <code>scripts/measure.sh</code>
+    The 27.5-second scene from the home page, rendered on the CPU by <code>scripts/measure.sh</code>
     on GitHub's shared runners at each release: small virtual machines, so read these as a floor, not
     a best case. Median of five runs; <code>check</code> is on a current dev build.
   </p>
@@ -125,7 +125,7 @@
       <tbody>
         {#each machines as m (m.name)}
           <tr>
-            <td>{m.machine} <span class="v">{m.version}, {m.date}</span></td>
+            <td>{m.machine} <span class="v">oxframe {m.version}, {m.date}</span></td>
             <td>{s(m.render30Seconds)} <span class="v">{m.render30Jobs} jobs</span></td>
             <td>{s(m.render30OneJobSeconds)}</td>
             <td>{s(m.checkWarmSeconds)}</td>

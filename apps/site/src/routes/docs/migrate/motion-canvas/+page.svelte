@@ -128,8 +128,8 @@
     the signal changes.
   </li>
   <li>
-    <code>scale(1.5, 1)</code> sets both axes from one number; in oxframe the target is a
-    <code>Vec2</code>.
+    <code>scale(1.5, 1)</code> sets both axes from one number, and so does oxframe's
+    <code>circle.scale().to(1.5, 1.0)</code>; a <code>Vec2</code> stretches the axes apart.
   </li>
 </ul>
 

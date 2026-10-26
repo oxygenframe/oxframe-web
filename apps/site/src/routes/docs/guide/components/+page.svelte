@@ -12,7 +12,12 @@
 <LiveExample name="components" />
 
 <h2>Title card</h2>
-<img src="/images/components/title-card.png" alt="Title card: Binary search, subtitle O(log n)" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/title-card.png"
+  alt="Title card: Binary search, subtitle O(log n)"
+/>
 <pre><code
     >{`let title = view.add(TitleCard::new("Binary search").subtitle("O(log n)"));
 title.enter().await;
@@ -22,7 +27,12 @@ title.exit().await;`}</code
 <p><code>enter</code> fades the card and the title in. <code>next</code> reveals the subtitle.</p>
 
 <h2>Chapter marker</h2>
-<img src="/images/components/chapter.png" alt="Chapter marker pinned to the top: 1 Search" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/chapter.png"
+  alt="Chapter marker pinned to the top: 1 Search"
+/>
 <pre><code
     >{`let chapter = view.add(ChapterMarker::new("1  Search"));
 chapter.enter().await;`}</code
@@ -31,6 +41,8 @@ chapter.enter().await;`}</code
 
 <h2>Bullet list</h2>
 <img
+  width="960"
+  height="540"
   src="/images/components/bullets.png"
   alt="Three bullets: Take the middle, Compare, Drop half"
 />
@@ -42,7 +54,12 @@ for _ in 0..steps.len() { steps.next().await; }`}</code
 <p><code>enter</code> shows the stack. Each <code>next</code> reveals one row.</p>
 
 <h2>Code explainer</h2>
-<img src="/images/components/code.png" alt="A line of code with the caption the middle" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/code.png"
+  alt="A line of code with the caption the middle"
+/>
 <pre><code
     >{`let code = view.add(
     CodeExplainer::new("lo + (hi - lo) / 2").step(1, 1, "the middle"),
@@ -56,7 +73,12 @@ code.next().await;`}</code
 </p>
 
 <h2>Flow diagram</h2>
-<img src="/images/components/flow.png" alt="Flow from Client to API to DB" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/flow.png"
+  alt="Flow from Client to API to DB"
+/>
 <pre><code
     >{`let flow = view.add(FlowDiagram::new().edge("Client", "API").edge("API", "DB"));
 flow.enter().await;
@@ -68,7 +90,12 @@ for _ in 0..flow.len() { flow.next().await; }`}</code
 </p>
 
 <h2>Callout</h2>
-<img src="/images/components/callout.png" alt="An arrow labeled the middle pointing at a square" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/callout.png"
+  alt="An arrow labeled the middle pointing at a square"
+/>
 <pre><code
     >{`let card = view.add(Rect::new().size(280.0).fill(Surface));
 let call = view.add(Callout::new(card).text("the middle"));
@@ -80,7 +107,12 @@ call.next().await;`}</code
 </p>
 
 <h2>Lower third</h2>
-<img src="/images/components/lower-third.png" alt="Lower third: Ada, walks the half" />
+<img
+  width="960"
+  height="540"
+  src="/images/components/lower-third.png"
+  alt="Lower third: Ada, walks the half"
+/>
 <pre><code
     >{`let lower = view.add(LowerThird::new("Ada").role("walks the half"));
 lower.enter().await;
@@ -90,6 +122,8 @@ lower.next().await;`}</code
 
 <h2>End card</h2>
 <img
+  width="960"
+  height="540"
   src="/images/components/end-card.png"
   alt="End card: That's the search, note Repeat from the top"
 />
@@ -113,6 +147,7 @@ end.exit().await;`}</code
 <style>
   img {
     width: min(100%, 640px);
+    height: auto;
     border-radius: 10px;
     border: 1px solid var(--border);
     margin: 8px 0 12px;

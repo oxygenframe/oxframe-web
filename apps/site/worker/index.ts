@@ -64,15 +64,21 @@ export async function media(request: Request, bucket: R2Bucket): Promise<Respons
   return file(request, bucket, path.slice(1));
 }
 
-/** One object of the bucket, with ranges; its key never changes content. */
-export async function file(request: Request, bucket: R2Bucket, key: string): Promise<Response> {
+/** One object of the bucket, with ranges; its key never changes content.
+ * `maxAge` is shorter for shared videos, which are deleted after 30 days. */
+export async function file(
+  request: Request,
+  bucket: R2Bucket,
+  key: string,
+  maxAge = 31536000,
+): Promise<Response> {
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
   }
   const ext = key.split('.').pop() ?? '';
   const headers = new Headers({
     'Content-Type': TYPES[ext] ?? 'application/octet-stream',
-    'Cache-Control': 'public, max-age=31536000, immutable',
+    'Cache-Control': `public, max-age=${maxAge}, immutable`,
     'Accept-Ranges': 'bytes',
   });
   if (request.method === 'HEAD') {
@@ -127,7 +133,7 @@ export default {
     if (path === '/api/share') return upload(request, shares, env.SHARE_LIMIT);
     // A share's files (ids are random, so a file never changes) and its page.
     const shared = /^\/s\/([A-Za-z0-9]{10})\/(video\.mp4|poster\.jpg)$/.exec(path);
-    if (shared) return file(request, shares, `shares/${shared[1]}/${shared[2]}`);
+    if (shared) return file(request, shares, `shares/${shared[1]}/${shared[2]}`, 86400);
     if (path.startsWith('/s/')) {
       const res = await page(request, shares);
       if (res) return res;

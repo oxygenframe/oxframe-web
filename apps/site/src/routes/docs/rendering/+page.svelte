@@ -441,7 +441,9 @@ oxframe render --out demo.gif --fps 10 --size 480x270   # smaller file`}</code
 
 <h2>In the browser</h2>
 <p>
-  The playground can export MP4 too (the <strong>Export</strong> button). It encodes with your browser's
-  WebCodecs, so it works offline but is limited to what the browser supports — use the CLI for ProRes,
-  4K or long videos.
+  The playground can export MP4 too (the <strong>Export mp4</strong> button). It encodes with your
+  browser's WebCodecs, so it works offline but is limited to what the browser supports, and the file
+  has no sound — use the CLI for sound, ProRes, 4K or long videos. <strong>Share video</strong>
+  renders the same way and uploads the result for a public link (up to 30 seconds, kept 30 days; see
+  <a href="/privacy">Privacy</a>).
 </p>

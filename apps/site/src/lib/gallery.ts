@@ -16,7 +16,7 @@ export const galleryItems: GalleryItem[] = [
     title: 'One scene, one camera, no cuts',
     tags: ['explainer', 'code'],
     prompt:
-      'The oxframe promo in one take: the camera pulls back from a semicolon through code, a diagram, a dashboard and a sea. The edit at 5 s shapes the sea at 28 s.',
+      'The oxframe promo in one take: the camera pulls back from a semicolon through code, a diagram, a dashboard and a sea, in one continuous scene.',
     playground: false,
   },
   {

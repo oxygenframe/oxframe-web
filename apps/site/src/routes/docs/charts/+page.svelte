@@ -72,6 +72,7 @@ stagger(0.15, [3.2, 7.5, 5.1].into_iter().enumerate(), |(i, v)| bars.value(i).to
   the same methods as the axes: <code>x_range</code>, <code>c2p</code> and <code>place</code>.
 </p>
 <p>
-  There is no pie chart yet; draw slices with <code>Custom</code>. Long rows of a
+  There is no pie-chart component yet; draw each slice with
+  <code>Circle::new().pie(true).start_angle(a).end_angle(b)</code>. Long rows of a
   <code>BulletList</code> now wrap inside the frame, so a list of results next to a chart stays readable.
 </p>

@@ -58,11 +58,12 @@
     Pick oxframe when a coding agent has to see the frames, fix them, and render without a browser.
   </li>
 </ul>
-<p>oxframe is early. The API is not stable; the banner at the top of this site says so.</p>
+<p>oxframe is early. The API is not stable; the version label in the header says so.</p>
 
 <h2>One tool at a time</h2>
 <p>
-  Each page compares oxframe with one tool, with dated facts, one scene in both and its render time.
+  Each page compares oxframe with one tool (or one kind of tool), with dated facts and, for most,
+  one scene in both and its render time.
 </p>
 <ul>
   {#each vsPages as p (p.slug)}

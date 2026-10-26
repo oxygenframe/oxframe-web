@@ -4,6 +4,7 @@
   import Seo from '$lib/components/Seo.svelte';
   import { MOTION_CANVAS_CHECKED, motionCanvasAlternatives as list } from '$lib/alternatives';
   import { SITE } from '$lib/site';
+  import { vsPage } from '$lib/vs';
 
   const checked = new Date(`${MOTION_CANVAS_CHECKED}T00:00:00Z`).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -105,7 +106,7 @@
     <li><strong>Watch out for:</strong> {a.watchOut}</li>
   </ul>
   <p>
-    {#if a.vs}<a href="/vs/{a.vs}">oxframe vs {a.name}</a> ·
+    {#if a.vs}<a href="/vs/{a.vs}">oxframe vs {vsPage(a.vs)?.name ?? a.name}</a> ·
     {/if}<a href={a.url} rel="external">{a.name} source</a>
   </p>
 {/each}

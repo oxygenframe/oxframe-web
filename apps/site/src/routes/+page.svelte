@@ -50,12 +50,12 @@
       'Save, and the editor reconnects to the new build. Scrubbing re-simulates without drawing every frame.',
     ],
     [
-      'GPU and CPU',
-      'vello on wgpu for playback, tiny-skia as the reference and for machines without a GPU.',
+      'CPU and GPU',
+      'tiny-skia on the CPU by default, byte for byte the same on any machine; vello on wgpu with --gpu.',
     ],
     [
       'Video out',
-      'MP4, WebM with alpha, ProRes 4444 or a PNG sequence, with the soundtrack muxed in.',
+      'MP4, WebM with alpha, ProRes 4444, GIF or a PNG sequence, with the soundtrack muxed in.',
     ],
   ];
 
@@ -356,7 +356,7 @@
       <p class="figure">{measurements.render30Seconds}s</p>
       <h3>Render of a {measurements.render30VideoSeconds}s video</h3>
       <p>
-        <code>oxframe render --cpu</code> in {measurements.render30Jobs} parallel segments ({measurements.render30OneJobSeconds}s
+        <code>oxframe render --cpu</code> with {measurements.render30Jobs} parallel jobs ({measurements.render30OneJobSeconds}s
         with one), no GPU. The two files are byte for byte the same.
       </p>
     </article>
@@ -367,16 +367,17 @@
         {measurements.a7.agent} passed {measurements.a7.passed} of {measurements.a7.prompts}
         <a href={measurements.a7.scriptUrl}>reference prompts</a>: the scene built,
         <code>oxframe check</code>
-        was clean and it did what was asked (oxframe {measurements.a7.version}, {measurements.a7
-          .date}).
+        was clean and it had what the prompt asked for (oxframe {measurements.a7.version}, {measurements
+          .a7.date}).
       </p>
     </article>
   </div>
   <p>
-    This is self-reported: a prompt passes when the scene builds and oxframe's own
-    <code>oxframe check</code> reports no error, run with one agent (Claude Code), {measurements.a7
-      .meanTurns} turns per prompt on average. A comparison across tools, judged independently, is still
-    to come — the prompt set and the runner are open in the CLI.
+    This is self-reported: a prompt passes when the scene builds, oxframe's own
+    <code>oxframe check</code> reports no error and the scene meets the prompt's expectations (the
+    nodes it should use, the aspect ratio, a minimum length), run with one agent (Claude Code), {measurements
+      .a7.meanTurns} turns per prompt on average. A comparison across tools, judged independently, is
+    still to come — the prompt set and the runner are open in the CLI.
   </p>
 </section>
 
@@ -488,10 +489,11 @@ fn main() {
       <pre><code>oxframe init my-video</code></pre>
     </article>
     <article>
-      <h3>OpenAI</h3>
+      <h3>ChatGPT and other chat apps</h3>
       <p>
-        No plugin. Give the model the project's <code>AGENTS.md</code>, or the docs of this version
-        at <a href="/llms.txt">/llms.txt</a>.
+        No plugin (Codex has one, above). Connect <a href="/docs/mcp">mcp.oxframe.dev</a>, or give
+        the model the project's <code>AGENTS.md</code>, or the docs of this version at
+        <a href="/llms.txt">/llms.txt</a>.
       </p>
     </article>
     <article>

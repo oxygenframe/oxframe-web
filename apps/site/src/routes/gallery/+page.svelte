@@ -29,8 +29,8 @@
 
 <h1>Gallery</h1>
 <p class="lead">
-  Examples from <code>oxframe-sdk/examples</code>. None of these cards is an agent run, so there is
-  no iteration count. The brief is the request the scene answers.
+  Examples from <code>oxframe-sdk/examples</code>. Each card shows the brief the scene was written
+  from, what it uses and its source.
 </p>
 
 <ul class="cards">

@@ -12,9 +12,10 @@
   <h1>Terms of use</h1>
   <p class="lead">
     These terms cover the website oxframe.dev and the free services on it: the playground, its
-    compile service, shared videos and the documentation server <code>mcp.oxframe.dev</code>. The
-    software itself (the SDK, the CLI and the release-video Action) is covered by its
-    <a href="/license">open-source license</a>, not by this page. Last updated 24 October 2026.
+    compile service, shared videos (from the playground or <code>oxframe publish</code>) and the
+    documentation server <code>mcp.oxframe.dev</code>. The software itself (the SDK, the CLI and the
+    release-video Action) is covered by its
+    <a href="/license">open-source license</a>, not by this page. Last updated 26 October 2026.
   </p>
 
   <h2>Using the services</h2>

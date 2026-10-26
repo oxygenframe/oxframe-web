@@ -1,11 +1,13 @@
 // Compiles the oxframe side of every migration guide (src/lib/migrate/*.rs)
-// against the oxframe version in og/Cargo.toml and runs `check` on it, so
+// against the SDK the playground builds with (src/lib/sdk.ts, or
+// OXFRAME_SDK_PATH) and runs `check` on it, so
 // the code the guides show (and open in the playground) builds and passes.
 //
 //   bun scripts/check-migrate.ts      (needs cargo)
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { SDK_VERSION } from '../src/lib/sdk';
 
 const site = join(import.meta.dir, '..');
 const ports = join(site, 'src/lib/migrate');
@@ -28,7 +30,10 @@ function run(cmd: string[], cwd: string): string {
 const names = readdirSync(ports)
   .filter((f) => f.endsWith('.rs'))
   .map((f) => f.slice(0, -3));
-const oxframe = /^oxframe = .*$/m.exec(readFileSync(join(site, 'og/Cargo.toml'), 'utf8'))![0];
+const sdkPath = process.env.OXFRAME_SDK_PATH;
+const oxframe = sdkPath
+  ? `oxframe = { path = ${JSON.stringify(join(sdkPath, 'crates/oxframe'))} }`
+  : `oxframe = "=${SDK_VERSION}"`;
 
 rmSync(crate, { recursive: true, force: true });
 mkdirSync(join(crate, 'src/bin'), { recursive: true });

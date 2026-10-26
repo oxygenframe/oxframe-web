@@ -257,7 +257,7 @@
 <p>Two paints of the same frame differ, so a seek or a render would not match the preview.</p>
 <p>
   Fix: draw only from signals and <code>ctx.time()</code>; take randomness from
-  <code>ctx.rng(seed)</code> or <code>random()</code>, never from the clock.
+  <code>ctx.rng(seed)</code>, never from the clock or from numbers kept between paints.
 </p>
 
 <h3 id="video_unavailable"><code>video_unavailable</code></h3>

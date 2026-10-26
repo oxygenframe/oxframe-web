@@ -62,8 +62,8 @@ fn main() {
     </li>
     <li>
       <strong>Two renderers.</strong> vello on the GPU and tiny-skia on the CPU, from the same scene
-      graph; <code>--cpu</code> renders on a machine without a GPU. 3D is a software rasterizer with byte-identical
-      output.
+      graph; the CPU is the default, <code>--gpu</code> opts into vello. 3D is a software rasterizer with
+      byte-identical output.
     </li>
     <li>
       <strong>Text.</strong> parley and skrifa lay out and outline text, with Inter and JetBrains

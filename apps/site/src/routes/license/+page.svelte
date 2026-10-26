@@ -43,6 +43,11 @@
     <thead><tr><th>Part</th><th>License</th></tr></thead>
     <tbody>
       <tr><td>Inter and JetBrains Mono fonts</td><td>SIL Open Font License 1.1</td></tr>
+      <tr
+        ><td>New Computer Modern Math font (the <code>math</code> feature)</td><td
+          >GUST Font License</td
+        ></tr
+      >
       <tr><td>Lucide icons (<code>lucide:</code>)</td><td>ISC</td></tr>
       <tr><td>Tabler icons (<code>tabler:</code>)</td><td>MIT</td></tr>
       <tr
@@ -61,8 +66,10 @@
   </p>
   <ul>
     <li>
-      <strong>Building.</strong> <code>cargo</code> downloads crates, and the install script fetches the
-      CLI binary from GitHub releases.
+      <strong>Building and tools.</strong> <code>cargo</code> downloads crates, the install script
+      fetches the CLI binary from GitHub releases, <code>oxframe render</code> fetches a static
+      ffmpeg when none is installed, <code>oxframe transcribe</code> fetches a speech model, and once
+      a day the CLI asks crates.io for a newer version.
     </li>
     <li>
       <strong>A network voice.</strong> A scene sends nothing on its own. If you add a network
@@ -74,6 +81,10 @@
       <code>compile.oxframe.dev</code>, which builds it and caches the build. “Share video” uploads
       the rendered MP4 and a poster to oxframe's storage and returns a <code>/s/…</code> link kept 30
       days.
+    </li>
+    <li>
+      <strong><code>oxframe publish</code></strong> uploads a video you rendered, its poster and its title
+      the same way, when you run it.
     </li>
     <li>
       <strong>This site</strong> counts visits with Plausible, which sets no cookies.

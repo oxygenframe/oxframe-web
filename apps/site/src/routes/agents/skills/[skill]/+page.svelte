@@ -1,6 +1,7 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
   import { INSTALL_SKILLS } from '$lib/agents';
+  import { SITE } from '$lib/site';
   let { data } = $props();
   const s = $derived(data.page);
   // Search results show about 160 characters.
@@ -9,9 +10,23 @@
       ? s.description.slice(0, 160).replace(/\s+\S*$/, '') + '…'
       : s.description,
   );
+  const jsonld = $derived([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Agents', item: `${SITE}/agents` },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: `${s.name} skill`,
+          item: `${SITE}/agents/skills/${s.name}`,
+        },
+      ],
+    },
+  ]);
 </script>
 
-<Seo title="{s.name} skill for agents — oxframe" {description} type="article" />
+<Seo title="{s.name} skill for agents — oxframe" {description} type="article" {jsonld} />
 
 <p class="crumb"><a href="/agents">Agents</a> / skills / {s.name}</p>
 <h1><code>{s.name}</code> skill</h1>
@@ -25,6 +40,8 @@
   > in oxframe-sdk.
 </p>
 
+<!-- The skill's own headings start at h2 or h3. -->
+<h2 id="skill">What the skill tells the agent</h2>
 <article class="skill">
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- built from oxframe-sdk/skills by scripts/sync-skills.ts -->
   {@html s.html}

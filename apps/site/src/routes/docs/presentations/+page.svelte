@@ -67,6 +67,6 @@ pub async fn opening(view: View) {
 <pre><code>oxframe render --slides talk.pdf</code></pre>
 <p>
   <code>render --slides talk.pdf</code> writes one page per stop, the frame the presentation shows
-  there, for handouts or a fallback. It needs no ffmpeg; <code>--size</code> and <code>--cpu</code>
+  there, for handouts or a fallback. It needs no ffmpeg; <code>--size</code> and <code>--gpu</code>
   work as for a video.
 </p>

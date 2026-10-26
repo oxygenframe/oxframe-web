@@ -43,8 +43,10 @@ oxframe inspect --at 2.5      # scene tree at that time, when a frame looks wron
   ></pre>
 <p>
   The storyboard is a grid of frames with the time under each cell. The report names the rule, the
-  node and the source line. <code>oxframe snapshot</code> is still there for one full-size still.
-  Nothing keeps running — <code>oxframe dev</code> is for you, not for the agent.
+  node and the source line. <code>oxframe snapshot</code> is still there for one still (960×540
+  unless
+  <code>--size</code> says otherwise). Nothing keeps running — <code>oxframe dev</code> is for you, not
+  for the agent.
 </p>
 <figure>
   <img

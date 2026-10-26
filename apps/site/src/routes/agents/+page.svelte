@@ -54,7 +54,10 @@ cd my-video                         # open this folder in your agent`}</code
       <tr
         ><td>An agent that cannot run commands (ChatGPT, a web IDE)</td><td
           ><a href="#remote-mcp">mcp.oxframe.dev</a></td
-        ><td>The docs only: search, pages, components, examples</td></tr
+        ><td
+          >The docs (search, pages, components, examples) and a check, a frame and the node tree of
+          one scene file</td
+        ></tr
       >
     </tbody>
   </table>
@@ -71,7 +74,7 @@ cd my-video                         # open this folder in your agent`}</code
 <p>
   <code>oxframe check</code> compiles the project, plays every scene and writes
   <code>out/check/storyboard.png</code> and <code>report.json</code>. Each issue names a rule (text
-  that leaves the frame, type too small to read, a shot that stands still), a time range, the node
+  that leaves the frame, a line too fast to read, a shot that stands still), a time range, the node
   and the line of code. The agent fixes them and checks again; the
   <a href="/agents/skills/oxframe-check">oxframe-check skill</a> lists every rule and its fix, and
   <a href="/docs/check-rules">Check rules</a> shows each one before and after. With the MCP server (<code

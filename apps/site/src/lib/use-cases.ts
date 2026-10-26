@@ -62,7 +62,7 @@ export const useCases: UseCase[] = [
     title: 'Math animations in Rust: plots, vectors, matrices',
     description:
       'Animate math the 3Blue1Brown way in Rust: function plots, vectors and linear maps, matrix multiplication step by step, live in the browser.',
-    lead: 'Plots that redraw as their ranges move, vectors and a grid that bend under a linear map, and matrices that multiply step by step. It all runs in the browser playground, with nothing to install.',
+    lead: 'Plots that redraw as their ranges move, vectors and a grid that bend under a linear map, and matrices that multiply step by step. All of it except formulas runs in the browser playground, with nothing to install.',
     examples: ['matrix_multiply', 'linear_map', 'charts'],
     points: [
       '<code>Axes</code> plots any function of x and samples it every frame, so plots follow animated ranges and morph with <code>to_fn</code> (<a href="/docs/charts">charts</a>).',
@@ -86,7 +86,7 @@ export const useCases: UseCase[] = [
       '<code>axes.bars</code>, <code>line_series</code> and <code>scatter</code>: every value is a signal, so it animates with <code>.to()</code> (<a href="/docs/charts">charts</a>).',
       'Ranges are signals too: <code>axes.x_range().to(..)</code> rescales the axes and everything on them.',
       '<code>Table</code> inserts and removes rows and sorts by a column, with the rows sliding into place (<a href="/docs/matrices">tables</a>).',
-      'The same project renders on any CI runner with <code>--cpu</code> (<a href="/docs/rendering">rendering</a>).',
+      'The same project renders on any CI runner, no GPU needed (<a href="/docs/rendering">rendering</a>).',
     ],
     skill: 'chart-video',
     prompt:
