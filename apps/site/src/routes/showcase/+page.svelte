@@ -32,7 +32,7 @@
 
 <h2>Badge</h2>
 <p>For a README or the description of a video:</p>
-<img src="/badge.svg" alt="made by Oxframe" width="152" height="28" />
+<img src="/badge.svg" alt="made by Oxframe" width="150" height="28" />
 <pre><code>[![made by Oxframe](https://oxframe.dev/badge.svg)](https://oxframe.dev)</code></pre>
 
 <style>

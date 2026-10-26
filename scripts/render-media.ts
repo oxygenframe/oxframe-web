@@ -5,11 +5,13 @@
 //   bun scripts/render-media.ts            # render, upload, write media.json
 //   bun scripts/render-media.ts --no-upload intro charts
 //
-// Files go under media/<sdk version>/gallery/, so they never change once
-// uploaded. Run after each SDK release (sdk.ts), with the oxframe-sdk
+// Files go under media/<sdk version>/gallery/ with a hash of their content
+// in the name, so they never change once uploaded (they are served as
+// immutable) and a render again gets new URLs. Run after each SDK release (sdk.ts), with the oxframe-sdk
 // checkout of that version next to this repository. Needs ffmpeg and a
 // logged-in wrangler.
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { galleryItems } from '../apps/site/src/lib/gallery';
@@ -136,27 +138,34 @@ for (const item of names.map((name) => ({ name }))) {
   const streams = ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=codec_type'];
   const audio = run(['ffprobe', ...streams, '-of', 'csv=p=0', mp4]).trim() !== '';
   const transcript = audio ? vttText(readFileSync(vtt, 'utf8')) : '';
+  const named = (file: string, ext: string) =>
+    `${item.name}-${createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8)}.${ext}`;
+  const keys = {
+    mp4: named(mp4, 'mp4'),
+    jpg: named(jpg, 'jpg'),
+    vtt: audio ? named(vtt, 'vtt') : '',
+  };
   items[item.name] = {
-    mp4: `${base}/${item.name}.mp4`,
-    poster: `${base}/${item.name}.jpg`,
+    mp4: `${base}/${keys.mp4}`,
+    poster: `${base}/${keys.jpg}`,
     seconds: Math.round(seconds * 100) / 100,
     width: SIZE[0],
     height: SIZE[1],
     bytes: statSync(mp4).size,
-    ...(audio ? { captions: `${base}/${item.name}.vtt` } : {}),
+    ...(audio ? { captions: `${base}/${keys.vtt}` } : {}),
     ...(transcript ? { transcript } : {}),
   };
   console.log(
     `${item.name}: ${seconds.toFixed(1)} s, ${(statSync(mp4).size / 1e6).toFixed(2)} MB, ${((Date.now() - t0) / 1000).toFixed(1)} s`,
   );
   if (upload) {
-    const files: [string, string][] = [
-      [mp4, 'video/mp4'],
-      [jpg, 'image/jpeg'],
+    const files: [string, string, string][] = [
+      [mp4, keys.mp4, 'video/mp4'],
+      [jpg, keys.jpg, 'image/jpeg'],
     ];
-    if (audio) files.push([vtt, 'text/vtt']);
-    for (const [file, type] of files) {
-      const key = `oxframe/media/${SDK_VERSION}/gallery/${file.split('/').pop()}`;
+    if (audio) files.push([vtt, keys.vtt, 'text/vtt']);
+    for (const [file, name, type] of files) {
+      const key = `oxframe/media/${SDK_VERSION}/gallery/${name}`;
       run([
         'npx',
         'wrangler',
