@@ -66,7 +66,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: oxygenframe/release-video-action@v1.7.0
+      - uses: oxygenframe/release-video-action@v1.8.0
         with:
           # An agent designs the scene; leave it out for the template.
           claude-code-oauth-token: $\{{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}`}</code
