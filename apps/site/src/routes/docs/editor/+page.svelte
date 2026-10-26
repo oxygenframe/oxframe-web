@@ -23,7 +23,8 @@
   <dt>Viewport</dt>
   <dd>
     The current frame. Scroll to zoom around the cursor, hold <kbd>Alt</kbd> (or the middle button) and
-    drag to pan, double-click to fit. Click a node to select it.
+    drag to pan, double-click to fit. Click a node to select it. The round button in the middle plays
+    and pauses.
   </dd>
   <dt>Timeline</dt>
   <dd>
@@ -81,8 +82,9 @@
 <h2>Small conveniences</h2>
 <ul>
   <li>
-    The frame, zoom and selection are kept in the URL — a reload or rebuild returns you to the same
-    spot.
+    The frame, zoom and selection are kept in the URL, so a link opens at the same spot. Reloading
+    the page starts from the beginning, and so does a rebuild, at most every 15 seconds: while you
+    edit quickly, the playhead stays where it is.
   </li>
   <li>Several browser tabs can be connected to one <code>oxframe dev</code> at the same time.</li>
   <li>In the playground, <strong>Share</strong> puts the whole source into the link.</li>
