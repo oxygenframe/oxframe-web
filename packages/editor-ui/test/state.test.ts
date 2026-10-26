@@ -43,6 +43,7 @@ describe('EditorState', () => {
     const { b, s, emit } = setup();
     b.h.status({ state: 'open' });
     expect(b.sent[0]).toMatchObject({ type: 'Hello', protocol_version: 1 });
+    expect(b.sent[1]).toEqual({ type: 'Pause' });
     s.setViewport(800, 450);
     emit(ready);
     expect(s.ready).toBe(true);
@@ -50,6 +51,12 @@ describe('EditorState', () => {
     b.sent.length = 0;
     emit({ type: 'Reloaded' });
     expect(b.sent.map((c) => c.type)).toEqual(['SetViewport', 'Seek']);
+    // The first rebuild starts over…
+    expect(b.sent[1]).toEqual({ type: 'Seek', frame: 0 });
+    // …and one soon after keeps the frame.
+    emit({ type: 'Frame', index: 42 });
+    b.sent.length = 0;
+    emit({ type: 'Reloaded' });
     expect(b.sent[1]).toEqual({ type: 'Seek', frame: 42 });
   });
 
