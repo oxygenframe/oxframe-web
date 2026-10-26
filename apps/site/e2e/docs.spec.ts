@@ -304,3 +304,19 @@ test('the theme switch changes the theme and remembers it', async ({ page }) => 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   expect(await bg()).not.toBe(dark);
 });
+
+test('the header search opens with Ctrl+K on any page and goes to a result', async ({ page }) => {
+  await page.goto('/gallery');
+  await page.getByTestId('header-search').click();
+  const dialog = page.getByTestId('search-dialog');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await page.keyboard.press('Control+k');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.type('easing');
+  await expect(dialog.getByTestId('search-results').locator('a').first()).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/docs\//);
+  await expect(dialog).toBeHidden();
+});

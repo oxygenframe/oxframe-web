@@ -10,7 +10,22 @@
    * missing URL). `inline`: results are a list in the page, always shown,
    * instead of a dropdown over it.
    */
-  let { query = '', inline = false }: { query?: string; inline?: boolean } = $props();
+  let {
+    query = '',
+    inline = false,
+    autofocus = false,
+    slashKey = true,
+    onchoose,
+  }: {
+    query?: string;
+    inline?: boolean;
+    /** Focus the box when it appears (the header's search dialog). */
+    autofocus?: boolean;
+    /** "/" focuses this box. Off where another handler owns the key. */
+    slashKey?: boolean;
+    /** Called when a result is chosen, before navigating. */
+    onchoose?: () => void;
+  } = $props();
   let q = $state(untrack(() => query));
   let hits: Hit[] = $state([]);
   let open = $state(false);
@@ -69,6 +84,7 @@
   }
 
   function choose(url: string) {
+    onchoose?.();
     open = false;
     q = '';
     hits = [];
@@ -76,10 +92,12 @@
   }
 
   onMount(() => {
+    if (autofocus) input?.focus();
     if (q.trim()) search();
   });
 
   function slash(e: KeyboardEvent) {
+    if (!slashKey) return;
     const t = e.target as HTMLElement;
     if (e.key !== '/' || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable) return;
     e.preventDefault();
