@@ -29,7 +29,7 @@ export const useCases: UseCase[] = [
     lead: 'Publish a release and its notes become a video attached to it. Headings become title cards, lists become bullet lists, and text that does not fit is split across cards instead of cut.',
     examples: ['release', 'transitions', 'components'],
     points: [
-      'The <a href="https://github.com/oxygenframe/release-video-action">release-video Action</a> reads the notes, writes the scenes and renders them on a plain runner; no model call.',
+      'The <a href="https://github.com/oxygenframe/release-video-action">release-video Action</a> renders the notes on a plain runner. Connect an LLM agent (Claude Code, Codex, the Anthropic API or any agent CLI) and it designs a scene for each release, a diagram of the fix or a before and after, until <code>oxframe check</code> passes; without one, a template lays out the notes.',
       '<code>oxframe check</code> runs first: a card that cannot fit its text is split in two and checked again.',
       'Your own scenes use the same <a href="/docs/guide/components">components</a>: <code>TitleCard</code>, <code>BulletList</code>, <code>EndCard</code>.',
       'A <code>[theme]</code> table in the repository’s <code>oxframe.toml</code> gives the video your colors.',
