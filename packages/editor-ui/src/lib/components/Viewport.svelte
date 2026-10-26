@@ -178,12 +178,7 @@
   }
 </script>
 
-<div
-  class="viewport"
-  class:commenting={editor.commenting}
-  bind:this={box}
-  data-testid="viewport"
->
+<div class="viewport" class:commenting={editor.commenting} bind:this={box} data-testid="viewport">
   <canvas
     bind:this={canvas}
     onpointerdown={onPointerDown}

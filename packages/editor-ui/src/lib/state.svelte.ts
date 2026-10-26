@@ -577,7 +577,9 @@ export class EditorState {
     const d = this.draft;
     if (!d || !d.text.trim()) return;
     this.draft = null;
-    const crop = this.image ? await cropPng(this.image, this.size, d.rect).catch(() => undefined) : undefined;
+    const crop = this.image
+      ? await cropPng(this.image, this.size, d.rect).catch(() => undefined)
+      : undefined;
     const scene = this.scenes.find((s) => this.frame >= s.start && this.frame < s.start + s.frames);
     this.sendCli({
       type: 'NoteAdd',

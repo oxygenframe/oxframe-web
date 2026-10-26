@@ -80,7 +80,12 @@ export async function cropPng(
   ctx.drawImage(image, x0 * s, y0 * s, w, h, 0, 0, w, h);
   ctx.strokeStyle = '#ff3b6b';
   ctx.lineWidth = Math.max(2, 3 * s);
-  ctx.strokeRect((rect[0] - x0) * s, (rect[1] - y0) * s, (rect[2] - rect[0]) * s, (rect[3] - rect[1]) * s);
+  ctx.strokeRect(
+    (rect[0] - x0) * s,
+    (rect[1] - y0) * s,
+    (rect[2] - rect[0]) * s,
+    (rect[3] - rect[1]) * s,
+  );
   const blob = await c.convertToBlob({ type: 'image/png' });
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let bin = '';

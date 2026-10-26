@@ -55,7 +55,13 @@ export class MockBackend implements Backend {
     if (m.type === 'NoteAdd') {
       const id = this.notes.reduce((a, n) => Math.max(a, n.id as number), 0) + 1;
       const { type: _type, crop_png, ...rest } = m;
-      this.notes.push({ ...rest, id, status: 'open', crop: crop_png ? `${id}.png` : undefined, created: 0 });
+      this.notes.push({
+        ...rest,
+        id,
+        status: 'open',
+        crop: crop_png ? `${id}.png` : undefined,
+        created: 0,
+      });
     } else if (m.type === 'NoteSet') {
       const n = this.notes.find((n) => n.id === m.id);
       if (n && m.status) n.status = m.status;

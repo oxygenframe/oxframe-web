@@ -253,6 +253,19 @@
       </div>
     {/each}
     <canvas class="wave" bind:this={wave} style:width="{width}px" aria-hidden="true"></canvas>
+    {#each (editor.notes ?? []).filter((n) => n.status === 'open') as n (n.id)}
+      {@const a = Math.round(n.time[0] * editor.fps)}
+      {@const b = Math.round(n.time[1] * editor.fps)}
+      <button
+        class="note-span"
+        style:left="{x(a)}px"
+        style:width="{Math.max(6, x(b) - x(a))}px"
+        title="#{n.id} · {n.text}"
+        aria-label="Note {n.id} at {n.time[0].toFixed(2)} s: {n.text}"
+        data-testid="note-tick-{n.id}"
+        onclick={() => editor.goToNote(n)}
+      ></button>
+    {/each}
     {#each editor.markers as m (m.scene + '/' + m.name)}
       {@const f = markerFrame(m)}
       {@const sel =
@@ -279,6 +292,17 @@
 </section>
 
 <style>
+  .note-span {
+    position: absolute;
+    bottom: 2px;
+    height: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    background: #ff3b6b;
+    cursor: pointer;
+    z-index: 1;
+  }
   .timeline {
     background: var(--m-panel);
     border-top: 1px solid var(--m-border);
