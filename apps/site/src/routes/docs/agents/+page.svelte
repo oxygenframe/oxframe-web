@@ -27,6 +27,14 @@
         >). Agents that support skills load it whenever you ask for a change to a scene.
       </td>
     </tr>
+    <tr>
+      <td><code>.claude/settings.json</code></td>
+      <td>
+        A hook that runs <code>oxframe notes</code> with every prompt, so Claude Code sees the open
+        <a href="/docs/editor#review-notes">notes from the editor</a> without being asked. Added to the
+        file you already have.
+      </td>
+    </tr>
   </tbody>
 </table>
 <p>The files are plain Markdown. Read them, edit them, add your own project conventions.</p>
