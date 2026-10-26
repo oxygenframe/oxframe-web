@@ -103,7 +103,7 @@
   </p>
   {#if missing}
     <p class="made">
-      The animation above was made with oxframe in under 80 lines of Rust.
+      The animation above was made by Oxframe in under 80 lines of Rust.
       <a href="/playground?ex=not_found">Open it in the playground</a>.
     </p>
   {/if}

@@ -34,8 +34,8 @@
 
   <h2>The videos you make</h2>
   <p>
-    They are yours. oxframe adds no watermark. The release-video Action ends with a “made with
-    oxframe” card, which <code>credit: false</code> turns off.
+    They are yours. oxframe adds no watermark. The release-video Action ends with a “made by
+    Oxframe” card, which <code>credit: false</code> turns off.
   </p>
 
   <h2>What comes bundled</h2>

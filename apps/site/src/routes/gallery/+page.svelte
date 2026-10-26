@@ -23,7 +23,7 @@
 
 <Seo
   title="Gallery of code-based videos — oxframe"
-  description="Explainer, code, chart and vertical videos made with oxframe. Each card has the brief, the source and a link into the playground."
+  description="Explainer, code, chart and vertical videos made by Oxframe. Each card has the brief, the source and a link into the playground."
   {jsonld}
 />
 

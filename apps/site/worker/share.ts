@@ -189,7 +189,7 @@ const escape = (s: string) =>
 /** The page of a share: the video, a way into the playground, link previews. */
 export function sharePage(origin: string, id: string, meta: ShareMeta): string {
   const base = `${origin}/s/${id}`;
-  const title = escape(meta.title ?? 'A scene made with oxframe');
+  const title = escape(meta.title ?? 'A scene made by Oxframe');
   const description = meta.code
     ? 'Rendered by oxframe from Rust code in the browser. Open it in the playground to see and change the code.'
     : 'A video rendered by oxframe, procedural animation in Rust.';

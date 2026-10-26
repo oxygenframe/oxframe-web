@@ -5,7 +5,7 @@
 
 <Seo
   title="Showcase and the made-with badge — oxframe"
-  description="Send a video made with oxframe and use the badge in a README or a video description. The gallery on this site is the starting set."
+  description="Send a video made by Oxframe and use the badge in a README or a video description. The gallery on this site is the starting set."
 />
 
 <h1>Showcase</h1>
@@ -32,8 +32,8 @@
 
 <h2>Badge</h2>
 <p>For a README or the description of a video:</p>
-<img src="/badge.svg" alt="made with oxframe" width="148" height="28" />
-<pre><code>[![made with oxframe](https://oxframe.dev/badge.svg)](https://oxframe.dev)</code></pre>
+<img src="/badge.svg" alt="made by Oxframe" width="152" height="28" />
+<pre><code>[![made by Oxframe](https://oxframe.dev/badge.svg)](https://oxframe.dev)</code></pre>
 
 <style>
   .lead {

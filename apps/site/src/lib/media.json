@@ -1,24 +1,24 @@
 {
-  "sdk": "0.23.0",
-  "date": "2026-10-24",
+  "sdk": "0.24.0",
+  "date": "2026-10-26",
   "items": {
     "one_shot": {
-      "mp4": "/media/0.23.0/gallery/one_shot.mp4",
-      "poster": "/media/0.23.0/gallery/one_shot.jpg",
-      "seconds": 48.68,
+      "mp4": "/media/0.24.0/gallery/one_shot.mp4",
+      "poster": "/media/0.24.0/gallery/one_shot.jpg",
+      "seconds": 48.32,
       "width": 1280,
       "height": 720,
-      "bytes": 3255855,
-      "captions": "/media/0.23.0/gallery/one_shot.vtt",
-      "transcript": "One scene. One camera. No cuts. This number shapes the sea. Change it, and remember it. The line is one node in a graph. The graph sits in a dashboard. Bars, a curve, a clip. Remember that number? Here it goes. All of it is one frame of oxframe check. Zero errors. Three formats. Made with oxframe. One scene, one camera, no cuts."
+      "bytes": 3249980,
+      "captions": "/media/0.24.0/gallery/one_shot.vtt",
+      "transcript": "One scene. One camera. No cuts. This number shapes the sea. Change it, and remember it. The line is one node in a graph. The graph sits in a dashboard. Bars, a curve, a clip. Remember that number? Here it goes. All of it is one frame of oxframe check. Zero errors. Three formats. Made by Oxframe. One scene, one camera, no cuts."
     },
     "release": {
-      "mp4": "/media/0.23.0/gallery/release.mp4",
-      "poster": "/media/0.23.0/gallery/release.jpg",
+      "mp4": "/media/0.24.0/gallery/release.mp4",
+      "poster": "/media/0.24.0/gallery/release.jpg",
       "seconds": 19.82,
       "width": 1280,
       "height": 720,
-      "bytes": 319178
+      "bytes": 320177
     },
     "cube_3d": {
       "mp4": "/media/0.23.0/gallery/cube_3d.mp4",
@@ -85,12 +85,12 @@
       "bytes": 177763
     },
     "ocean": {
-      "mp4": "/media/0.23.0/gallery/ocean.mp4",
-      "poster": "/media/0.23.0/gallery/ocean.jpg",
+      "mp4": "/media/0.24.0/gallery/ocean.mp4",
+      "poster": "/media/0.24.0/gallery/ocean.jpg",
       "seconds": 6.37,
       "width": 1280,
       "height": 720,
-      "bytes": 186064
+      "bytes": 186108
     },
     "magnifier": {
       "mp4": "/media/0.23.0/gallery/magnifier.mp4",
@@ -101,12 +101,12 @@
       "bytes": 240985
     },
     "splash": {
-      "mp4": "/media/0.23.0/gallery/splash.mp4",
-      "poster": "/media/0.23.0/gallery/splash.jpg",
+      "mp4": "/media/0.24.0/gallery/splash.mp4",
+      "poster": "/media/0.24.0/gallery/splash.jpg",
       "seconds": 3.83,
       "width": 1280,
       "height": 720,
-      "bytes": 94282
+      "bytes": 94137
     },
     "waves": {
       "mp4": "/media/0.23.0/gallery/waves.mp4",
@@ -286,12 +286,12 @@
       "bytes": 12058
     },
     "showreel": {
-      "mp4": "/media/0.23.0/gallery/showreel.mp4",
-      "poster": "/media/0.23.0/gallery/showreel.jpg",
+      "mp4": "/media/0.24.0/gallery/showreel.mp4",
+      "poster": "/media/0.24.0/gallery/showreel.jpg",
       "seconds": 30.2,
       "width": 1280,
       "height": 720,
-      "bytes": 1131457
+      "bytes": 1132160
     }
   }
 }
