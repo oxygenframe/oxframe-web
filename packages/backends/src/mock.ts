@@ -54,7 +54,8 @@ export class MockBackend implements Backend {
   private noteEdit(m: Record<string, unknown>): boolean {
     if (m.type === 'NoteAdd') {
       const id = this.notes.reduce((a, n) => Math.max(a, n.id as number), 0) + 1;
-      const { type: _type, crop_png, ...rest } = m;
+      const { crop_png, ...rest } = m;
+      delete rest.type;
       this.notes.push({
         ...rest,
         id,
