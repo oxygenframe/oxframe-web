@@ -291,6 +291,17 @@ oxframe check --against out/before`}</code
   labeled by the line that called <code>add</code>.
 </p>
 
+<h3><code>oxframe notes</code></h3>
+<p>
+  Lists the open <a href="/docs/editor#review-notes">notes</a> written in the editor under
+  <code>oxframe dev</code> (<code>--all</code> adds the closed ones).
+  <code>oxframe notes done 3 --reply "…"</code>
+  closes one with a reply the editor shows, <code>reopen 3</code> opens it again and
+  <code>delete 3</code>
+  removes it. <code>oxframe check</code> reports open notes first, as
+  <a href="/docs/check-rules#review_note"><code>review_note</code></a> errors.
+</p>
+
 <h3><code>oxframe inspect --at &lt;seconds&gt;</code></h3>
 <p>
   Prints the scene tree at that time as JSON: kind, name, source location, scene bounds, opacity,
@@ -381,7 +392,8 @@ oxframe check --against out/before`}</code
 <h3><code>oxframe mcp</code></h3>
 <p>
   An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
-  serves <code>check</code>, <code>storyboard</code>, <code>render_frame</code>,
+  serves <code>check</code>, <code>notes</code>, <code>note_done</code>,
+  <code>storyboard</code>, <code>render_frame</code>,
   <code>inspect</code>, <code>render_graph</code>,
   <code>list_components</code>, <code>docs_search</code> and <code>render</code>.
   <code>render_graph</code> is <code>oxframe inspect --graph</code> without the node tree: the
