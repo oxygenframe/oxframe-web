@@ -40,6 +40,17 @@ export interface EditorOptions {
  * All editor state, driven by protocol events. Components read it and call
  * its actions; nothing else talks to the backend.
  */
+/** A new build rewinds to frame 0 at most this often (ms). */
+export const REWIND_MS = 15_000;
+
+/** Whether this page load is the browser's reload. */
+function reloaded(): boolean {
+  if (typeof performance === 'undefined') return false;
+  const nav = performance.getEntriesByType?.('navigation')[0] as
+    PerformanceNavigationTiming | undefined;
+  return nav?.type === 'reload';
+}
+
 export class EditorState {
   connection = $state<ConnectionStatus>({ state: 'connecting' });
   ready = $state(false);
@@ -76,6 +87,8 @@ export class EditorState {
   editingEase = $state<{ scene: string; name: string } | null>(null);
 
   private restoredFrame: number | null = null;
+  /** When a new build last sent the playhead back to the start. */
+  private rewoundAt = -Infinity;
   private readonly persistEnabled: boolean;
   private readonly uiVersion: string;
   private pcm: { rate: number; samples: Float32Array } | null = null;
@@ -93,7 +106,9 @@ export class EditorState {
     this.uiVersion = opts.uiVersion ?? '0.1.0';
     if (this.persistEnabled) {
       const v = persist.load();
-      this.restoredFrame = v.frame ?? null;
+      // Reloading the page starts over; opening a link with a frame in it
+      // (or `oxframe dev --open` again) goes to that frame.
+      this.restoredFrame = reloaded() ? 0 : (v.frame ?? null);
       this.zoom = v.zoom ?? 1;
       this.panX = v.panX ?? 0;
       this.panY = v.panY ?? 0;
@@ -124,6 +139,10 @@ export class EditorState {
     this.connection = s;
     if (s.state === 'open') {
       this.send({ type: 'Hello', protocol_version: PROTOCOL_VERSION, ui_version: this.uiVersion });
+      // A native engine outlives the page: after a reload it can still be
+      // playing a stream this page shows as paused, with no sound. A new
+      // page starts paused.
+      this.send({ type: 'Pause' });
     } else {
       this.ready = false;
       this.playing = false;
@@ -166,7 +185,13 @@ export class EditorState {
         this.audioGen++;
         this.waveform = null;
         this.clips = [];
-        // Unless a restart already asked the new engine for frame 0.
+        // A new build starts over from the beginning, but at most every
+        // REWIND_MS: while edits come in quickly, the playhead stays where
+        // it is. A restart may already have asked for frame 0.
+        if (this.reloadedAt - this.rewoundAt >= REWIND_MS) {
+          this.rewoundAt = this.reloadedAt;
+          this.restoredFrame = 0;
+        }
         this.restoredFrame ??= this.frame;
         this.resync();
         if (resume) this.play();

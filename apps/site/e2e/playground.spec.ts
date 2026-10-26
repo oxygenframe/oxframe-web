@@ -12,7 +12,8 @@ test('code typed on the site renders in the browser', async ({ page }) => {
   expect(firstFrame).toBeLessThan(1000);
 
   // Scrub with the keyboard: the engine in the worker answers.
-  await page.locator('[data-testid=viewport]').click();
+  // A corner: the middle of the frame is the play button.
+  await page.locator('[data-testid=viewport]').click({ position: { x: 5, y: 5 } });
   await page.keyboard.press('End');
   await expect.poll(() => frameOf(page)).toBeGreaterThan(30);
 });
@@ -91,7 +92,8 @@ test('the quicksort showcase compiles and plays', async ({ page }) => {
   await page.goto('/playground?ex=quicksort');
   await expect(page.getByTestId('compile-status')).toHaveText(/Compiled/, { timeout: 300_000 });
   await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThanOrEqual(0);
-  await page.locator('[data-testid=viewport]').click();
+  // A corner: the middle of the frame is the play button.
+  await page.locator('[data-testid=viewport]').click({ position: { x: 5, y: 5 } });
   await page.keyboard.press('End');
   await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThan(2000);
   // Tunables from tune!() appear in the inspector.
@@ -121,7 +123,8 @@ for (const ex of [
     await expect(page.getByTestId('example')).toHaveValue(ex);
     await expect(page.getByTestId('compile-status')).toHaveText(/Compiled/, { timeout: 300_000 });
     await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThanOrEqual(0);
-    await page.locator('[data-testid=viewport]').click();
+    // A corner: the middle of the frame is the play button.
+    await page.locator('[data-testid=viewport]').click({ position: { x: 5, y: 5 } });
     await page.keyboard.press('End');
     await expect.poll(() => frameOf(page), { timeout: 30_000 }).toBeGreaterThan(30);
     expect(errors.filter((e) => /unreachable|panicked/i.test(e))).toEqual([]);
