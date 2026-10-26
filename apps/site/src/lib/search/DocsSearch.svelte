@@ -1,7 +1,7 @@
 <script lang="ts">
   // Search over the current docs (Pagefind index built after the site build).
   // Nothing loads until the box is focused; "/" focuses it.
-  import { onMount, untrack } from 'svelte';
+  import { onDestroy, onMount, untrack } from 'svelte';
   import { goto } from '$app/navigation';
   import type { Hit } from './search-worker';
 
@@ -95,6 +95,8 @@
     if (autofocus) input?.focus();
     if (q.trim()) search();
   });
+  // The header's dialog mounts a new box each time it opens.
+  onDestroy(() => worker?.terminate());
 
   function slash(e: KeyboardEvent) {
     if (!slashKey) return;

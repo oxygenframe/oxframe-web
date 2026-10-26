@@ -316,10 +316,9 @@ test('the header search opens with Ctrl+K on any page and goes to a result', asy
   await expect(dialog).toBeVisible();
   await expect(dialog.getByTestId('docs-search')).toBeFocused();
   await page.keyboard.type('easing');
-  // Pagefind loads on first use; slow on a busy CI runner.
-  await expect(dialog.getByTestId('search-results').locator('a').first()).toBeVisible({
-    timeout: 15_000,
-  });
+  // Pagefind loads on first use; slow on a busy CI runner. On failure the
+  // message shows what the list says instead ("Nothing found.", "not available").
+  await expect(dialog.getByTestId('search-results')).toContainText('Easing', { timeout: 15_000 });
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/docs\//);
   await expect(dialog).toBeHidden();
