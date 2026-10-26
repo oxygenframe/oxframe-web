@@ -75,7 +75,7 @@ test('every sitemap page has complete, unique SEO metadata', async ({ request })
     } else if (path.startsWith('/gallery/')) {
       // An example's page shows a frame of its video and offers the video.
       expect(attr(html, /<meta property="og:image" content="([^"]*)"/), path).toMatch(
-        /^https:\/\/oxframe\.dev\/media\/[\d.]+\/gallery\/\w+\.jpg$/,
+        /^https:\/\/oxframe\.dev\/media\/[\d.]+\/gallery\/[\w-]+\.jpg$/,
       );
       expect(attr(html, /<meta property="og:video" content="([^"]*)"/), path).toMatch(/\.mp4$/);
     } else {
