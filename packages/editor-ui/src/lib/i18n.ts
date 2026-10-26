@@ -17,8 +17,8 @@ const en = {
   'error.previous': 'The previous version keeps running.',
   'transport.play': 'Play (Space)',
   'transport.pause': 'Pause (Space)',
-  'transport.prev': 'Previous frame (←, Shift+← for 10)',
-  'transport.next': 'Next frame (→, Shift+→ for 10)',
+  'transport.prev': 'Previous frame (, or < for 10)',
+  'transport.next': 'Next frame (. or > for 10)',
   'transport.start': 'Go to start (Home)',
   'transport.end': 'Go to end (End)',
   'timeline.label': 'Timeline',
@@ -41,7 +41,7 @@ const en = {
   'theme.toggle': 'Toggle light/dark theme',
   'help.title': 'Shortcuts',
   'help.keys':
-    'Space play/pause · ←/→ step · Shift+←/→ 10 frames · Home/End · M marker · wheel zoom · Alt/middle-drag pan',
+    'Space play/pause · ←/→ 5 s · Shift+←/→ 1 s · ,/. frame · </> 10 frames · Home/End · M marker · wheel zoom · Alt/middle-drag pan',
 } as const;
 
 export type Key = keyof typeof en;

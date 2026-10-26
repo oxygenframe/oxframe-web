@@ -79,16 +79,29 @@
     }
     // Focused markers handle their own arrow keys.
     if (target?.dataset.marker && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
-    const big = e.shiftKey ? 10 : 1;
+    // Arrows jump in time and keep playing; , and . step frames (and pause).
+    const jump = e.shiftKey ? 1 : 5;
     switch (e.key) {
       case ' ':
         editor.togglePlay();
         break;
       case 'ArrowLeft':
-        editor.step(-big);
+        editor.seekBy(-jump);
         break;
       case 'ArrowRight':
-        editor.step(big);
+        editor.seekBy(jump);
+        break;
+      case ',':
+        editor.step(-1);
+        break;
+      case '.':
+        editor.step(1);
+        break;
+      case '<':
+        editor.step(-10);
+        break;
+      case '>':
+        editor.step(10);
         break;
       case 'Home':
         editor.seek(0);

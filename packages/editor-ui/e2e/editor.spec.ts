@@ -33,12 +33,21 @@ test('a new page pauses an engine that is still playing', async ({ page }) => {
   expect(types).not.toContain('Play');
 });
 
-test('keyboard: space, arrows, shift+arrows, home, end', async ({ page }) => {
+test('keyboard: space, frame steps, jumps in time, home, end', async ({ page }) => {
   await open(page);
-  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('.');
   await expect(page.getByTestId('frame')).toHaveText('1 / 119');
-  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('>');
   await expect(page.getByTestId('frame')).toHaveText('11 / 119');
+  await page.keyboard.press(',');
+  await expect(page.getByTestId('frame')).toHaveText('10 / 119');
+  // Arrows jump 5 s (Shift: 1 s), within the video.
+  await page.keyboard.press('Shift+ArrowRight');
+  await expect(page.getByTestId('frame')).toHaveText('40 / 119');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByTestId('frame')).toHaveText('119 / 119');
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByTestId('frame')).toHaveText('0 / 119');
   await page.keyboard.press('End');
   await expect(page.getByTestId('frame')).toHaveText('119 / 119');
   await page.keyboard.press('Home');
@@ -63,9 +72,9 @@ test('the button in the middle of the frame plays and pauses; keys still work af
   await page.keyboard.press(' ');
   await expect(page.getByTestId('play')).toHaveText('▶');
   const at = Number((await frameText(page)).split(' / ')[0]);
-  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('.');
   await expect(page.getByTestId('frame')).toHaveText(`${at + 1} / 119`);
-  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press(',');
   await expect(page.getByTestId('frame')).toHaveText(`${at} / 119`);
   await center.click();
   await expect(page.getByTestId('play')).toHaveText('❚❚');
@@ -99,9 +108,32 @@ test('dragging a marker writes it to meta', async ({ page }) => {
   expect(Math.abs((cmd.time as number) - 1.0)).toBeGreaterThan(0.01);
 });
 
+test('arrows and dragging the playhead keep the video playing', async ({ page }) => {
+  await open(page);
+  await page.keyboard.press(' ');
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  const types = (await sent(page)).map((c) => c.type);
+  expect(types.filter((t) => t === 'Seek').length).toBeGreaterThanOrEqual(2);
+  expect(types).not.toContain('Step');
+  // Drag the playhead: it pauses while held and plays on from where it is let go.
+  const track = (await page.getByRole('slider', { name: 'Timeline' }).boundingBox())!;
+  const y = track.y + track.height / 2;
+  await page.mouse.move(track.x + track.width * 0.2, y);
+  await page.mouse.down();
+  await page.mouse.move(track.x + track.width * 0.5, y, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  // , and . step a frame and pause.
+  await page.keyboard.press('.');
+  await expect(page.getByTestId('play')).toHaveText('▶');
+});
+
 test('M adds a marker at the playhead', async ({ page }) => {
   await open(page);
-  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('>');
   await page.keyboard.press('m');
   await expect(page.getByTestId('marker-marker-1')).toBeVisible();
   const cmd = (await sent(page)).filter((c) => c.type === 'SetMarker').at(-1)!;
@@ -208,8 +240,8 @@ test('curve editor and tunables send edits', async ({ page }) => {
 
 test('a link keeps its frame; reloading the page starts over', async ({ page }) => {
   await open(page);
-  await page.keyboard.press('Shift+ArrowRight');
-  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('>');
+  await page.keyboard.press('>');
   await expect(page.getByTestId('frame')).toHaveText('20 / 119');
   await expect.poll(() => page.evaluate(() => location.hash)).toContain('f=20');
   const url = page.url();
@@ -232,7 +264,7 @@ test('light theme toggles', async ({ page }) => {
 test('review notes: mark an area or a node, write, resolve', async ({ page }) => {
   await open(page);
   await expect(page.getByTestId('notes')).toContainText('Press C');
-  await page.keyboard.press('Shift+ArrowRight');
+  await page.keyboard.press('>');
   await page.keyboard.press('c');
   await expect(page.getByTestId('comment-mode')).toHaveAttribute('aria-pressed', 'true');
 

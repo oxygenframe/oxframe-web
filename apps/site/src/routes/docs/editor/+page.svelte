@@ -28,7 +28,8 @@
   </dd>
   <dt>Timeline</dt>
   <dd>
-    Play, pause and scrub. Shows scene boundaries, markers and the soundtrack's waveform. Drag a
+    Play, pause and scrub: dragging the playhead during playback holds it until you let go, then it
+    plays on from there. Shows scene boundaries, markers and the soundtrack's waveform. Drag a
     marker to retime everything that waits for it.
   </dd>
   <dt>Inspector</dt>
@@ -58,8 +59,16 @@
 <table>
   <tbody>
     <tr><td><kbd>Space</kbd></td><td>Play / pause</td></tr>
-    <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next frame</td></tr>
-    <tr><td><kbd>Shift</kbd>+<kbd>←</kbd> <kbd>→</kbd></td><td>Jump 10 frames</td></tr>
+    <tr
+      ><td><kbd>←</kbd> <kbd>→</kbd></td><td
+        >Back / forward 5 seconds (<kbd>Shift</kbd>: 1 second); playback goes on</td
+      ></tr
+    >
+    <tr
+      ><td><kbd>,</kbd> <kbd>.</kbd></td><td
+        >Previous / next frame (<kbd>&lt;</kbd> <kbd>&gt;</kbd>: 10 frames); pauses</td
+      ></tr
+    >
     <tr><td><kbd>Home</kbd> <kbd>End</kbd></td><td>Start / end</td></tr>
     <tr
       ><td><kbd>M</kbd></td><td

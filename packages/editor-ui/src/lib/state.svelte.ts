@@ -307,6 +307,11 @@ export class EditorState {
     if (this.playing) this.startAudio(f);
   }
 
+  /** Jumps `seconds` from the playhead; playback goes on from there. */
+  seekBy(seconds: number): void {
+    this.seek(this.frame + Math.round(seconds * this.fps));
+  }
+
   private onPcm(clip: { rate: number; pcm: ArrayBuffer }): void {
     const view = new Int16Array(clip.pcm);
     const samples = new Float32Array(view.length);
