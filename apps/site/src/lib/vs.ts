@@ -345,7 +345,7 @@ cd my-video && oxframe dev</code></pre>
       {
         heading: 'Rendering and scale',
         html: `<p>Both engines skip the browser, so both are fast. fframes draws each frame with Skia on the GPU and links ffmpeg's libav statically; its README reports a 128-second video rendered in 36 seconds. oxframe draws with its own renderer — tiny-skia on the CPU or wgpu on the GPU — and pipes frames to an ffmpeg binary (its own copy if none is installed).</p>
-<p>Where oxframe leans on scale is the CLI. <code>oxframe render --jobs N</code> splits the video into two-second segments, renders them in parallel processes and joins them without re-encoding, and the output bytes are identical for any N — so a render is reproducible, and the same scene gives the same file on a laptop and in CI. The <a href="/">home page</a> times a 27.5-second explainer at 8.4 seconds on eight jobs.</p>`,
+<p>Where oxframe leans on scale is the CLI. <code>oxframe render --jobs N</code> splits the video into two-second segments, renders them in parallel processes and joins them without re-encoding, and the output bytes are identical for any N — so a render is reproducible, and the same scene gives the same file on a laptop and in CI. The <a href="/">home page</a> times a 27.5-second explainer at 5.1 seconds on eight jobs.</p>`,
       },
       {
         heading: 'Writing the video with an agent',
@@ -1000,7 +1000,7 @@ cd my-video && oxframe dev</code></pre>
         html: `<p>Take a thousand 30-second videos a month: 500 minutes of video.</p>
 <ul>
 <li><strong>Shotstack</strong>, from <a href="https://shotstack.io/pricing/">its pricing page</a> on ${CHECKED}: the Pro plan, $99 a month for 750 minutes, or $100 pay as you go at 20¢ a minute. The Starter plan’s 250 minutes are not enough.</li>
-<li><strong>oxframe</strong>: no fee. On a laptop, a 27.5-second explainer renders in 8.4 seconds on 8 jobs (the measurement on <a href="/">the home page</a>), so 500 minutes of similar video take about two and a half hours of one machine. On GitHub Actions that is runner time, free for public repositories.</li>
+<li><strong>oxframe</strong>: no fee. On a laptop, a 27.5-second explainer renders in 5.1 seconds on 8 jobs (the measurement on <a href="/">the home page</a>), so 500 minutes of similar video take about an hour and a half of one machine. On GitHub Actions that is runner time, free for public repositories.</li>
 </ul>
 <p>The trade is time and hardware against a bill and a dependency. A hosted API wins when you render rarely or cannot run anything yourself; code wins when you render often, need logic in the video or want the data to stay with you.</p>`,
       },
@@ -1055,7 +1055,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'How fast is oxframe compared to Shotstack?',
-        a: 'We have not timed Shotstack: it needs an account, and a cloud render includes the queue. oxframe renders a 27.5-second explainer in 8.4 seconds on a laptop with 8 jobs.',
+        a: 'We have not timed Shotstack: it needs an account, and a cloud render includes the queue. oxframe renders a 27.5-second explainer in 5.1 seconds on a laptop with 8 jobs.',
       },
       {
         q: 'Do I need an account or an API key?',
@@ -1103,7 +1103,7 @@ cd my-video && oxframe dev</code></pre>
 <li><a href="https://json2video.com/pricing/">JSON2Video</a>: Professional $49.95 a month for 200 minutes, Startup $99.95 for 500; the free plan adds a watermark.</li>
 <li><a href="https://creatomate.com/pricing">Creatomate</a>: plans in credits, where a minute of 720p video is about 14 credits.</li>
 </ul>
-<p>A thousand 30-second videos a month is 500 minutes: $99 on Shotstack Pro, $99.95 on JSON2Video Startup. With oxframe it is compute time you already have. On a laptop, oxframe renders a 27.5-second explainer in 8.4 seconds on 8 jobs (the measurement on <a href="/">the home page</a>), so 500 minutes of similar video take about two and a half hours of one machine, or a few CI jobs.</p>`,
+<p>A thousand 30-second videos a month is 500 minutes: $99 on Shotstack Pro, $99.95 on JSON2Video Startup. With oxframe it is compute time you already have. On a laptop, oxframe renders a 27.5-second explainer in 5.1 seconds on 8 jobs (the measurement on <a href="/">the home page</a>), so 500 minutes of similar video take about an hour and a half of one machine, or a few CI jobs.</p>`,
       },
       {
         heading: 'Code instead of JSON',
@@ -1145,7 +1145,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'What does a render cost with oxframe?',
-        a: 'Only your compute. On a laptop, a 27.5-second video renders in 8.4 seconds on 8 jobs; on a free GitHub runner, release-video-action renders a release video in under a minute and a half including the build.',
+        a: 'Only your compute. On a laptop, a 27.5-second video renders in 5.1 seconds on 8 jobs; on a free GitHub runner, release-video-action renders a release video in under a minute and a half including the build.',
       },
       {
         q: 'When is a cloud API the better choice?',

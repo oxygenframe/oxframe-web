@@ -110,12 +110,12 @@
           </tr>
           <tr>
             <th scope="row">oxframe {bench.oxframe.version}</th>
-            <td><code>render --cpu</code></td>
+            <td><code>render</code> (CPU)</td>
             <td>{s(bench.oxframe.cpuSeconds)}</td>
           </tr>
           <tr>
             <th scope="row">oxframe {bench.oxframe.version}</th>
-            <td><code>render</code> (GPU)</td>
+            <td><code>render --gpu</code></td>
             <td>{s(bench.oxframe.seconds)}</td>
           </tr>
         </tbody>

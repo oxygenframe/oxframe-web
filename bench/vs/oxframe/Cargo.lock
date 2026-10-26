@@ -1198,9 +1198,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91bfd2f8eb71d0d6f50b8feca6cd4f64dd2aec55f1726253346f2888e09a8103"
+checksum = "1f8949749356e552cfa4253091243965871d14703560cea82b750acd31778cb2"
 dependencies = [
  "flate2",
  "oxframe-2d",
@@ -1218,12 +1218,13 @@ dependencies = [
 
 [[package]]
 name = "oxframe-2d"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2096f5fceffd6b6f7b91cf7ab620e22a4b9c80484034f79388904ca524a7558"
+checksum = "b67efef3342a4d1bb00f8ad6ecb3b7f36d3bbde563aabc03fe4aaaeb52198660"
 dependencies = [
  "image",
  "kurbo",
+ "libm",
  "naga",
  "oxframe-core",
  "oxframe-text",
@@ -1235,9 +1236,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-components"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63524814dbb63647e1bf3db88ba379e11e2fff34584a530c41e1b0bf405a6110"
+checksum = "d9fd21350e6f1e6c210037046c096ac4396a2d77870dcf1d188396deb02faed5"
 dependencies = [
  "oxframe-2d",
  "oxframe-core",
@@ -1245,9 +1246,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-core"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c6dac2c28e2ac942c20c6e50145a64589f2eccd5b132b39db3c32019367dfb0"
+checksum = "372bf4fd49e36227f75993a23cbc57b996fd55e64bee1be5d272f8f77a5c0e8e"
 dependencies = [
  "kurbo",
  "oxframe-protocol",
@@ -1258,9 +1259,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-export"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "592d7c5928f77d7a61a4788ecf8ada88199c5a91126ab2695b927003501e5b76"
+checksum = "7e6baeaca7c261776e9c7316f1aca25bdfdc067783c793f316d44d977fca71bc"
 dependencies = [
  "oxframe-core",
  "symphonia",
@@ -1268,9 +1269,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-macros"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a898bbcfc3d020412c25a5ac7ccc26b3a428777fef8edc61c90456e5e5e8eb10"
+checksum = "5ac6b10892297d3ea38793b26981fac766df9e1c70bb9a54d8b4749850d4d2f1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1279,9 +1280,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-preview"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab2638177c226f5b04a403ef4f367c4c3d14cf1c4f1f4a5412b1bdfb5be41617"
+checksum = "77f56ecf15f80d7193a2f4c66efbb03d8362cd698dc11195c0863cc40ca8d381"
 dependencies = [
  "axum",
  "image",
@@ -1294,9 +1295,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-protocol"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9bfd8663d4d4a209114b03edfc7f5545b5ae24523dfdef5a77ee6a00fe7664f4"
+checksum = "fe49f1808fd51759f84f38205a4ff0acf6e08107773c8f51d59cec5c90ac7e66"
 dependencies = [
  "serde",
  "serde_json",
@@ -1304,9 +1305,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-render"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9820f8470381aec94ce77f6abbf0e618460ee4fe5a9702f8d63f22979abc56d5"
+checksum = "480c35eb36faed3cab0bd2784554ca04bff8549a840009e324a25206ff52649a"
 dependencies = [
  "kurbo",
  "oxframe-2d",
@@ -1320,9 +1321,9 @@ dependencies = [
 
 [[package]]
 name = "oxframe-text"
-version = "0.20.4"
+version = "0.23.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02be9d39f2aa68c9ac8d13a64bd1aaf519af15640f07a94c315d49e3f0e88fc3"
+checksum = "676722f2998e7ce4b3b19c1d43797caa076b390972a29151d03e6fa3662b88d8"
 dependencies = [
  "kurbo",
  "parley",

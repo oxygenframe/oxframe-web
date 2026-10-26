@@ -356,8 +356,8 @@
       <p class="figure">{measurements.render30Seconds}s</p>
       <h3>Render of a {measurements.render30VideoSeconds}s video</h3>
       <p>
-        <code>oxframe render --cpu</code> with {measurements.render30Jobs} parallel jobs ({measurements.render30OneJobSeconds}s
-        with one), no GPU. The two files are byte for byte the same.
+        <code>oxframe render</code> on the CPU with {measurements.render30Jobs} parallel jobs ({measurements.render30OneJobSeconds}s
+        with one). The two files are byte for byte the same.
       </p>
     </article>
     <article>
