@@ -301,6 +301,14 @@ oxframe check --against out/before`}</code
   removes it. <code>oxframe check</code> reports open notes first, as
   <a href="/docs/check-rules#review_note"><code>review_note</code></a> errors.
 </p>
+<p>
+  <code>oxframe notes wait</code> returns as soon as there is an open note nobody has taken and
+  prints it (<code>--timeout 600</code> gives up after ten minutes). An agent keeps it running in
+  the background while you review, so a new note reaches it without a message in the chat.
+  <code>oxframe notes take 3</code> tells the editor the agent is on it; with
+  <code>--reply "…"</code> it asks you a question, and <strong>Send back</strong> in the editor hands
+  the note back.
+</p>
 
 <h3><code>oxframe inspect --at &lt;seconds&gt;</code></h3>
 <p>
@@ -379,7 +387,9 @@ oxframe check --against out/before`}</code
 <p>
   Writes or refreshes <code>AGENTS.md</code>, <code>CLAUDE.md</code> and
   <code>.claude/skills/oxframe/</code> — run it after upgrading oxframe. Files you edited yourself
-  are left alone unless you pass <code>--force</code>.
+  are left alone unless you pass <code>--force</code>. It also adds a Claude Code hook to
+  <code>.claude/settings.json</code> (keeping what is there) that shows the open
+  <a href="/docs/editor#review-notes">notes</a> with every prompt.
 </p>
 
 <h3><code>oxframe upgrade</code></h3>
@@ -392,7 +402,7 @@ oxframe check --against out/before`}</code
 <h3><code>oxframe mcp</code></h3>
 <p>
   An MCP server on stdin and stdout, for Claude Code and other clients. Started in a project, it
-  serves <code>check</code>, <code>notes</code>, <code>note_done</code>,
+  serves <code>check</code>, <code>notes</code>, <code>note_take</code>, <code>note_done</code>,
   <code>storyboard</code>, <code>render_frame</code>,
   <code>inspect</code>, <code>render_graph</code>,
   <code>list_components</code>, <code>docs_search</code> and <code>render</code>.

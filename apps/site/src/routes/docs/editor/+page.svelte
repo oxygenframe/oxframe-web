@@ -64,12 +64,18 @@
   playhead first).
 </p>
 <p>
-  The notes are saved in <code>out/notes/</code> with a close-up of the marked area. The next
+  The notes are saved in <code>out/notes/</code> with a close-up of the marked area. An agent that
+  keeps <code>oxframe notes wait</code> running in the background (the generated
+  <code>AGENTS.md</code> asks it to) gets each new note at once; the note then says
+  <strong>agent is on it</strong>. If the agent asks a question in its reply, answer by editing the
+  scene or writing a new note, or press <strong>Send back</strong>. In Claude Code, open notes are
+  also shown with every prompt you send (a hook from <code>oxframe init</code>). The next
   <code>oxframe check</code> reports each open note first, as a <code>review_note</code> error with
   your words, the time, the node and its <code>file:line</code>, so the agent sees it with the rest
   of the report and the check fails until it is dealt with. The agent closes a note with
   <code>oxframe notes done 3 --reply "Title is 128 px now"</code> (or the MCP tool
-  <code>note_done</code>); the reply shows under the note in the editor, which you can reopen.
+  <code>note_done</code>; <code>take</code> and <code>note_take</code> mark it as being worked on);
+  the reply shows under the note in the editor, which you can reopen.
   <code>oxframe notes</code> lists the open ones.
 </p>
 <pre><code
