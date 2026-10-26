@@ -30,6 +30,27 @@ const pageCsp = `frame-ancestors 'self'; object-src 'none'; base-uri 'self'`;
 const workerCsp = `default-src 'self'; connect-src 'self' ${compile}; script-src 'self' ${compile} 'wasm-unsafe-eval'`;
 const searchCsp = `default-src 'self'; script-src 'self' 'wasm-unsafe-eval'`;
 
+// The Markdown copy of a page (docs/editor.md, for agents) points search
+// engines at the page itself, or they report it as a duplicate.
+const markdown: string[] = [];
+const walk = (dir: string, rel: string) => {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    if (e.isDirectory()) {
+      if (e.name !== '_app') walk(join(dir, e.name), `${rel}/${e.name}`);
+    } else if (e.name.endsWith('.md')) {
+      markdown.push(`${rel}/${e.name}`);
+    }
+  }
+};
+walk(build, '');
+const canonical = markdown
+  .sort()
+  .map((md) => {
+    const page = md.replace(/\.md$/, '').replace(/\/index$/, '') || '/';
+    return `${md}\n  Link: <https://oxframe.dev${page}>; rel="canonical"\n`;
+  })
+  .join('\n');
+
 const headers = `/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -55,7 +76,11 @@ const headers = `/*
   Content-Security-Policy: ${workerCsp}
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600
-`;
+
+${canonical}`;
+// Cloudflare reads at most 100 rules from _headers.
+const ruleCount = headers.split('\n').filter((l) => l.startsWith('/')).length;
+if (ruleCount > 100) throw new Error(`_headers: ${ruleCount} rules, Cloudflare allows 100`);
 writeFileSync(join(build, '_headers'), headers);
 // Cloudflare counts every rule after the first splat as dynamic and allows
 // 100 of those, so exact paths go first. Each exact path is checked before
