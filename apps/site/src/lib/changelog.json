@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.10",
+    "date": "2026-10-26",
+    "html": "<h3>Fixed</h3>\n<ul><li>Speech from a <code>TtsProvider</code> could crackle and skip in a render with several jobs: every job called the provider for a line that was not cached yet and wrote the same <code>tts/</code> file at once, splicing two takes into one WAV. Now one process speaks the line and the others wait for its cache entry, which is written whole (WAV first, then the JSON). Delete the <code>tts/</code> files of a line that sounds broken and render again.</li><li><code>oxframe dev</code>: reloading the page while the video played showed it paused while frames kept moving, with no sound. A new page now stops playback (and the editor, 0.1.7, asks for that itself).</li><li>A trimmed sound (or a recording that does not start at zero) no longer clicks: every clip fades in and out over 2 ms.</li></ul>"
+  },
+  {
     "version": "0.23.9",
     "date": "2026-10-26",
     "html": "<h3>Fixed</h3>\n<ul><li>The preview (<code>oxframe dev</code>, <code>oxframe present</code>) read <code>--cpu</code> as &quot;draw on the GPU&quot;. It now takes <code>--gpu</code> for vello, as <code>render</code> does; the CPU stays the default and <code>--cpu</code> is still accepted.</li><li>Skills: formulas are <code>Math::new</code> (feature <code>math</code>), not &quot;not yet&quot;; <code>oxframe-check</code> no longer lists <code>input_cycle</code> (gone since 0.21) and gives <code>bounds</code> in scene units, as the report has them; a snapshot is 960×540 unless <code>--size</code> says otherwise; the voiceover skill covers recorded voice-overs; the <code>oxframe mcp</code> tool list is complete.</li></ul>"

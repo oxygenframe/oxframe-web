@@ -37,7 +37,7 @@
 </p>
 <pre><code
     >{`[dependencies]
-oxframe = "=0.23.9"`}</code
+oxframe = "=0.23.10"`}</code
   ></pre>
 <p>
   Keep the <code>=</code>. With a plain <code>"0.23"</code>, Cargo may pick a newer patch the next
