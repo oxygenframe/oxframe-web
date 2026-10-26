@@ -323,3 +323,17 @@ test('the header search opens with Ctrl+K on any page and goes to a result', asy
   await expect(page).toHaveURL(/\/docs\//);
   await expect(dialog).toBeHidden();
 });
+
+// Each release and each of its sections has an anchor, and a release can be
+// shared: its link, a post for X and the video.
+test('changelog releases have anchors and share links', async ({ page }) => {
+  await page.goto('/changelog');
+  const release = page.locator('section[id^="v0-"]').first();
+  const id = await release.getAttribute('id');
+  await expect(release.locator('h3').first()).toHaveAttribute('id', new RegExp(`^${id}-`));
+  const share = release.locator('[data-testid^="share-"]');
+  await expect(share.getByRole('button', { name: 'Copy link' })).toBeVisible();
+  const post = await share.getByRole('link', { name: 'Post on X' }).getAttribute('href');
+  expect(post).toContain('https://x.com/intent/post?text=oxframe');
+  expect(decodeURIComponent(post!)).toContain(`https://oxframe.dev/changelog#${id}`);
+});
