@@ -1,11 +1,21 @@
 <script lang="ts">
   import Seo from '$lib/components/Seo.svelte';
   import { INSTALL_CLI, INSTALL_SKILLS, skills } from '$lib/agents';
+  import { SITE } from '$lib/site';
   let { data } = $props();
   const a = $derived(data.page);
+  const jsonld = $derived([
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Agents', item: `${SITE}/agents` },
+        { '@type': 'ListItem', position: 2, name: a.name, item: `${SITE}/agents/${a.slug}` },
+      ],
+    },
+  ]);
 </script>
 
-<Seo title="{a.title} — oxframe" description={a.description} type="article" />
+<Seo title="{a.title} — oxframe" description={a.description} type="article" {jsonld} />
 
 <p class="crumb"><a href="/agents">Agents</a> / {a.name}</p>
 <h1>oxframe in {a.name}</h1>

@@ -37,7 +37,7 @@
       'Install',
       'Python with Cairo and Pango; LaTeX for formulas',
       'Node.js; Chrome Headless Shell on first render',
-      'Rust and ffmpeg, or nothing in the browser playground',
+      'Rust (ffmpeg is downloaded if missing), or nothing in the browser playground',
     ],
     [
       'Rendering at scale',

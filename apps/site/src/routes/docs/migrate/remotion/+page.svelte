@@ -21,8 +21,8 @@
 <p>
   Seeking works the same way in both: oxframe replays the scene up to the frame you ask for, so
   every frame is deterministic and the editor scrubs freely. Rendering needs no browser. oxframe
-  draws with its own renderer, on the GPU or with <code>--cpu</code> on any machine, and encodes with
-  ffmpeg.
+  draws with its own renderer, on the CPU by default (any machine) or the GPU with <code>--gpu</code
+  >, and encodes with ffmpeg.
 </p>
 
 <h2>Concepts side by side</h2>
@@ -94,7 +94,7 @@
         ><code>oxframe render</code>; <code>--jobs</code> renders 2-second segments in parallel</td
       ></tr
     >
-    <tr><td>Remotion Lambda</td><td>a plain CI runner; <code>--cpu</code> needs no GPU</td></tr>
+    <tr><td>Remotion Lambda</td><td>a plain CI runner; rendering needs no GPU</td></tr>
   </tbody>
 </table>
 
@@ -136,8 +136,8 @@
     <a href="/docs/3d">View3d</a> covers lit meshes and glTF models, not a full three.js scene.
   </li>
   <li>
-    <strong>Embedding.</strong> There is no published player component for your own web app yet; share
-    a rendered video or a playground link instead.
+    <strong>Embedding.</strong> <a href="/docs/embed"><code>&lt;oxframe-player&gt;</code></a> plays a
+    scene on your own site; there is no npm or React package yet.
   </li>
 </ul>
 

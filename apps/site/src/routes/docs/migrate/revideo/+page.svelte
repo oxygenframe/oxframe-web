@@ -38,7 +38,9 @@
     >
     <tr
       ><td>rendering in headless Chromium</td><td
-        >no browser: oxframe draws frames itself, on the GPU or with <code>--cpu</code></td
+        >no browser: oxframe draws frames itself, on the CPU by default or the GPU with <code
+          >--gpu</code
+        ></td
       ></tr
     >
     <tr
@@ -55,7 +57,8 @@
     >
     <tr
       ><td>the player for your own site</td><td
-        >no published player package yet: share the rendered video or a playground link</td
+        ><a href="/docs/embed"><code>&lt;oxframe-player&gt;</code></a> from a script tag; no npm package
+        yet</td
       ></tr
     >
   </tbody>
@@ -83,7 +86,7 @@
     it with <code>std::fs</code> and <code>serde</code>).
   </li>
   <li>
-    Replace the render script with <code>oxframe render</code> in CI; <code>--cpu</code> runs on any runner.
+    Replace the render script with <code>oxframe render</code> in CI; it runs on any runner, no GPU needed.
   </li>
   <li>Run <code>oxframe check</code> for each input you render.</li>
 </ol>

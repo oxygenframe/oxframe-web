@@ -13,15 +13,23 @@
   <p class="lead">
     oxframe is a library you run yourself. The SDK and the <code>oxframe</code> CLI collect nothing and
     send nothing to us unless you publish a video. This page lists everything that does reach a server:
-    the website, the playground and the documentation server for agents. Last updated 25 October 2026.
+    the website, the playground, the embeddable player and the documentation server for agents. Last updated
+    26 October 2026.
   </p>
 
   <h2>The SDK and the CLI</h2>
   <p>
     No telemetry, no account, no license check. Rendering happens on your machine or your CI. The
-    network is used only by things you start: <code>cargo</code> downloading crates, the install script
-    downloading the CLI from GitHub, and a speech provider you add yourself (such as ElevenLabs), which
-    receives the text you ask it to speak under its own privacy policy.
+    network is used only for downloads and by things you start: <code>cargo</code> downloading
+    crates, the install script downloading the CLI from GitHub, <code>oxframe render</code>
+    downloading a static ffmpeg from GitHub when none is installed (<code
+      >OXFRAME_NO_FFMPEG_DOWNLOAD=1</code
+    >
+    turns that off), <code>oxframe transcribe</code> downloading a speech model from Hugging Face,
+    and a speech provider you add yourself (such as ElevenLabs), which receives the text you ask it
+    to speak under its own privacy policy. Once a day the CLI asks crates.io (with
+    <code>cargo search</code>) whether a newer version exists;
+    <code>OXFRAME_NO_UPDATE_CHECK=1</code> turns that off, and it never runs in CI.
   </p>
   <p>
     <code>oxframe publish</code> uploads the video you rendered, a poster frame and the title you
@@ -36,13 +44,15 @@
       <a href="https://plausible.io/data-policy" rel="external">Plausible Analytics</a>: the page,
       the referrer, the browser, the operating system and the country. Plausible sets no cookies,
       keeps no IP addresses and builds no profile of a visitor. A few actions are counted the same
-      way, with no details about you: opening the playground, the first build, sharing, exporting an
-      MP4 and copying the install command. Cloudflare Web Analytics measures page load speed the
-      same way, also with no cookies and no profile.
+      way, with no details about you, such as opening the playground or a shared link, a build, an
+      edit, sharing, exporting an MP4, copying an embed snippet or the install command, and the
+      example or tab involved. Cloudflare Web Analytics measures page load speed the same way, also
+      with no cookies and no profile.
     </li>
     <li>
       <strong>No cookies.</strong> The site sets none, so there is no cookie banner. Your browser keeps
-      one setting in local storage, the light or dark theme you picked, and it never leaves the browser.
+      the light or dark theme you picked in local storage and, in the playground, the editor's view (frame,
+      zoom, selection) for the session. None of it leaves the browser.
     </li>
     <li>
       <strong>Hosting.</strong> The site runs on Cloudflare, which processes each request (including
@@ -56,25 +66,36 @@
   <h2>The playground</h2>
   <ul>
     <li>
-      <strong>Running a scene</strong> sends its code to <code>compile.oxframe.dev</code>. The
-      service builds it and keeps the result (the compiled scene, or the compile errors) so the same
-      code is not built twice. The result is stored under a hash of the code, not under anything
-      about you. Your IP address is used to limit how often one visitor can start a build, and is
-      not stored.
+      <strong>Building a scene.</strong> The playground sends the code to
+      <code>compile.oxframe.dev</code> each time it builds: when the page opens and whenever you pause
+      typing. The service builds it and keeps the result (the compiled scene and the compiler's output,
+      which quotes lines of the code) so the same code is not built twice and embedded players keep working;
+      it is not deleted. The result is stored under a hash of the code, not under anything about you,
+      and anyone who has its build id (for example from an embed snippet) can download it. The build machine
+      also keeps the code itself until it restarts. Your IP address is used to limit how often one visitor
+      can start a build, and is not stored.
     </li>
     <li>
       <strong>“Share video”</strong> uploads the video you rendered, a poster image and the scene's
-      code, and returns a public <code>/s/…</code> link. Anyone with the link can watch it. The
-      files are deleted after 30 days. Your IP address limits uploads to a few a minute and is not
-      stored. To remove a shared video sooner, write to
+      code, and returns a public <code>/s/…</code> link. Anyone with the link can watch it and open
+      its code. The files are deleted from our storage after 30 days; copies a browser or a chat app
+      cached before that are out of our hands. Your IP address limits uploads to a few a minute and
+      is not stored. To remove a shared video sooner, write to
       <a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a> with its link.
     </li>
     <li>
-      Your code in the editor stays in your browser until you run or share it. A link to the code
-      itself (“Share link”) keeps the code after <code>#</code> in the URL, a part browsers never send
-      to a server; we never see it until the person who opens it runs it.
+      A link to the code itself (“Share”) keeps the code after <code>#</code> in the URL, a part browsers
+      never send to a server. When someone opens the link, the playground builds the code as above.
     </li>
   </ul>
+
+  <h2>The embeddable player</h2>
+  <p>
+    A page with <code>&lt;oxframe-player&gt;</code> loads the player from oxframe.dev and the scene
+    from <code>compile.oxframe.dev</code> (or from wherever its owner hosts it). Its visitors' browsers
+    reach those servers like any visitor of this site, with the same request logs, and nothing else is
+    recorded.
+  </p>
 
   <h2>mcp.oxframe.dev</h2>
   <p>
@@ -87,9 +108,9 @@
 
   <h2>Logs</h2>
   <p>
-    The playground's compile service and the documentation server write request logs (the time, the
-    path, errors) to Cloudflare to keep them running. These logs are deleted automatically within a
-    few days and are not used for anything else.
+    The website (including video uploads), the playground's compile service and the documentation
+    server write request logs (the time, the path, errors) to Cloudflare to keep them running. These
+    logs are deleted automatically within a few days and are not used for anything else.
   </p>
 
   <h2>What we never do</h2>

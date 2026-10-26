@@ -26,8 +26,11 @@ oxframe render            # when you are happy: out/my-video.mp4`}</code
   <code>src/main.rs</code> with one scene, its <code>meta.json</code>, <code>oxframe.toml</code>,
   <code>.gitignore</code> and instructions for AI coding agents (see
   <a href="/docs/agents">Working with AI agents</a>).
-  <code>--template node</code> makes a library crate with a node of your own instead (see
-  <a href="/docs/custom-nodes">Writing your own node</a>).
+  <code>--template</code> starts from something else: <code>explainer</code> (a title, a bullet list
+  and an end card), <code>short</code> (a vertical 9:16 short), <code>chart</code> (a function on
+  axes with a dot that rides the curve), or <code>node</code>, a library crate with a node of your
+  own (see <a href="/docs/custom-nodes">Writing your own node</a>). Every project also gets an empty
+  <code>assets/</code> folder.
 </p>
 <table>
   <tbody>
@@ -151,6 +154,23 @@ oxframe snapshot --at 0.5 --scene outro         # time from the start of a scene
       ></tr
     >
     <tr><td><code>--no-audio</code></td><td>Leave the soundtrack out.</td></tr>
+    <tr
+      ><td><code>--jobs &lt;n&gt;</code></td><td
+        >Render two-second segments in this many processes at once (default: the number of cores, at
+        most 8). The file is the same for any number.</td
+      ></tr
+    >
+    <tr
+      ><td><code>--subtitles &lt;file&gt;</code></td><td
+        >Also write the spoken lines as <code>.srt</code> or <code>.vtt</code>, by the extension.</td
+      ></tr
+    >
+    <tr
+      ><td><code>--slides &lt;file.pdf&gt;</code></td><td
+        >Instead of a video, a PDF with one page per presentation stop (see
+        <a href="/docs/presentations">Presentations</a>). No ffmpeg needed.</td
+      ></tr
+    >
   </tbody>
 </table>
 
@@ -169,8 +189,9 @@ oxframe publish --range 0..30            # the first 30 seconds of a longer vide
 <p>
   Anyone with the link can watch the video, and it is deleted after 30 days. A video can be up to 30
   seconds and 16 MB; a larger render is re-encoded at 720p once. The upload sends the video, a
-  poster frame and the title, nothing else (see <a href="/privacy">Privacy</a>). It needs ffmpeg and
-  <code>curl</code>, which ships with Linux, macOS and Windows 10 and later. Flags:
+  poster frame and the title, nothing else (see <a href="/privacy">Privacy</a>). It needs ffmpeg
+  (downloaded if missing, as for <code>render</code>) and <code>curl</code>, which ships with Linux,
+  macOS and Windows 10 and later. Flags:
   <code>--title</code> (up to 100 characters, shown on the page and in link previews),
   <code>--scene</code>, <code>--range</code> and <code>--gpu</code>, as for <code>render</code>.
   With <code>--json</code> it prints <code>url</code>, <code>id</code> and <code>seconds</code>.
@@ -198,7 +219,8 @@ oxframe publish --range 0..30            # the first 30 seconds of a longer vide
 </figure>
 <p>
   Each issue has a rule, a severity (<code>error</code> or <code>warning</code>), a time range, the
-  node name, the source <code>file:line</code> and a hint:
+  node name, the source <code>file:line</code> and a hint. The most common rules are below;
+  <a href="/docs/check-rules">Check rules</a> lists all of them with their fixes:
 </p>
 <ul>
   <li>
@@ -371,14 +393,17 @@ oxframe check --against out/before`}</code
 
 <h2>Updating</h2>
 <pre><code
-    >{`cargo install oxframe-cli --force   # a new CLI
+    >{`curl -fsSL https://github.com/oxygenframe/oxframe-cli/releases/latest/download/install.sh | sh
+                                    # a new CLI: run the installer again
 brew upgrade oxframe                # or, if Homebrew installed it
+cargo install oxframe-cli --force   # or, if cargo did
 oxframe upgrade                     # then in each project`}</code
   ></pre>
 <p>
   Projects pin the SDK version, so a release never changes an existing project on its own. Once a
   day the CLI checks crates.io in the background and mentions a newer version; set
-  <code>OXFRAME_NO_UPDATE_CHECK=1</code> to turn that off.
+  <code>OXFRAME_NO_UPDATE_CHECK=1</code> to turn that off (it is off in CI, when
+  <code>CI</code> is set).
 </p>
 
 <h2>oxframe.toml</h2>

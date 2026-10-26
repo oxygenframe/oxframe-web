@@ -13,7 +13,7 @@ pub async fn hello(view: View) {
     circle.x().to(300.0, 1.0).await;
     all((
         circle.fill().to(color!("#68abdf"), 1.0),
-        circle.scale().to(Vec2::new(1.5, 1.5), 1.0),
+        circle.scale().to(1.5, 1.0),
     ))
     .await;
     count.to(100.0, 2.0).await;

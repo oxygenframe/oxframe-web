@@ -77,6 +77,7 @@ let speed = tune!("speed", 1.4);               // tunable: a number with a slide
 
 <h2>A bigger example</h2>
 <p>
-  The player above is that chart. It uses a marker to sync the bars with a beat and named eases for
-  their motion.
+  The player above is a function plot: the markers <code>draw</code> and <code>dot</code> time the
+  curve and the dot, <code>ease!("draw")</code> shapes the drawing, and
+  <code>tune!("dot_seconds")</code> sets how long the dot rides.
 </p>

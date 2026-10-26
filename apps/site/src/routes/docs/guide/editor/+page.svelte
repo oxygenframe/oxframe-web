@@ -41,7 +41,8 @@
   The first time your scene runs, oxframe writes these names and their starting values into a file
   next to your code,
   <code>src/&lt;scene&gt;.meta.json</code>. From then on the file wins: the editor changes the file,
-  the code only provides defaults. Commit the file — it is part of your animation.
+  the code only provides defaults. Commit the file — it is part of your animation. The playground
+  has no such file: edits there last until you reload, and a share link carries only the code.
 </p>
 <pre><code
     >{`{

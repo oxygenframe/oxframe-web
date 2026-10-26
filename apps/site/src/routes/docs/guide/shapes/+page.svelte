@@ -101,7 +101,7 @@ accent = "#68abdf"`}</code
   Place a node against another node or the safe area instead of counting pixels. The position is
   worked out again every frame, so it follows a neighbor that moves or changes size. <code
     >pct(80)</code
-  > is 80% of the frame width.
+  > is 80% of the frame (or of a parent with a fixed size) along the axis it sets.
 </p>
 <pre><code
     >{`let title = view.add(Txt::new().text("Binary search").h1().to_edge(Edge::Top));

@@ -85,7 +85,7 @@ scripts/delete-share.ts <id>`.
 `/docs/migrate/*` show the same scene in another tool and in oxframe. The
 code lives in `apps/site/src/lib/migrate/` (`x.tsx.txt`, `x.py.txt` and the
 port `x.rs`, in the playground's `pub fn project()` form). After changing a
-port or bumping the oxframe version in `apps/site/og/Cargo.toml`, run `bun
+port or bumping `apps/site/src/lib/sdk.ts`, run `bun
 scripts/check-migrate.ts` in apps/site: it compiles every port and fails
 unless `oxframe check` reports no issue.
 

@@ -47,6 +47,11 @@
   worked keeps playing, so you never lose your place. Fix the code and save — the error goes away by
   itself.
 </p>
+<p>
+  In the <a href="/playground">playground</a> there is no saving: it rebuilds half a second after
+  you stop typing (or at once with <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd>), and compile
+  errors are listed under the code and underlined in it.
+</p>
 
 <h2>Shortcuts</h2>
 <table>
@@ -55,8 +60,21 @@
     <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next frame</td></tr>
     <tr><td><kbd>Shift</kbd>+<kbd>←</kbd> <kbd>→</kbd></td><td>Jump 10 frames</td></tr>
     <tr><td><kbd>Home</kbd> <kbd>End</kbd></td><td>Start / end</td></tr>
-    <tr><td><kbd>M</kbd></td><td>Move the selected marker to the playhead</td></tr>
-    <tr><td><kbd>Esc</kbd></td><td>Close dialogs, dismiss errors</td></tr>
+    <tr
+      ><td><kbd>M</kbd></td><td
+        >Move the selected marker to the playhead, or add a new marker there</td
+      ></tr
+    >
+    <tr
+      ><td><kbd>←</kbd> <kbd>→</kbd> on a focused marker</td><td
+        >Move the marker a frame (<kbd>Shift</kbd>: 10 frames); <kbd>Enter</kbd> jumps to it</td
+      ></tr
+    >
+    <tr
+      ><td><kbd>Esc</kbd></td><td>Close the curve editor, dismiss an error, deselect the marker</td
+      ></tr
+    >
+    <tr><td><kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd></td><td>Build now (playground)</td></tr>
   </tbody>
 </table>
 

@@ -38,6 +38,16 @@
       Write an oxframe scene in Rust, and it compiles and plays right here: edit the examples, scrub
       the timeline, share a link or export an MP4. Loading the editor…
     </p>
+    <p>
+      The scene is built on compile.oxframe.dev and runs in your browser as WebAssembly, with the
+      same timeline, markers and tunables as <code>oxframe dev</code> on your machine. Start from an
+      example — shapes, text, charts, code walkthroughs, particles, 3D, transitions — or from a
+      lesson of the
+      <a href="/docs/guide/hello">guide</a>. The <a href="/gallery">gallery</a> shows every example
+      as a video, and <a href="/docs/embed">Embed</a> puts a scene on your own site. To render
+      longer videos with sound, install the CLI (<a href="/docs/getting-started">getting started</a
+      >).
+    </p>
   </section>
 {/if}
 

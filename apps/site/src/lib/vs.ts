@@ -82,17 +82,17 @@ export const vsPages: VsPage[] = [
       [
         'Telemetry',
         'None',
-        'On by default for client-side rendering; mandatory for the Automators plan from Remotion 5.0',
+        'Always on for client-side rendering; mandatory for the Automators plan from Remotion 5.0',
       ],
       [
         'Install',
-        'Rust and ffmpeg',
+        'Rust (ffmpeg is downloaded on first render if none is installed)',
         'Node.js; Chrome Headless Shell is downloaded on first render',
       ],
       ['Live preview', '<code>oxframe dev</code>: timeline, markers, tunables', 'Remotion Studio'],
       [
         'An agent sees the frames',
-        '<code>oxframe check</code>: a storyboard and a JSON report of 15 rules, plus an MCP server',
+        '<code>oxframe check</code>: a storyboard and a JSON report of 14 rules, plus an MCP server',
         'Agent skills; the agent renders stills to look at',
       ],
       ['Frame shapes', '16:9, 9:16 and 1:1 from one scene', 'One size per composition'],
@@ -189,7 +189,11 @@ export const vsPages: VsPage[] = [
       ],
       ['License', 'MIT or Apache-2.0', 'Apache-2.0'],
       ['Telemetry', 'None', 'Anonymous render telemetry in the CLI'],
-      ['Install', 'Rust and ffmpeg', 'Node.js 22+ and FFmpeg; Chrome is driven through Puppeteer'],
+      [
+        'Install',
+        'Rust (ffmpeg is downloaded on first render if none is installed)',
+        'Node.js 22+ and FFmpeg; Chrome is driven through Puppeteer',
+      ],
       [
         'Timing model',
         'Signals and an async timeline: <code>wait_for</code>, <code>all</code>, markers',
@@ -248,7 +252,7 @@ export const vsPages: VsPage[] = [
       },
       {
         q: 'Does HyperFrames need Chrome?',
-        a: 'Yes. Its README says the renderer seeks each frame in headless Chrome and encodes with FFmpeg; it needs Node.js 22+ and FFmpeg. oxframe needs Rust and ffmpeg and no browser.',
+        a: 'Yes. Its README says the renderer seeks each frame in headless Chrome and encodes with FFmpeg; it needs Node.js 22+ and FFmpeg. oxframe needs Rust and no browser; it downloads ffmpeg on first render if none is installed.',
       },
       {
         q: 'Which one is easier for an AI agent?',
@@ -256,7 +260,7 @@ export const vsPages: VsPage[] = [
       },
       {
         q: 'Does oxframe collect telemetry?',
-        a: 'No. Neither the CLI nor the SDK sends anything. The browser playground compiles your scene on compile.oxframe.dev; nothing else leaves your machine.',
+        a: 'No. The SDK sends nothing, and the CLI uploads a video only when you run oxframe publish to get a share link. The browser playground compiles your scene on compile.oxframe.dev.',
       },
       {
         q: 'Can oxframe render HTML or Lottie?',
@@ -302,7 +306,7 @@ export const vsPages: VsPage[] = [
       ['Encoding', 'Pipes frames to ffmpeg', 'Links ffmpeg libav statically'],
       [
         'Install',
-        'Rust and ffmpeg',
+        'Rust (ffmpeg is downloaded on first render if none is installed)',
         'Rust plus codec development packages (x264, x265, opus, clang); prebuilt Skia and ffmpeg on macOS and Linux',
       ],
       [
@@ -321,9 +325,9 @@ export const vsPages: VsPage[] = [
     sections: [
       {
         heading: 'Two models of a frame',
-        html: `<p>fframes asks one question per frame: given this index, what is the SVG? A scene implements a <code>Video</code> trait with <code>render_frame</code>, and the <code>svgr!</code> macro writes the SVG tree. That makes any frame cheap to reach and easy to reason about, and Skia on the GPU draws it fast. Its README reports a 128-second video rendered in 36 seconds.</p>
+        html: `<p>fframes asks one question per frame: given this index, what is the SVG? A scene implements a <code>Video</code> trait with <code>render_frame</code>, and the <code>svgr!</code> macro writes the SVG tree. That makes any frame cheap to reach and easy to reason about, and Skia on the GPU draws it fast.</p>
 <p>oxframe keeps a scene graph. A title is a node; its opacity, position and text are signals that animate over time and can be bound to each other, so a label follows a point and a card grows with its text. Layout places nodes in rows and columns and wraps text, and components bundle the parts of an explainer. The agent writes "a bullet list next to the chart" instead of computing coordinates, which is less code to write and less to get wrong.</p>
-<p>Both give an agent a way to look at the video without playing it. fframes has <code>inspect</code>, <code>strip</code> and <code>frame</code> commands; oxframe has <code>check</code>, which applies 15 rules (overflow, contrast, safe area, motion speed and more) and points at the node and the time of each problem.</p>`,
+<p>Both give an agent a way to look at the video without playing it. fframes has <code>inspect</code>, <code>strip</code> and <code>frame</code> commands; oxframe has <code>check</code>, which applies 14 rules (overflow, contrast, safe area, motion speed and more) and points at the node and the time of each problem.</p>`,
       },
       {
         heading: 'Getting started, side by side',
@@ -335,12 +339,12 @@ cargo fframes new my-video</code></pre>
 <pre><code>cargo install oxframe-cli
 oxframe init my-video
 cd my-video && oxframe dev</code></pre>
-<p>It needs Rust and an ffmpeg binary on the PATH to write MP4; nothing else is compiled from source. Or skip the install and open the <a href="/playground">playground</a>.</p>
-<p>We have not timed the same scene in both: fframes needs those codec development packages, which the benchmark machine does not have. When it does, the numbers and the script will be on this page, as they are for <a href="/vs/remotion">Remotion</a> and <a href="/vs/manim">Manim</a>.</p>`,
+<p>It needs Rust; ffmpeg is downloaded on the first render when none is installed; nothing else is compiled from source. Or skip the install and open the <a href="/playground">playground</a>.</p>
+<p>We have not timed the same scene in both: fframes needs those codec development packages, which the benchmark machine does not have. When it does, the numbers and the script will be on this page, as they are for <a href="/vs/remotion">Remotion</a>, <a href="/vs/hyperframes">HyperFrames</a>, <a href="/vs/revideo">Revideo</a> and <a href="/vs/manim">Manim</a>.</p>`,
       },
       {
         heading: 'Rendering and scale',
-        html: `<p>Both engines skip the browser, so both are fast. fframes draws each frame with Skia on the GPU and links ffmpeg's libav statically; its README reports a 128-second video rendered in 36 seconds. oxframe draws with its own renderer — tiny-skia on the CPU or wgpu on the GPU — and pipes frames to an ffmpeg binary on the PATH.</p>
+        html: `<p>Both engines skip the browser, so both are fast. fframes draws each frame with Skia on the GPU and links ffmpeg's libav statically; its README reports a 128-second video rendered in 36 seconds. oxframe draws with its own renderer — tiny-skia on the CPU or wgpu on the GPU — and pipes frames to an ffmpeg binary (its own copy if none is installed).</p>
 <p>Where oxframe leans on scale is the CLI. <code>oxframe render --jobs N</code> splits the video into two-second segments, renders them in parallel processes and joins them without re-encoding, and the output bytes are identical for any N — so a render is reproducible, and the same scene gives the same file on a laptop and in CI. The <a href="/">home page</a> times a 27.5-second explainer at 8.4 seconds on eight jobs.</p>`,
       },
       {
@@ -357,7 +361,7 @@ cd my-video && oxframe dev</code></pre>
       'An agent should write layout, not coordinates: rows, columns, wrapping text, themes.',
       'You want ready components for titles, lists, code and charts.',
       'You want a JSON report of what is wrong in the frames, an MCP server and a browser playground.',
-      'Install should be Rust and ffmpeg, without codec development packages.',
+      'Install should be Rust alone, without codec development packages.',
     ],
     faq: [
       {
@@ -381,7 +385,7 @@ cd my-video && oxframe dev</code></pre>
         a: 'Both can. fframes has a GPU preview window and a WebAssembly editor; oxframe has oxframe dev with a timeline and markers, and a browser playground with nothing to install. Any single frame is cheap to reach in both.',
       },
       {
-        q: 'Does oxframe render in parallel like fframes is fast?',
+        q: 'Does oxframe render in parallel?',
         a: 'Both render without a browser. oxframe adds oxframe render --jobs N, which renders two-second segments in parallel processes and joins them without re-encoding; the bytes are identical for any N, so the result is reproducible in CI.',
       },
       {
@@ -409,7 +413,7 @@ cd my-video && oxframe dev</code></pre>
       ['Renderer', 'Own renderer, CPU or GPU', 'Cairo, or OpenGL'],
       [
         'Install',
-        'Rust and ffmpeg; or nothing, in the browser playground',
+        'Rust (ffmpeg is downloaded if missing); or nothing, in the browser playground',
         'Python with Cairo and Pango; LaTeX for formulas',
       ],
       [
@@ -454,7 +458,7 @@ cd my-video && oxframe dev</code></pre>
         heading: 'Where each one is strong',
         html: `<p>Manim is the tool behind the 3Blue1Brown style, and its community has years of scenes, plugins and answers. If the formulas are already written in LaTeX, or need LaTeX packages, Manim is the reason to stay. oxframe sets formulas with Typst (<code>Math::new("e^(i pi) + 1 = 0")</code>), glyph by glyph as nodes you animate, with the font bundled so nothing else is installed; see <a href="/docs/formulas">Formulas</a>.</p>
 <p>oxframe's case is the workflow around the scene. <code>oxframe dev</code> shows the video with a timeline, markers you drag to retime it, and tunables you change without rebuilding; the <a href="/playground">playground</a> runs the same scene in a browser with nothing to install. One scene can hold a plot, a code block, a video clip and a voice line, and render 16:9, 9:16 and 1:1. And <code>oxframe check</code> tells an agent what is wrong in a frame before you watch it.</p>
-<p>Cairo is quick on simple scenes; most of the gap below is start-up and encoding. Manim's real cost is its install, which the playground avoids altogether.</p>`,
+<p>Cairo is quick on simple scenes; most of the gap above is start-up and encoding. Manim's real cost is its install, which the playground avoids altogether.</p>`,
       },
       {
         heading: 'How the code maps',
@@ -506,7 +510,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'Do I need to install anything to try oxframe?',
-        a: 'No. The playground on oxframe.dev compiles and plays a scene in the browser. To render video locally you need Rust and ffmpeg.',
+        a: 'No. The playground on oxframe.dev compiles and plays a scene in the browser. To render video locally you need Rust; ffmpeg is downloaded on the first render if none is installed.',
       },
       {
         q: 'What does Manim need installed?',
@@ -706,7 +710,7 @@ cd my-video && oxframe dev</code></pre>
       {
         heading: 'Templated video without a browser',
         html: `<p>Revideo took Motion Canvas and made it a rendering engine: scenes read variables, <code>renderVideo</code> renders a project from Node, and a CLI exposes a render endpoint. Its README says it runs anywhere Node and a headless browser run, including serverless platforms, and that it is the engine behind Midrender. It also counts rendered videos anonymously through PostHog unless <code>DISABLE_TELEMETRY=true</code> is set.</p>
-<p>oxframe covers the same job natively. A scene takes its data as Rust values, the CLI renders it in parallel segments, and the bytes do not depend on the machine or the number of jobs. Nothing is sent anywhere. The welcome card below is the same scene in both; the times are on this page.</p>`,
+<p>oxframe covers the same job natively. A scene takes its data as Rust values, the CLI renders it in parallel segments, and with the default CPU renderer the bytes do not depend on the machine or the number of jobs. Nothing is sent anywhere unless you publish a video. The welcome card above is the same scene in both, with its render times.</p>`,
       },
       {
         heading: 'What Revideo adds, in oxframe',
@@ -760,7 +764,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'Are oxframe renders reproducible for a templated batch?',
-        a: 'Yes. oxframe render --jobs N renders segments in parallel and joins them without re-encoding, and the output bytes are identical for any N and on any machine. One video per input re-renders to the same file, which is easy to cache and to diff in CI.',
+        a: 'Yes. oxframe render --jobs N renders segments in parallel and joins them without re-encoding, and with the default CPU renderer the output bytes are identical for any N and on any machine. One video per input re-renders to the same file, which is easy to cache and to diff in CI.',
       },
     ],
     sources: [
@@ -1055,7 +1059,7 @@ cd my-video && oxframe dev</code></pre>
       },
       {
         q: 'Do I need an account or an API key?',
-        a: 'No. oxframe sends nothing anywhere; the only network use is the optional playground on oxframe.dev.',
+        a: 'No. The SDK sends nothing, and the CLI uploads a video only when you run oxframe publish to get a share link. The optional playground compiles scenes on oxframe.dev.',
       },
     ],
     sources: [
@@ -1108,7 +1112,7 @@ cd my-video && oxframe dev</code></pre>
       {
         heading: 'Rendering at scale, yourself',
         html: `<p>The reason teams reach for a cloud API is scale: thousands of videos without a machine to babysit. oxframe meets that with parallel rendering and CI rather than a bill. <code>oxframe render --jobs N</code> renders two-second segments in parallel and joins them without re-encoding, and because the output bytes do not depend on the number of jobs or the machine, a render is reproducible — the same scene gives the same file on a laptop and on a build runner. Rows of a batch are independent, so a CI matrix or <code>xargs -P</code> spreads them across runners. On a free GitHub runner, <a href="/use-cases/release-videos">release-video-action</a> renders a release video in under a minute and a half, the SDK build included.</p>
-<p>The trade is real. Nobody hosts the files or scales the fleet for you, and there is no template editor a non-developer can open in a browser — that is what the vendors sell, and it is why the table above ends with "when nobody should install or run anything." oxframe's bet is that an agent writes and runs the render, so the install and the compute stop being the hard part.</p>`,
+<p>The trade is real. Nobody hosts the files or scales the fleet for you, and there is no template editor a non-developer can open in a browser — that is what the vendors sell, and it is why "When to pick them" starts with "when nobody should install or run anything." oxframe's bet is that an agent writes and runs the render, so the install and the compute stop being the hard part.</p>`,
       },
     ],
     example: {

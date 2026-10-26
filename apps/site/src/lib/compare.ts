@@ -54,7 +54,7 @@ export const rows: string[][] = [
   [
     'Live editor',
     'Timeline, markers, tunables',
-    'Preview of any frame',
+    'GPU preview window and a WebAssembly editor',
     'Preview studio',
     'Studio and a web playground',
     'Editor',

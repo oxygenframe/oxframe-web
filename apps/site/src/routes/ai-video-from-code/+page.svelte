@@ -136,8 +136,8 @@ oxframe init my-video && cd my-video
 # then, in Claude Code, Codex or Cursor: "make a video about …"`}</code
     ></pre>
   <p>
-    Rust and ffmpeg are needed on the machine (<a href="/docs/getting-started"
-      >Install and first project</a
+    Rust is needed on the machine, and ffmpeg is downloaded on the first render if missing (<a
+      href="/docs/getting-started">Install and first project</a
     >); you do not need to know Rust. Setup for each agent is on
     <a href="/agents">Agents and skills</a>, the tools an agent calls on
     <a href="/docs/mcp">MCP server</a>. Or try a scene in the

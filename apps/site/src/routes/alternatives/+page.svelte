@@ -30,7 +30,10 @@
 <ul class="list">
   <li>
     <a href="/alternatives/remotion">Remotion alternatives in 2026</a>
-    <p>Seven tools people move to from Remotion, with licenses, renderers and render times.</p>
+    <p>
+      oxframe and the other tools people move to from Remotion, with licenses, renderers and render
+      times.
+    </p>
   </li>
   <li>
     <a href="/alternatives/motion-canvas">Motion Canvas alternatives in 2026</a>
@@ -39,9 +42,10 @@
 </ul>
 
 <p>
-  The <a href="/compare">comparison table</a> puts five tools side by side, the
-  <a href="/benchmarks">benchmarks</a> time one scene in each and score an agent on the reference
-  prompts, and the <a href="/docs/migrate/remotion">migration guides</a> port a scene from each.
+  The <a href="/compare">comparison table</a> puts six tools side by side, the
+  <a href="/benchmarks">benchmarks</a> time one scene in oxframe, Remotion, HyperFrames, Revideo and
+  Manim and score an agent on the reference prompts, and the
+  <a href="/docs/migrate/remotion">migration guides</a> port a scene from each.
 </p>
 
 <style>
