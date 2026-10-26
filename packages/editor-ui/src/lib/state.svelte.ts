@@ -23,6 +23,7 @@ import {
   type MixClip,
 } from './audio';
 import * as persist from './persist';
+import { cropPng, rectOf, toScene, type NoteDraft, type ReviewNote } from './notes';
 
 export interface EditorError {
   kind: ErrorKind;
@@ -85,6 +86,15 @@ export class EditorState {
   viewport = { w: 0, h: 0 };
   selectedMarker = $state<{ scene: string; name: string } | null>(null);
   editingEase = $state<{ scene: string; name: string } | null>(null);
+
+  // Review notes
+  /** From `oxframe dev`; `null` where there is no CLI (the playground). */
+  notes = $state<ReviewNote[] | null>(null);
+  /** Comment mode: a click or a drag in the frame starts a note. */
+  commenting = $state(false);
+  draft = $state<NoteDraft | null>(null);
+  /** A click in comment mode, waiting for the engine to say what is there. */
+  private draftPick: { x: number; y: number } | null = null;
 
   private restoredFrame: number | null = null;
   /** When a new build last sent the playhead back to the start. */
@@ -157,6 +167,12 @@ export class EditorState {
   }
 
   handle(e: Event): void {
+    // From the CLI, not the engine: not part of the engine protocol.
+    const cli = e as unknown as { type: string; notes?: ReviewNote[] };
+    if (cli.type === 'Notes') {
+      this.notes = cli.notes ?? [];
+      return;
+    }
     switch (e.type) {
       case 'Ready':
         this.ready = true;
@@ -231,10 +247,17 @@ export class EditorState {
         if (e.node_id === this.selected) {
           this.signals = e.values;
           this.bounds = e.bounds ?? null;
+          if (this.draftPick && e.bounds) this.draftFromNode(e.node_id, e.bounds);
         }
         break;
       case 'Selected':
         this.selected = e.node_id;
+        if (e.node_id === null && this.draftPick) {
+          // Nothing there: mark a small area around the click.
+          const { x, y } = this.draftPick;
+          this.draftPick = null;
+          this.startDraft(rectOf(x - 60, y - 60, x + 60, y + 60));
+        }
         if (e.node_id === null) {
           this.signals = [];
           this.bounds = null;
@@ -501,6 +524,94 @@ export class EditorState {
   select(id: number | null): void {
     this.selected = id;
     this.send({ type: 'Select', node_id: id });
+  }
+
+  // ------------------------------------------------------- review notes
+
+  /** Seconds from the start of the project at the playhead. */
+  get time(): number {
+    return this.frame / Math.max(1, this.fps);
+  }
+
+  toggleCommenting(): void {
+    this.commenting = !this.commenting;
+    this.draft = null;
+    this.draftPick = null;
+    if (this.commenting && this.playing) this.pause();
+  }
+
+  /** A note about an area of the frame (frame pixels). */
+  startDraft(rect: NoteDraft['rect'], node?: NoteDraft['node']): void {
+    const t = Number(this.time.toFixed(3));
+    this.draft = { rect, time: [t, t], node, text: '' };
+  }
+
+  /** A note about what is under a click: the engine picks the node. */
+  startDraftAt(x: number, y: number): void {
+    this.draftPick = { x, y };
+    this.pick(x, y);
+  }
+
+  private draftFromNode(id: number, b: number[]): void {
+    this.draftPick = null;
+    const xs = [b[0]!, b[2]!, b[4]!, b[6]!];
+    const ys = [b[1]!, b[3]!, b[5]!, b[7]!];
+    const info = this.tree.find((n) => n.id === id);
+    const label = info ? (info.name ?? info.kind) : `#${id}`;
+    this.startDraft(rectOf(Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)), {
+      id,
+      label,
+      source: info?.source,
+    });
+  }
+
+  /** The note covers the time from where it was started to the playhead. */
+  draftUntilPlayhead(): void {
+    if (!this.draft) return;
+    const t = Number(this.time.toFixed(3));
+    const a = this.draft.time[0];
+    this.draft.time = [Math.min(a, t), Math.max(a, t)];
+  }
+
+  async saveDraft(): Promise<void> {
+    const d = this.draft;
+    if (!d || !d.text.trim()) return;
+    this.draft = null;
+    const crop = this.image ? await cropPng(this.image, this.size, d.rect).catch(() => undefined) : undefined;
+    const scene = this.scenes.find((s) => this.frame >= s.start && this.frame < s.start + s.frames);
+    this.sendCli({
+      type: 'NoteAdd',
+      text: d.text.trim(),
+      time: d.time,
+      scene: scene?.name,
+      node: d.node?.label,
+      source: d.node?.source,
+      bounds: toScene(d.rect, this.size),
+      crop_png: crop,
+    });
+  }
+
+  setNoteStatus(id: number, status: ReviewNote['status']): void {
+    this.sendCli({ type: 'NoteSet', id, status });
+  }
+
+  deleteNote(id: number): void {
+    this.sendCli({ type: 'NoteDelete', id });
+  }
+
+  goToNote(n: ReviewNote): void {
+    this.seek(Math.round(n.time[0] * this.fps));
+  }
+
+  /** URL of a note's crop on the `oxframe dev` server. */
+  noteCropUrl(n: ReviewNote): string | null {
+    if (!n.crop || typeof location === 'undefined') return null;
+    const token = new URLSearchParams(location.search).get('token') ?? '';
+    return `/notes/${encodeURIComponent(n.crop)}?token=${encodeURIComponent(token)}`;
+  }
+
+  private sendCli(msg: Record<string, unknown>): void {
+    this.backend.send(msg as unknown as Command);
   }
 
   dismissError(): void {
