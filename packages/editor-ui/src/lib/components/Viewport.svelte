@@ -73,6 +73,17 @@
     }
   });
 
+  // The play button in the middle of the frame: always there while paused,
+  // shown for a moment by the pointer while playing.
+  const center = $derived(toScreen(view, editor.size[0] / 2, editor.size[1] / 2));
+  let stirred = $state(false);
+  let calm: ReturnType<typeof setTimeout> | undefined;
+  function stir() {
+    stirred = true;
+    clearTimeout(calm);
+    calm = setTimeout(() => (stirred = false), 1500);
+  }
+
   // --- interaction: click = pick, wheel = zoom, alt/middle drag = pan ---
   let drag: { x: number; y: number; px: number; py: number; moved: boolean } | null = null;
 
@@ -87,6 +98,7 @@
   }
 
   function onPointerMove(e: PointerEvent) {
+    stir();
     if (!drag) return;
     const dx = e.clientX - drag.x;
     const dy = e.clientY - drag.y;
@@ -132,6 +144,34 @@
     data-frame={editor.imageFrame}
     aria-label="frame {editor.imageFrame}"
   ></canvas>
+  {#if editor.ready && editor.frames > 0}
+    <button
+      class="center-play"
+      class:shown={!editor.playing || stirred}
+      style:left="{center[0]}px"
+      style:top="{center[1]}px"
+      onclick={() => editor.togglePlay()}
+      onpointermove={stir}
+      ondblclick={(e) => e.stopPropagation()}
+      aria-label={editor.playing ? 'Pause' : 'Play'}
+      title="{editor.playing ? 'Pause' : 'Play'} (Space)"
+      data-testid="center-play"
+    >
+      {#if editor.playing}
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><rect x="6" y="5" width="4" height="14" rx="1" /><rect
+            x="14"
+            y="5"
+            width="4"
+            height="14"
+            rx="1"
+          /></svg
+        >
+      {:else}
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+      {/if}
+    </button>
+  {/if}
   <span class="zoom" aria-live="off">{Math.round(editor.zoom * 100)}%</span>
 </div>
 
@@ -149,6 +189,33 @@
     height: 100%;
     touch-action: none;
     cursor: crosshair;
+  }
+  .center-play {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.5);
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .center-play.shown,
+  .center-play:focus-visible {
+    opacity: 1;
+  }
+  .center-play:hover {
+    background: rgb(0 0 0 / 0.7);
+  }
+  .center-play svg {
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
   }
   .zoom {
     position: absolute;

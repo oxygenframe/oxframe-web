@@ -23,6 +23,16 @@ test('connects, shows frames and the timeline', async ({ page }) => {
   await expect(page.getByTestId('tree')).toContainText('Rect');
 });
 
+test('a new page pauses an engine that is still playing', async ({ page }) => {
+  // After a reload the native engine may still be playing; the page starts
+  // paused, so it must not let frames run without sound.
+  await open(page);
+  const types = (await sent(page)).map((c) => c.type);
+  expect(types[0]).toBe('Hello');
+  expect(types).toContain('Pause');
+  expect(types).not.toContain('Play');
+});
+
 test('keyboard: space, arrows, shift+arrows, home, end', async ({ page }) => {
   await open(page);
   await page.keyboard.press('ArrowRight');
@@ -39,6 +49,28 @@ test('keyboard: space, arrows, shift+arrows, home, end', async ({ page }) => {
   await page.keyboard.press(' ');
   await expect(page.getByTestId('play')).toHaveText('▶');
   expect(await frameText(page)).not.toBe('0 / 119');
+});
+
+test('the button in the middle of the frame plays and pauses; keys still work after it', async ({
+  page,
+}) => {
+  await open(page);
+  const center = page.getByTestId('center-play');
+  await expect(center).toHaveCSS('opacity', '1');
+  await center.click();
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  // Focus is on that button now: Space must toggle once, not twice.
+  await page.keyboard.press(' ');
+  await expect(page.getByTestId('play')).toHaveText('▶');
+  const at = Number((await frameText(page)).split(' / ')[0]);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByTestId('frame')).toHaveText(`${at + 1} / 119`);
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByTestId('frame')).toHaveText(`${at} / 119`);
+  await center.click();
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+  await center.click();
+  await expect(page.getByTestId('play')).toHaveText('▶');
 });
 
 test('scrubbing the track seeks', async ({ page }) => {
@@ -114,32 +146,41 @@ test('error overlay and building status', async ({ page }) => {
   await expect(page.getByTestId('reloaded')).toBeVisible();
 });
 
-test('a rebuild while playing goes on from the same frame, picture and sound together', async ({
+test('a rebuild while playing starts over, then keeps its frame for a while; picture and sound together', async ({
   page,
 }) => {
   await open(page);
   await page.keyboard.press(' ');
   await expect(page.getByTestId('play')).toHaveText('❚❚');
   await page.waitForTimeout(400);
-  const before = (await sent(page)).length;
-  // The new build: Reloaded, then its first frame, which is frame 0.
-  const at = await page.evaluate(() => {
-    const b = window.__oxframe!.backend as unknown as { inject(e: unknown): void };
-    const frame = Number(
-      document.querySelector('[data-testid=frame]')!.textContent!.split(' / ')[0],
-    );
-    b.inject({ type: 'Reloaded' });
-    b.inject({ type: 'Frame', index: 0 });
-    return frame;
-  });
-  expect(at).toBeGreaterThan(0);
-  const after = (await sent(page)).slice(before);
-  const seek = after.find((c) => c.type === 'Seek');
-  expect(seek?.frame).toBeGreaterThanOrEqual(at);
+  // A new build: Reloaded, then its first frame, which is frame 0.
+  const rebuild = () =>
+    page.evaluate(() => {
+      const b = window.__oxframe!.backend as unknown as { inject(e: unknown): void };
+      const frame = Number(
+        document.querySelector('[data-testid=frame]')!.textContent!.split(' / ')[0],
+      );
+      b.inject({ type: 'Reloaded' });
+      b.inject({ type: 'Frame', index: 0 });
+      return frame;
+    });
+  let before = (await sent(page)).length;
+  expect(await rebuild()).toBeGreaterThan(0);
+  let after = (await sent(page)).slice(before);
+  expect(after.find((c) => c.type === 'Seek')?.frame).toBe(0);
   // Played again only after the seek, so both start at that frame.
   expect(after.findIndex((c) => c.type === 'Play')).toBeGreaterThan(
     after.findIndex((c) => c.type === 'Seek'),
   );
+  await expect(page.getByTestId('play')).toHaveText('❚❚');
+
+  // Another build within REWIND_MS goes on from where it was.
+  await page.waitForTimeout(400);
+  before = (await sent(page)).length;
+  const at = await rebuild();
+  expect(at).toBeGreaterThan(0);
+  after = (await sent(page)).slice(before);
+  expect(after.find((c) => c.type === 'Seek')?.frame).toBeGreaterThanOrEqual(at);
   await expect(page.getByTestId('play')).toHaveText('❚❚');
 });
 
@@ -165,14 +206,21 @@ test('curve editor and tunables send edits', async ({ page }) => {
     .toBe(true);
 });
 
-test('view state survives a reload via the URL hash', async ({ page }) => {
+test('a link keeps its frame; reloading the page starts over', async ({ page }) => {
   await open(page);
   await page.keyboard.press('Shift+ArrowRight');
   await page.keyboard.press('Shift+ArrowRight');
   await expect(page.getByTestId('frame')).toHaveText('20 / 119');
   await expect.poll(() => page.evaluate(() => location.hash)).toContain('f=20');
+  const url = page.url();
+  // The link, opened in another tab, goes to that frame.
+  const other = await page.context().newPage();
+  await open(other, new URL(url).hash);
+  await expect(other.getByTestId('frame')).toHaveText('20 / 119');
+  await other.close();
+  // Reloading the page starts over.
   await page.reload();
-  await expect(page.getByTestId('frame')).toHaveText('20 / 119');
+  await expect(page.getByTestId('frame')).toHaveText('0 / 119');
 });
 
 test('light theme toggles', async ({ page }) => {
