@@ -223,6 +223,20 @@
 </p>
 <p>Fix: shorten the wait, or give the viewer something to look at while it lasts.</p>
 
+<h2>Review</h2>
+
+<h3 id="review_note"><code>review_note</code></h3>
+<p>
+  A note a person wrote in the <a href="/docs/editor#review-notes">editor</a> under
+  <code>oxframe dev</code>, still open. <code>note_text</code> says what to change; the issue has
+  the time, the node and its <code>file:line</code>, the marked area and a crop. Always an error.
+</p>
+<p>
+  Fix: do what the note says, then <code
+    >oxframe notes done &lt;id&gt; --reply "what you changed"</code
+  >.
+</p>
+
 <h2>Voice</h2>
 
 <h3 id="voice_cut"><code>voice_cut</code></h3>
