@@ -306,7 +306,7 @@ test('the theme switch changes the theme and remembers it', async ({ page }) => 
 });
 
 test('the header search opens with Ctrl+K on any page and goes to a result', async ({ page }) => {
-  await page.goto('/gallery');
+  await page.goto('/gallery', { waitUntil: 'networkidle' });
   await page.getByTestId('header-search').click();
   const dialog = page.getByTestId('search-dialog');
   await expect(dialog).toBeVisible();
@@ -314,8 +314,12 @@ test('the header search opens with Ctrl+K on any page and goes to a result', asy
   await expect(dialog).toBeHidden();
   await page.keyboard.press('Control+k');
   await expect(dialog).toBeVisible();
+  await expect(dialog.getByTestId('docs-search')).toBeFocused();
   await page.keyboard.type('easing');
-  await expect(dialog.getByTestId('search-results').locator('a').first()).toBeVisible();
+  // Pagefind loads on first use; slow on a busy CI runner.
+  await expect(dialog.getByTestId('search-results').locator('a').first()).toBeVisible({
+    timeout: 15_000,
+  });
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/docs\//);
   await expect(dialog).toBeHidden();

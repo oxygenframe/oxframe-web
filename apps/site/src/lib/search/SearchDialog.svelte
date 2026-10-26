@@ -14,8 +14,9 @@
   });
 
   function show() {
+    if (!dialog || dialog.open) return;
     open = true;
-    dialog?.showModal();
+    dialog.showModal();
   }
   function close() {
     dialog?.close();
@@ -26,9 +27,11 @@
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable;
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      if (open) close();
+      // dialog.open, not `open`: the close event (which resets `open`)
+      // comes a task after Escape closes the dialog.
+      if (dialog?.open) close();
       else show();
-    } else if (slashKey && e.key === '/' && !typing && !open) {
+    } else if (slashKey && e.key === '/' && !typing && !dialog?.open) {
       e.preventDefault();
       show();
     }
