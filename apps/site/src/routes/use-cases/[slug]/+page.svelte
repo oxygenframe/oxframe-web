@@ -66,10 +66,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: oxygenframe/release-video-action@v1
+      - uses: oxygenframe/release-video-action@v1.6.0
         with:
-          portrait: false`}</code
+          # An agent designs the scene; leave it out for the template.
+          claude-code-oauth-token: \$\{{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}`}</code
     ></pre>
+  <p>
+    The token comes from <code>claude setup-token</code> (a Claude subscription). An Anthropic API
+    key (<code>anthropic-api-key</code>) or any agent CLI such as Codex (<code>agent-command</code>)
+    works too; the
+    <a href="https://github.com/oxygenframe/release-video-action#connect-an-agent">README</a> shows each.
+  </p>
   <p>
     A release made by a workflow with <code>GITHUB_TOKEN</code> does not start
     <code>on: release</code>; pass <code>tag: $&#123;&#123; github.ref_name &#125;&#125;</code> in
