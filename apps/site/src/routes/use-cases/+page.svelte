@@ -56,6 +56,7 @@
   }
   .cases a {
     display: block;
+    box-sizing: border-box;
     height: 100%;
     padding: 12px;
     border: 1px solid var(--border);
