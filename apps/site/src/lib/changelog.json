@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.23.9",
+    "date": "2026-10-26",
+    "html": "<h3>Fixed</h3>\n<ul><li>The preview (<code>oxframe dev</code>, <code>oxframe present</code>) read <code>--cpu</code> as &quot;draw on the GPU&quot;. It now takes <code>--gpu</code> for vello, as <code>render</code> does; the CPU stays the default and <code>--cpu</code> is still accepted.</li><li>Skills: formulas are <code>Math::new</code> (feature <code>math</code>), not &quot;not yet&quot;; <code>oxframe-check</code> no longer lists <code>input_cycle</code> (gone since 0.21) and gives <code>bounds</code> in scene units, as the report has them; a snapshot is 960×540 unless <code>--size</code> says otherwise; the voiceover skill covers recorded voice-overs; the <code>oxframe mcp</code> tool list is complete.</li></ul>"
+  },
+  {
     "version": "0.23.8",
     "date": "2026-10-25",
     "html": "<h3>Added</h3>\n<ul><li>The browser build of a project can run the checks: the wasm module exports <code>check</code> (the report and the storyboard PNG), <code>inspect</code> and a frame as PNG. The remote MCP server at mcp.oxframe.dev uses them to check a scene without a local install.</li></ul>"
