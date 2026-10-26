@@ -18,6 +18,8 @@ export interface ReviewNote {
   /** `<id>.png` next to notes.json, served at `/notes/<file>?token=`. */
   crop?: string;
   status: NoteStatus;
+  /** The agent is on it (`oxframe notes take`); its reply may be a question. */
+  taken?: boolean;
   reply?: string;
   created: number;
 }

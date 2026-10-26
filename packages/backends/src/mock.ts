@@ -65,7 +65,10 @@ export class MockBackend implements Backend {
       });
     } else if (m.type === 'NoteSet') {
       const n = this.notes.find((n) => n.id === m.id);
-      if (n && m.status) n.status = m.status;
+      if (n && m.status) {
+        n.status = m.status;
+        delete n.taken;
+      }
     } else if (m.type === 'NoteDelete') {
       this.notes = this.notes.filter((n) => n.id !== m.id);
     } else {
