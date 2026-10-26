@@ -75,7 +75,11 @@
 <pre><code
     >error[review_note] #3 at 4.20s title src/main.rs:18: The title should stay a second longer</code
   ></pre>
-<p>The playground has no notes: there is no project on disk to keep them in.</p>
+<p>
+  The node's <code>file:line</code> is the call that added it, which the engine sends with the scene
+  tree (<code>NodeInfo::source</code> in the protocol, so another editor can use it too). The playground
+  has no notes: there is no project on disk to keep them in.
+</p>
 
 <h2>Shortcuts</h2>
 <table>
