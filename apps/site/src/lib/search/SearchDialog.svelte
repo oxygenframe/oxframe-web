@@ -1,7 +1,7 @@
 <script lang="ts">
   // The header's search: a button that opens a dialog with the docs search.
   // "/" (except on docs pages, whose sidebar box owns it) and Ctrl/⌘+K open it.
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import DocsSearch from './DocsSearch.svelte';
 
   let { slashKey = true }: { slashKey?: boolean } = $props();
@@ -13,10 +13,14 @@
     mac = /Mac|iPhone|iPad/.test(navigator.platform);
   });
 
-  function show() {
+  // The box is mounted first, so showModal() focuses it. The close event of
+  // an earlier Escape can arrive after a quick reopen: onclose keeps `open`
+  // in step with the dialog rather than clearing it.
+  async function show() {
     if (!dialog || dialog.open) return;
     open = true;
-    dialog.showModal();
+    await tick();
+    if (!dialog.open) dialog.showModal();
   }
   function close() {
     dialog?.close();
@@ -30,10 +34,10 @@
       // dialog.open, not `open`: the close event (which resets `open`)
       // comes a task after Escape closes the dialog.
       if (dialog?.open) close();
-      else show();
+      else void show();
     } else if (slashKey && e.key === '/' && !typing && !dialog?.open) {
       e.preventDefault();
-      show();
+      void show();
     }
   }
 </script>
@@ -57,7 +61,7 @@
 
 <dialog
   bind:this={dialog}
-  onclose={() => (open = false)}
+  onclose={() => (open = dialog?.open ?? false)}
   onclick={(e) => e.target === dialog && close()}
   aria-label="Search the docs"
   data-testid="search-dialog"
