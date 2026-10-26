@@ -31,6 +31,12 @@ python3 - "$migrate/revideo.tsx.txt" "$here/revideo" <<'PY'
 import sys
 card, render = open(sys.argv[1]).read().split('// render.ts\n')
 open(sys.argv[2] + '/src/scenes/card.tsx', 'w').write(card.replace('// src/scenes/card.tsx\n', ''))
+# Chrome's sandbox needs unprivileged user namespaces, which Ubuntu 24.04+
+# blocks with AppArmor; Remotion launches Chrome with --no-sandbox, so
+# Revideo gets the same here (the guide's code stays as it is).
+render = render.replace("settings: {outFile: 'welcome.mp4'}",
+                        "settings: {outFile: 'welcome.mp4', puppeteer: {args: ['--no-sandbox']}}")
+assert '--no-sandbox' in render
 open(sys.argv[2] + '/render.ts', 'w').write(render)
 PY
 
@@ -39,7 +45,11 @@ median() { sort -n | awk '{a[NR]=$1} END {print a[int((NR+1)/2)]}'; }
 time_of() {
   local dir=$1
   shift
-  (cd "$dir" && "$@" >/dev/null 2>&1)
+  # The warm-up must succeed: a crash is fast, and its time is no render.
+  (cd "$dir" && "$@" >/dev/null 2>&1) || {
+    echo "measure.sh: $* failed in $dir" >&2
+    exit 1
+  }
   for _ in 1 2 3; do
     local t0 t1
     t0=$(date +%s.%N)
@@ -51,26 +61,26 @@ time_of() {
 seconds() { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1" | xargs printf '%.2f'; }
 
 remotion=$(time_of "$here/remotion" npx remotion render Hello "$out/remotion.mp4")
-ox_remotion=$(time_of "$here" "$bin/remotion" render --out "$out/ox-remotion.mp4")
-ox_remotion_cpu=$(time_of "$here" "$bin/remotion" render --cpu --out "$out/ox-remotion-cpu.mp4")
+ox_remotion=$(time_of "$here" "$bin/remotion" render --gpu --out "$out/ox-remotion.mp4")
+ox_remotion_cpu=$(time_of "$here" "$bin/remotion" render --out "$out/ox-remotion-cpu.mp4")
 
 # HyperFrames gets the Remotion scene, written as HTML and GSAP.
 export HYPERFRAMES_SKIP_SKILLS=1
 hyperframes=$(time_of "$here/hyperframes" npx --yes hyperframes@0.8.185 render --fps 30 --quiet -o "$out/hyperframes.mp4")
 
 revideo=$(time_of "$here/revideo" npx tsx render.ts)
-ox_revideo=$(time_of "$here" "$bin/revideo" render --out "$out/ox-revideo.mp4")
-ox_revideo_cpu=$(time_of "$here" "$bin/revideo" render --cpu --out "$out/ox-revideo-cpu.mp4")
+ox_revideo=$(time_of "$here" "$bin/revideo" render --gpu --out "$out/ox-revideo.mp4")
+ox_revideo_cpu=$(time_of "$here" "$bin/revideo" render --out "$out/ox-revideo-cpu.mp4")
 
 # The oxframe port holds both guide scenes at 60 fps, so Manim renders both too.
 manim=$(time_of "$here/manim" uv run manim render -r 1920,1080 --fps 60 --disable_caching -a scene.py)
-ox_manim=$(time_of "$here" "$bin/manim" render --out "$out/ox-manim.mp4")
-ox_manim_cpu=$(time_of "$here" "$bin/manim" render --cpu --out "$out/ox-manim-cpu.mp4")
+ox_manim=$(time_of "$here" "$bin/manim" render --gpu --out "$out/ox-manim.mp4")
+ox_manim_cpu=$(time_of "$here" "$bin/manim" render --out "$out/ox-manim-cpu.mp4")
 
 # /vs/cloud-video-apis: one video per row of a CSV, the loop on that page.
 csv() {
   tail -n +2 "$here/oxframe/people.csv" | while IFS=, read -r name prs; do
-    NAME="$name" PRS="$prs" "$bin/thanks" render --cpu --out "$out/thanks-$name.mp4"
+    NAME="$name" PRS="$prs" "$bin/thanks" render --out "$out/thanks-$name.mp4"
   done
 }
 csv_rows=$(($(wc -l <"$here/oxframe/people.csv") - 1))
@@ -88,7 +98,7 @@ cat >"$site/vs-measurements.json" <<EOF
   "date": "$(date +%F)",
   "machine": "$cpu, $(nproc) threads, $(uname -s)",
   "script": "bench/vs/measure.sh",
-  "note": "Wall time of the render command, median of 3 after a warm-up. 1920x1080, H.264. oxframe renders on the GPU by default; --cpu forces the CPU renderer.",
+  "note": "Wall time of the render command, median of 3 after a warm-up. 1920x1080, H.264. oxframe renders on the CPU by default (cpuSeconds); seconds is render --gpu.",
   "remotion": {
     "version": "$v_remotion",
     "command": "npx remotion render Hello",

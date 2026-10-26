@@ -1,13 +1,13 @@
 {
-  "version": "0.20.0",
-  "date": "2026-10-22",
+  "version": "0.23.9",
+  "date": "2026-10-26",
   "machine": "Intel(R) Core(TM) Ultra 7 255H, 16 threads, rustc 1.97.1, Linux",
   "scene": "One scene: a title card, a bullet list and an end card, about 28 seconds. oxframe was already built in the same target directory.",
-  "editSeconds": 0.6,
-  "checkWarmSeconds": 0.37,
-  "checkAfterEditSeconds": 0.83,
-  "render30Seconds": 8.41,
-  "render30OneJobSeconds": 34.02,
+  "editSeconds": 0.58,
+  "checkWarmSeconds": 0.28,
+  "checkAfterEditSeconds": 0.82,
+  "render30Seconds": 5.09,
+  "render30OneJobSeconds": 12.23,
   "render30Jobs": 8,
   "render30VideoSeconds": 27.52,
   "render30SameBytes": true,
@@ -24,45 +24,45 @@
     "scriptUrl": "https://github.com/oxygenframe/oxframe-cli/blob/main/evals/run.py"
   },
   "commands": [
-    "cargo build (one-line change, warm dependencies): 0.60s",
-    "oxframe check with a current dev build: 0.37s",
-    "oxframe check immediately after an edit, including cargo check: 0.83s",
-    "render of the 27.5-second video on the CPU, 8 jobs: 8.41s; one job: 34.02s"
+    "cargo build (one-line change, warm dependencies): 0.58s",
+    "oxframe check with a current dev build: 0.28s",
+    "oxframe check immediately after an edit, including cargo check: 0.82s",
+    "render of the 27.5-second video on the CPU, 8 jobs: 5.09s; one job: 12.23s"
   ],
   "machines": [
     {
       "name": "linux-arm64",
       "machine": "Neoverse-N2, 4 threads, rustc 1.97.1, Linux",
-      "version": "0.23.6",
-      "date": "2026-10-25",
+      "version": "0.23.9",
+      "date": "2026-10-26",
       "checkWarmSeconds": 0.39,
-      "render30Seconds": 15.63,
-      "render30OneJobSeconds": 21.57,
+      "render30Seconds": 15.66,
+      "render30OneJobSeconds": 21.37,
       "render30Jobs": 4,
       "render30VideoSeconds": 27.52
     },
     {
       "name": "linux-x64",
-      "machine": "AMD EPYC 7763 64-Core Processor, 4 threads, rustc 1.97.1, Linux",
-      "version": "0.23.6",
-      "date": "2026-10-25",
-      "checkWarmSeconds": 0.52,
-      "render30Seconds": 21.77,
-      "render30OneJobSeconds": 26.17,
+      "machine": "INTEL(R) XEON(R) PLATINUM 8573C, 4 threads, rustc 1.97.1, Linux",
+      "version": "0.23.9",
+      "date": "2026-10-26",
+      "checkWarmSeconds": 0.42,
+      "render30Seconds": 19.87,
+      "render30OneJobSeconds": 23.9,
       "render30Jobs": 4,
       "render30VideoSeconds": 27.52
     },
     {
       "name": "macos-arm64",
       "machine": "Apple M1 (Virtual), 3 threads, rustc 1.97.1, macOS",
-      "version": "0.23.6",
-      "date": "2026-10-25",
-      "checkWarmSeconds": 0.9,
-      "render30Seconds": 20.52,
-      "render30OneJobSeconds": 25.92,
+      "version": "0.23.9",
+      "date": "2026-10-26",
+      "checkWarmSeconds": 1.15,
+      "render30Seconds": 16.23,
+      "render30OneJobSeconds": 21.76,
       "render30Jobs": 3,
       "render30VideoSeconds": 27.52
     }
   ],
-  "machinesRun": "https://github.com/oxygenframe/oxframe-sdk/actions/runs/40206770701"
+  "machinesRun": "https://github.com/oxygenframe/oxframe-sdk/actions/runs/40297868832"
 }
