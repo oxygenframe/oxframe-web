@@ -34,6 +34,7 @@ COPY apps/site/package.json apps/site/
 COPY packages/backends/package.json packages/backends/
 COPY packages/editor-ui/package.json packages/editor-ui/
 COPY packages/protocol/package.json packages/protocol/
+COPY packages/player/package.json packages/player/
 COPY services/compile/package.json services/compile/
 COPY services/compile-cf/package.json services/compile-cf/
 COPY services/mcp/package.json services/mcp/

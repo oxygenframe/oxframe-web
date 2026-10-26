@@ -18,7 +18,7 @@
     "check": "bun run --cwd packages/editor-ui check && bun run --cwd apps/site check && tsc -p services/compile --noEmit && tsc -p packages/backends --noEmit && tsc -p packages/player --noEmit && bun run --cwd services/compile-cf gen && tsc -p services/compile-cf && tsc -p services/mcp",
     "test": "bun test ./scripts apps/site/scripts apps/site/worker && bun run --cwd packages/backends test && bun run --cwd packages/editor-ui test && bun test --cwd services/compile && bun run --cwd services/compile-cf gen && bun test --cwd services/compile-cf && bun test --cwd services/mcp",
     "e2e": "bun run --cwd packages/editor-ui e2e",
-    "lint": "prettier --check . && eslint .",
+    "lint": "prettier --check . && eslint . && bun scripts/check-dockerfiles.ts",
     "format": "prettier --write .",
     "sync-protocol": "bun scripts/sync-protocol.ts",
     "sync-examples": "bun scripts/sync-examples.ts && bun scripts/sync-skills.ts && bun scripts/sync-changelog.ts",
