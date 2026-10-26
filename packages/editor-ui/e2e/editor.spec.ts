@@ -308,6 +308,26 @@ test('review notes: mark an area or a node, write, resolve', async ({ page }) =>
   await expect(page.getByTestId('note-area-1')).toHaveCount(0);
   await page.getByTestId('note-1').getByTitle('Go to the note').click();
   await expect(page.getByTestId('frame')).toHaveText('10 / 119');
+
+  // The agent takes it (`oxframe notes take 1 --reply …`) and the person
+  // answers its question by sending the note back.
+  await page.evaluate(() => {
+    const b = window.__oxframe!.backend as unknown as {
+      notes: Record<string, unknown>[];
+      inject(e: unknown): void;
+    };
+    Object.assign(b.notes[0]!, { taken: true, reply: 'Faster than what?' });
+    b.inject({ type: 'Notes', notes: b.notes });
+  });
+  await expect(page.getByTestId('note-taken-1')).toHaveText('agent is on it');
+  await expect(page.getByTestId('note-reply-1')).toContainText('Faster than what?');
+  await page.getByTestId('note-1').getByRole('button', { name: 'Send back' }).click();
+  await expect(page.getByTestId('note-taken-1')).toHaveCount(0);
+  expect((await sent(page)).filter((c) => c.type === 'NoteSet').at(-1)).toMatchObject({
+    id: 1,
+    status: 'open',
+  });
+
   await page.getByTestId('note-1').getByRole('button', { name: 'Resolve' }).click();
   await expect(page.getByTestId('note-1')).toContainText('done');
   await expect(page.getByTestId('note-area-1')).toHaveCount(0);

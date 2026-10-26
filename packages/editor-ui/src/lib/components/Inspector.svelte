@@ -76,14 +76,16 @@
       <h2>Notes for the agent</h2>
       {#if editor.notes.length === 0}
         <p class="dim">
-          Press <kbd>C</kbd>, then click or drag in the frame. <code>oxframe check</code> gives open notes
-          to the agent first.
+          Press <kbd>C</kbd>, then click or drag in the frame. An agent running
+          <code>oxframe notes wait</code> picks a note up at once; <code>oxframe check</code> gives open
+          notes to the agent first.
         </p>
       {:else}
         <ol class="notes">
           {#each editor.notes as n (n.id)}
             {@const crop = editor.noteCropUrl(n)}
-            <li class:done={n.status === 'done'} data-testid="note-{n.id}">
+            {@const taken = n.status === 'open' && n.taken}
+            <li class:done={n.status === 'done'} class:taken data-testid="note-{n.id}">
               <button class="note-go" onclick={() => editor.goToNote(n)} title="Go to the note">
                 <span class="note-id">#{n.id}</span>
                 {n.time[0].toFixed(2)}{n.time[1] > n.time[0] ? `–${n.time[1].toFixed(2)}` : ''} s
@@ -95,6 +97,14 @@
                   ↳ {n.reply}
                 </p>{/if}
               <div class="note-row">
+                {#if taken}
+                  <span class="note-agent" data-testid="note-taken-{n.id}">agent is on it</span>
+                  <button
+                    onclick={() => editor.setNoteStatus(n.id, 'open')}
+                    title="Hand the note back to the agent, for instance after answering its question"
+                    >Send back</button
+                  >
+                {/if}
                 {#if n.status === 'open'}
                   <button onclick={() => editor.setNoteStatus(n.id, 'done')}>Resolve</button>
                 {:else}
@@ -215,6 +225,13 @@
   .notes li {
     border-left: 3px solid #ff3b6b;
     padding-left: 6px;
+  }
+  .notes li.taken {
+    border-left-color: #f5a524;
+  }
+  .note-agent {
+    font-size: 12px;
+    color: #f5a524;
   }
   .notes li.done {
     border-left-color: var(--m-border);
