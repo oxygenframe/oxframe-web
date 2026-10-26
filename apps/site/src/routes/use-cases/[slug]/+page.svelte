@@ -69,7 +69,7 @@ jobs:
       - uses: oxygenframe/release-video-action@v1.6.0
         with:
           # An agent designs the scene; leave it out for the template.
-          claude-code-oauth-token: \$\{{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}`}</code
+          claude-code-oauth-token: $\{{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}`}</code
     ></pre>
   <p>
     The token comes from <code>claude setup-token</code> (a Claude subscription). An Anthropic API
