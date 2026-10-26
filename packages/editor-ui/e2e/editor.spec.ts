@@ -254,7 +254,7 @@ test('review notes: mark an area or a node, write, resolve', async ({ page }) =>
   await expect(page.getByTestId('note-tick-1')).toBeVisible();
   const add = (await sent(page)).find((c) => c.type === 'NoteAdd')!;
   expect(add.time).toEqual([0.333, 0.333]);
-  const b = add.bounds as number[];
+  const b = add.bounds as [number, number, number, number];
   expect(b[0]).toBeLessThan(b[2]);
   expect(b[0]).toBeLessThan(0); // scene units: origin at the center
 
