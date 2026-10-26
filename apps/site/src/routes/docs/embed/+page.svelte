@@ -88,6 +88,7 @@
 
 <h2 id="javascript">From JavaScript</h2>
 <p>The element works like a <code>&lt;video&gt;</code> for the basics:</p>
+<!-- snippet-skip: JavaScript -->
 <pre><code
     >{`const player = document.querySelector('oxframe-player');
 player.addEventListener('ready', () => console.log(player.duration, 's'));
@@ -120,6 +121,7 @@ crate-type = ["cdylib"]
 oxframe = { version = "0.23", default-features = false, features = ["wasm", "gpu"] }
 wasm-bindgen = "0.2"`}</code
   ></pre>
+<!-- snippet-skip: a crate's lib.rs, needs wasm-bindgen -->
 <pre><code
     >{`// src/lib.rs
 use wasm_bindgen::prelude::*;
