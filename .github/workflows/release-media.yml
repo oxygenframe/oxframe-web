@@ -57,7 +57,12 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with: { bun-version-file: .bun-version }
       - run: bun install --frozen-lockfile
-      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
+      # A static build from GitHub: apt mirrors stalled the first run.
+      - name: ffmpeg
+        timeout-minutes: 3
+        run: |
+          curl -fsSL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz | tar -xJ -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/ffmpeg-master-latest-linux64-gpl/bin" >> "$GITHUB_PATH"
       - run: bun scripts/release-media.ts ${{ inputs.versions }}
       - name: Commit release-media.json
         run: |
