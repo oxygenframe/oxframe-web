@@ -27,7 +27,11 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
-        with: { sparse-checkout: apps/site/src/lib/release-media.json, sparse-checkout-cone-mode: false }
+        with:
+          {
+            sparse-checkout: apps/site/src/lib/release-media.json,
+            sparse-checkout-cone-mode: false,
+          }
       - id: new
         run: |
           new=false
