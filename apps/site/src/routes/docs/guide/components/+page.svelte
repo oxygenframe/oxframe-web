@@ -25,6 +25,11 @@ title.next().await;
 title.exit().await;`}</code
   ></pre>
 <p><code>enter</code> fades the card and the title in. <code>next</code> reveals the subtitle.</p>
+<p>
+  <code>TitleCard::logo()</code> puts the oxframe logo before the title, sized to it:
+  <code>TitleCard::new("oxframe").logo()</code>. <code>Logo::new().height(48)</code> is the logo alone,
+  a node like any other.
+</p>
 
 <h2>Chapter marker</h2>
 <img
@@ -134,6 +139,19 @@ end.next().await;
 end.exit().await;`}</code
   ></pre>
 <p>Same rhythm as a title card. The note waits for <code>next</code>.</p>
+
+<h3>Made by Oxframe</h3>
+<pre><code
+    >{`let end = view.add(EndCard::new("").made_by().note("oxframe.dev"));
+end.enter().await;
+end.next().await;`}</code
+  ></pre>
+<p>
+  <code>EndCard::made_by()</code> shows “made by”, the oxframe logo and “Oxframe” in place of the
+  title. <code>MadeBy::new().font_size(40)</code> is the same line on its own, to put under other
+  content; <code>enter</code> fades it in. <code>EndCard::rich</code> takes styled runs for the
+  title, as <code>Txt::rich</code> does.
+</p>
 <p>
   Every component goes wherever a node does, so you can place other nodes around it:
   <code>caption.next_to(&end_card, Side::Bottom)</code>.

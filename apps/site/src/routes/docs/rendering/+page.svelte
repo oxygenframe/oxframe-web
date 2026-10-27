@@ -198,7 +198,7 @@ async fn sea(view: View) {
 async fn shore(view: View) {
     view.add(shaders::waves().amp(0.02).width(pct(100)).height(pct(20)).to_edge(Edge::Bottom));
     transition(Transition::shader(shaders::water_wipe())).await;
-    view.add(EndCard::new("Made with oxframe")).enter().await;
+    view.add(EndCard::new("").made_by()).enter().await;
 }`}</code
   ></pre>
 <LiveExample name="splash" />

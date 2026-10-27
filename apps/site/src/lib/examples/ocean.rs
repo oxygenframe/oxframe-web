@@ -58,7 +58,7 @@ pub async fn shore(view: View) {
             .to_edge(Edge::Bottom),
     );
     transition(Transition::shader(shaders::water_wipe())).await;
-    view.add(EndCard::new("Made with oxframe")).enter().await;
+    view.add(EndCard::new("").made_by()).enter().await;
 }
 
 pub fn project() -> Project {
