@@ -41,7 +41,8 @@ for _ in $(seq 30); do
   curl -sf 127.0.0.1:13000/docs >/dev/null && curl -sf 127.0.0.1:18787/healthz >/dev/null && break
   sleep 1
 done
-curl -sf 127.0.0.1:13000/docs | grep -q '<title>'
-curl -sf 127.0.0.1:18787/api/examples | grep -q '"name":"intro"'
+# grep -q would close the pipe early and fail curl (exit 23) under pipefail.
+curl -sf 127.0.0.1:13000/docs | grep '<title>' >/dev/null
+curl -sf 127.0.0.1:18787/api/examples | grep '"name":"intro"' >/dev/null
 
 printf '\nimage-check: all green\n'

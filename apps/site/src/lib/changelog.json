@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.24.3",
+    "date": "2026-10-27",
+    "html": "<h3>Added</h3>\n<ul><li><code>code.focus_text(&quot;main&quot;, 0.4)</code>: lights one piece of the source and dims the rest, as <code>focus_lines</code> does for lines; between two pieces the highlight slides across, and <code>focus_text(&quot;&quot;, 0.3)</code> shows everything again. Explaining one expression part by part no longer needs a <code>Txt</code> per token.</li></ul>\n<h3>Changed</h3>\n<ul><li><code>shaders::ripple()</code> also lights the slope of each ring, so the rings show on a flat fill and on <code>shaders::waves()</code>, not only on text or an image. Frames with a ripple render differently.</li></ul>"
+  },
+  {
     "version": "0.24.2",
     "date": "2026-10-27",
     "html": "<p>The credit with the oxframe logo. (0.24.1 was a release of the CLI alone: <code>oxframe notes wait</code> and <code>notes take</code>.)</p>\n<h3>Added</h3>\n<ul><li><code>EndCard::rich</code>: styled runs for the card's title, like <code>Txt::rich</code>.</li><li><code>MadeBy</code>: &quot;made by&quot;, the oxframe logo and &quot;Oxframe&quot; on one line (<code>MadeBy::new().font_size(40)</code>), and <code>EndCard::made_by()</code> for an end card with it: <code>EndCard::new(&quot;&quot;).made_by()</code>. The examples end on it.</li><li><code>Logo</code>: the oxframe logo as a node (<code>Logo::new().height(48)</code>), and <code>TitleCard::logo()</code> to put it before a title.</li></ul>"
