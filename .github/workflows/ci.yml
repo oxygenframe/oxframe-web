@@ -82,7 +82,8 @@ jobs:
 
   # Links to other sites, nightly only (they change without a commit here).
   # Links inside the site are checked by e2e; archived docs and sites that
-  # refuse bots are left out.
+  # refuse bots are left out. A slow site gets a minute and retries before it
+  # counts as broken.
   links:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
@@ -98,6 +99,7 @@ jobs:
             --no-progress --root-dir ${{ github.workspace }}/apps/site/build --exclude '^file://'
             --exclude-path 'apps/site/build/docs/0\.'
             --accept '200..=299,429' --max-concurrency 16
+            --timeout 60 --max-retries 5 --retry-wait-time 10
             --exclude '^https?://(localhost|127\.0\.0\.1)' --exclude '^https://oxframe\.dev'
             --exclude '^https://(www\.)?(x|twitter|linkedin|npmjs)\.com'
             'apps/site/build/**/*.html'
