@@ -212,8 +212,9 @@ async fn shore(view: View) {
 <p>
   <code>Node::effect</code> runs a shader on one node's pixels, children included, and returns an
   <code>Effect</code>. <code>shaders::ripple()</code> sends rings out from the node's center;
-  <code>.strength()</code> and <code>.speed()</code> are signals. The colors move and the outline stays,
-  so use it on water, text, a gradient or an image: a flat fill shows no rings. A node has one effect.
+  <code>.strength()</code> and <code>.speed()</code> are signals. The colors move and each ring is lit
+  on one side, so the rings show on water and flat fills as well as on text or an image; the outline stays.
+  A node has one effect.
 </p>
 <p>
   <code>lens_drops</code>, <code>node.effect(..)</code> or a frame-reading shader of your own also
