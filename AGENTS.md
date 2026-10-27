@@ -119,8 +119,9 @@ snapshots at `/docs/<series>/…`; `/docs/<current series>/…` 301-redirects to
   upgraded.
 - `bun run sync-examples` also copies the SDK's CHANGELOG.md to
   `/changelog`. Once the release's video is attached on GitHub (the SDK's
-  `release video` workflow), `bun scripts/release-media.ts` copies it to R2
-  for that page.
+  `release video` workflow), the `release-media` workflow (every three hours,
+  or by hand) runs `scripts/release-media.ts`: it copies the video to R2 and
+  commits `release-media.json`.
 - Archived pages are canonicalized to the current page and stay out of the
   sitemap; "API reference" links to docs.rs for the selected version.
 - `scripts/llms.ts` writes `/llms.txt` for the current docs and
